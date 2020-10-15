@@ -1,0 +1,29 @@
+{
+    "wemos": {
+        "id": 1,
+        "name": "Wemos D1 Mini Development Board",
+        "w": 15,
+        "ww": 13,
+        "R": 12,
+        "G": 14,
+        "B": 16
+    },
+    "novostella": {
+        "id": 2,
+        "name": "Novostella",
+        "w": 13,
+        "ww": 5,
+        "R": 4,
+        "G": 12,
+        "B": 14
+    },
+    "lohas": {
+        "id": 3,
+        "name": "LOHAS LED",
+        "w": 14,
+        "ww": 12,
+        "R": 5,
+        "G": 4,
+        "B": 13
+    }
+}
