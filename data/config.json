@@ -10,7 +10,7 @@
         "gpio_b": 16
     },
     "network": {
-        "ssid": null,
-        "password": null
+        "ssid": "",
+        "password": ""
     }
 }
