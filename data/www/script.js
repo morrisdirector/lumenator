@@ -8,10 +8,11 @@ let websocket;
 let config;
 let devicePresets;
 let mode = Mode.STANDBY;
+let rgbControlColorPicker;
 
 const onWsError = (evt) => {
 	document.querySelector('#error-messages').setState({ text: 'Error establishing Web Socket connection' });
-	$(window).scrollTop(0);
+	window.scrollTo(0, 0);
 	console.log(evt);
 };
 
@@ -91,7 +92,7 @@ const loadConfigJson = () => {
 		})
 		.catch(function(e) {
 			console.warn('Something went wrong loading the config json file.', e);
-			$(window).scrollTop(0);
+			window.scrollTo(0, 0);
 			document.querySelector('#error-messages').setState({ text: 'Error loading configuration' });
 		});
 };
@@ -110,7 +111,7 @@ const loadDevicePresets = () => {
 		})
 		.catch(function(e) {
 			console.warn('Something went wrong loading the device presets.', e);
-			$(window).scrollTop(0);
+			window.scrollTo(0, 0);
 			document.querySelector('#error-messages').setState({ text: 'Error loading device presets' });
 		});
 };
@@ -118,33 +119,55 @@ const loadDevicePresets = () => {
 const addEventListeners = () => {
 	// Page Settings:
 	document.addEventListener('touchstart', function() {}, true); // mobile safari styling
-	// Components
-	const gpioToggleSwitches = Array.from(document.querySelectorAll('.gpio-toggle'));
-	for (let toggle of gpioToggleSwitches) {
-		toggle.addEventListener('onToggle', (e) => {
-			if (e.target.state.state === 'ON') {
-				for (let t of gpioToggleSwitches) {
-					if (t.state.id !== e.target.state.id && t.state.state === 'ON') {
-						t.setState({ state: 'OFF' });
-					}
-				}
-			}
-			if (websocket) {
-				websocket.send(`${e.detail.id}:${OnOff[e.detail.state]}`);
-			}
-		});
-	}
 
+	// Mode Toggles
 	const modeToggleSwitches = Array.from(document.querySelectorAll('.mode-toggle'));
 	for (let toggle of modeToggleSwitches) {
 		toggle.addEventListener('onToggle', (e) => {
-			mode = Mode.WHITE;
-			if (e.target.state.state === 'ON') {
+			const state = e.target.state;
+			if (state.state === 'ON') {
 				for (let t of modeToggleSwitches) {
-					if (t.state.id !== e.target.state.id && t.state.state === 'ON') {
+					if (t.state.id !== state.id && t.state.state === 'ON') {
 						t.setState({ state: 'OFF' });
 					}
 				}
+				switch (state.id) {
+					case 'modeRgb':
+						mode = Mode.RGB;
+						document.querySelector('#rgb-warning').setState({
+							text:
+								'While manual RGB mode is enabled, Lumenator will not respond to external control commands.'
+						});
+						sendRgbColors();
+						break;
+					case 'modeWhite':
+						mode = Mode.WHITE;
+						break;
+					default:
+						// GPIO Testing Mode
+						mode = Mode.GPIO_TESTING;
+						document.querySelector('#gpio-test-warning').setState({
+							text:
+								'While GPIO testing is enabled, Lumenator will not respond to external control commands.'
+						});
+						break;
+				}
+			} else if (state.state === 'OFF') {
+				mode = Mode.STANDBY;
+				document.querySelector('#gpio-test-warning').setState({
+					visible: false,
+					text: null
+				});
+				document.querySelector('#rgb-warning').setState({
+					visible: false,
+					text: null
+				});
+				if (websocket) {
+					websocket.send('standby');
+				}
+			}
+			if (websocket && state.id !== 'modeRgb' && state.id !== 'modeWhite') {
+				websocket.send(`${e.detail.id}:${OnOff[e.detail.state]}`);
 			}
 		});
 	}
@@ -176,12 +199,12 @@ const saveConfiguration = () => {
 				document
 					.querySelector('#info-messages')
 					.setState({ text: 'Updated Configuration Successfully', visible: true });
-				$(window).scrollTop(0);
+				window.scrollTo(0, 0);
 			} else {
 				document
 					.querySelector('#error-messages')
 					.setState({ text: 'Something went wrong while saving the configuration', visible: true });
-				$(window).scrollTop(0);
+				window.scrollTo(0, 0);
 			}
 		})
 		.catch((e) => {
@@ -189,7 +212,7 @@ const saveConfiguration = () => {
 			document
 				.querySelector('#error-messages')
 				.setState({ text: 'Something went wrong while saving the configuration', visible: true });
-			$(window).scrollTop(0);
+			window.scrollTo(0, 0);
 		});
 };
 
@@ -197,12 +220,12 @@ const refresh = () => {
 	window.location.reload();
 };
 
-const sendRgbColors = (picker) => {
+const sendRgbColors = () => {
 	if (mode !== Mode.RGB) {
 		mode = Mode.RGB;
 		document.querySelector('#modeRgb').setState({ state: 'ON' });
 	}
-	const color = picker.getCurColorRgb();
+	const color = rgbControlColorPicker.getCurColorRgb();
 	const r = `00${color.r}`.slice(`00${color.r}`.length - 3);
 	const g = `00${color.g}`.slice(`00${color.g}`.length - 3);
 	const b = `00${color.b}`.slice(`00${color.b}`.length - 3);
@@ -214,22 +237,22 @@ const sendRgbColors = (picker) => {
 
 const loadColorPickers = () => {
 	// Control Page Color Picker
-	new KellyColorPicker({
+	rgbControlColorPicker = new KellyColorPicker({
 		place: 'control-color-picker',
 		size: 225,
 		color: 'rgb(0, 0, 255)',
 		userEvents: {
-			mousemoveh: (e, self) => {
-				sendRgbColors(self);
+			mousemoveh: () => {
+				sendRgbColors();
 			},
-			mousemovesv: (e, self) => {
-				sendRgbColors(self);
+			mousemovesv: () => {
+				sendRgbColors();
 			},
-			mouseuph: (e, self) => {
-				sendRgbColors(self);
+			mouseuph: () => {
+				sendRgbColors();
 			},
-			mouseupsv: (e, self) => {
-				sendRgbColors(self);
+			mouseupsv: () => {
+				sendRgbColors();
 			}
 		}
 	});

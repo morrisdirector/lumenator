@@ -1,5 +1,5 @@
 /*
-  "Lumenator"
+  "Lumenator" v1.0
   by Patrick Morris
 */
 #include <ArduinoJson.h>
@@ -24,16 +24,6 @@
 //  TX  1
 //  RX  3
 
-// #define UNIVERSE 1                      // First DMX Universe to listen for
-// #define UNIVERSE_COUNT 1                // Total number of Universes to listen for, starting at
-// UNIVERSE
-
-// #define RED_PIN 12
-// #define GREEN_PIN 14
-// #define BLUE_PIN 16
-// #define CWHITE_PIN 15
-// #define WWHITE_PIN 13
-
 /* ------- NETWORK CREDENTIALS ------- */
 /* Fallback configuration if config.json is empty or fails */
 const char *ssid = mySSID;
@@ -44,12 +34,11 @@ const char CONFIG_FILE[] = "/config.json";
 
 String dtoBuffer;
 
-// Control modes
-enum ctrlModeSetting { CTRL_RGB, CTRL_WHITE, CTRL_GPIO };
-int ctrlMode;
-
-// Data Source to use
+// Enums
+enum ctrlModeSetting { STANDBY, CTRL_RGB, CTRL_WHITE, CTRL_GPIO };
 enum deviceType { LRGBWW, LRGBW, LRGB };
+
+int ctrlMode;
 
 struct DeviceConfig {
   String name;
@@ -61,11 +50,7 @@ struct DeviceConfig {
   uint8_t gpio_g;
   uint8_t gpio_b;
 };
-// struct DeviceConfig {
-//  String name;
-//  String map_preset;
-//};
-//
+
 struct NetworkConfig {
   String ssid;
   String password;
@@ -73,13 +58,6 @@ struct NetworkConfig {
 
 DeviceConfig deviceConfig;
 NetworkConfig networkConfig;
-
-// Set LED GPIO
-// #define LED_PIN 2
-// #define OFF HIGH
-// #define ON LOW
-// Stores LED state
-// String ledState;
 
 // Web Server port 80
 AsyncWebServer server(80);
@@ -258,9 +236,6 @@ void ctrlCommand(char *command) {
 }
 
 bool saveConfiguration(String dto) {
-  // Delete existing file, otherwise the configuration is appended to the file
-  // SPIFFS.remove(CONFIG_FILE);
-
   Serial.println();
   Serial.println("Configuration Update DTO: ");
   Serial.println(dto);
@@ -354,6 +329,10 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     } else if (strncmp(text, "rgbctrl", 7) == 0) {
       // rgbctrl command:
       rgbCtrlCommand(text);
+    } else if (strncmp(text, "standby", 7) == 0) {
+      // Standby Mode
+      resetGpios();
+      ctrlMode = STANDBY;
     }
 
     break;
@@ -392,12 +371,19 @@ void deserializeNetworkConfig(const JsonObject &json) {
 
     // Fallback to embedded ssid and password if null in config
     networkConfig.ssid = networkJson["ssid"].as<String>();
-    if (!networkConfig.ssid.length())
-      networkConfig.ssid = ssid;
-
     networkConfig.password = networkJson["password"].as<String>();
-    if (!networkConfig.password.length())
+    if (!networkConfig.ssid.length() || !networkConfig.password.length()) {
+      networkConfig.ssid = ssid;
       networkConfig.password = password;
+      Serial.println("No network credentials found in config.json.");
+      Serial.println("Using fallback for credentials:");
+
+    } else {
+      Serial.println();
+      Serial.println("Network credentials found in config.json:");
+    }
+    Serial.print("SSID: ");
+    Serial.println(networkConfig.ssid);
 
   } else {
     Serial.println("No network settings found.");
@@ -427,23 +413,7 @@ void startWiFi() {
   // Connect to Wi-Fi
   Serial.println(" ");
   Serial.println("Connecting to WiFi:");
-  // Get SSID and password from configuration file
-  // Fallback to hard coded connection if not able to read it
-  if (networkConfig.ssid.length() == 0 || networkConfig.password.length() == 0) {
-    Serial.println("Using fallback for credentials:");
-    Serial.print("SSID: ");
-    Serial.println(ssid);
-    Serial.print("PASSWORD: ");
-    Serial.println(password);
-  } else {
-    WiFi.begin(networkConfig.ssid, networkConfig.password);
-    Serial.println("Using config.json for credentials:");
-    Serial.print("SSID: ");
-    Serial.println(networkConfig.ssid);
-    Serial.print("PASSWORD: ");
-    Serial.println(networkConfig.password);
-  }
-  WiFi.begin(ssid, password);
+  WiFi.begin(networkConfig.ssid, networkConfig.password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.print(".");

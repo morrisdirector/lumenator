@@ -421,11 +421,48 @@ li.tab.active {
   padding: 10px;
   color: #242423;
   margin: 0 0 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.alert-message .info .icon,
+.alert-message .alert .icon,
+.alert-message .danger .icon {
+  font-size: 14px;
+  min-width: 16px;
+  max-height: 16px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid #242423;
+  border-radius: 9px;
+  padding: 0px;
+  margin: 0 8px 0 0;
+}
+
+.alert-message .info .icon.hidden,
+.alert-message .alert .icon.hidden,
+.alert-message .danger .icon.hidden {
+  display: none;
+}
+
+.alert-message .info .text,
+.alert-message .alert .text,
+.alert-message .danger .text {
+  margin: 0 14px 0 0;
 }
 
 .alert-message .info button,
 .alert-message .alert button,
 .alert-message .danger button {
+  font-size: 14px;
+  min-width: 16px;
+  max-height: 16px;
+  display: inline-block;
+  text-align: center;
   display: none;
   position: absolute;
   top: calc(10px *.7);
@@ -460,6 +497,10 @@ li.tab.active {
   background: #cfdcf0;
 }
 
+.alert-message .info .icon {
+  border: 1px solid #2d5693;
+}
+
 .alert-message .info,
 .alert-message .info button {
   color: #2d5693;
@@ -469,6 +510,10 @@ li.tab.active {
   background: #edc1c1;
 }
 
+.alert-message .alert .icon {
+  border: 1px solid #882727;
+}
+
 .alert-message .alert,
 .alert-message .alert button {
   color: #882727;
@@ -476,6 +521,10 @@ li.tab.active {
 
 .alert-message .danger {
   background: #f8da8c;
+}
+
+.alert-message .danger .icon {
+  border: 1px solid #7d5d08;
 }
 
 .alert-message .danger,

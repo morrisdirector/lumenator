@@ -46,7 +46,8 @@ alertMessageTemplate.innerHTML = /*html*/ `
 </style>
 <div class="alert-message">
 	<div id="message" class="info">
-		<span></span>
+		<span class="icon hidden"></span>
+		<span class="text"></span>
 		<button class="close">x</button>
 	</div>
 </div>
@@ -57,6 +58,7 @@ class AlertMessage extends CustomElement {
 		const text = this.getAttribute('text');
 		this.setState({
 			text: text,
+			icon: this.getAttribute('icon'),
 			type: this.getAttribute('type') || 'info',
 			closable: !!this.getAttribute('closable'),
 			visible: !!text
@@ -73,15 +75,27 @@ class AlertMessage extends CustomElement {
 		if (state.visible) {
 			const newClass = state.closable ? `closable ${state.type}` : state.type;
 			this.shadowRoot.querySelector('#message').className = newClass;
-			this.shadowRoot.querySelector('#message span').innerHTML = state.text;
+			this.shadowRoot.querySelector('#message span.text').innerHTML = state.text;
 			this.shadowRoot.querySelector('.alert-message').className = 'alert-message';
+
+			if (state.icon) {
+				switch (state.icon) {
+					case 'info':
+					default:
+						this.shadowRoot.querySelector('#message span.icon').innerHTML = 'i';
+						break;
+				}
+				this.shadowRoot.querySelector('#message span.icon').className = 'icon';
+			} else {
+				this.shadowRoot.querySelector('#message span.icon').className = 'icon hidden';
+			}
 		} else {
 			this.shadowRoot.querySelector('.alert-message').className = 'alert-message hidden';
 		}
 	}
 
 	onClose() {
-		this.setState({ visible: false });
+		this.setState({ visible: false, text: null });
 	}
 
 	connectedCallback() {
