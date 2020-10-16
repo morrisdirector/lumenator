@@ -401,3 +401,112 @@ class Loader extends CustomElement {
 	}
 }
 window.customElements.define('ui-loader', Loader);
+
+/**
+ * Color Slider
+ */
+const colorSliderTemplate = document.createElement('template');
+colorSliderTemplate.innerHTML = /*html*/ `
+<style>
+	@import "style.css";
+</style>
+<div id="color-slider" class="color-slider" ontouchstart="return true;">
+	<div id="handle"></div>
+</div>
+`;
+class ColorSlider extends CustomElement {
+	constructor() {
+		super(colorSliderTemplate);
+		this.handlePos = { xLeft: 0, xPos: 0, xStart: 0, xMax: 0, posRatio: 0 };
+		this.shadowRoot.querySelector('#handle').onmousedown = this.onHandleGrab.bind(this);
+		this.shadowRoot.querySelector('#handle').ontouchstart = this.onHandleGrab.bind(this);
+		// this.slideWidth = this.shadowRoot.querySelector('#color-slider').clientWidth;
+
+		window.onresize = () => {
+			const handleWidth = this.shadowRoot.querySelector('#handle').clientWidth;
+			const hp = this.handlePos;
+
+			const sliderRect = this.shadowRoot.querySelector('#color-slider').getBoundingClientRect();
+			const sliderWidth = sliderRect.right - sliderRect.left;
+			const leftOffset = sliderWidth * hp.posRatio - handleWidth - 3;
+			this.handlePos = {
+				xLeft: leftOffset,
+				xPos: sliderRect.left + leftOffset - handleWidth - 3,
+				xStart: sliderRect.left,
+				xMax: sliderRect.right - handleWidth - 3,
+				posRatio: hp.posRatio
+			};
+			console.log(this.handlePos);
+			this.shadowRoot.querySelector('#handle').style.left = this.handlePos.xLeft + 'px';
+		};
+		// this.setState({
+		// 	id: this.getAttribute('id'),
+		// 	loading: this.getAttribute('loading')
+		// });
+		// this.updateLoadingClass(!!this.getAttribute('loading'));
+
+		this.setPosition = this.setPosition.bind(this);
+		this.elementDrag = this.elementDrag.bind(this);
+		this.closeDragElement = this.closeDragElement.bind(this);
+	}
+
+	setPosition(e) {
+		let pos = e.clientX;
+		console.log('clientX:', pos);
+		if (pos < this.handlePos.xStart) {
+			pos = this.handlePos.xStart;
+		} else if (pos > this.handlePos.xMax) {
+			pos = this.handlePos.xMax;
+		}
+		console.log('final pos:', pos);
+		this.handlePos.xPos = pos;
+	}
+
+	onHandleGrab(e) {
+		if (!this.handlePos.xStart) {
+			this.handlePos.xStart = e.clientX;
+			this.handlePos.xMax =
+				e.clientX +
+				this.shadowRoot.querySelector('#color-slider').clientWidth -
+				this.shadowRoot.querySelector('#handle').clientWidth -
+				3;
+		}
+		e.preventDefault();
+		this.setPosition(e);
+		document.onmouseup = this.closeDragElement;
+		document.onmousemove = this.elementDrag;
+		document.ontouchend = this.closeDragElement;
+		document.ontouchmove = this.elementDrag;
+	}
+
+	elementDrag(e) {
+		e.preventDefault();
+		this.setPosition(e);
+		this.handlePos.xLeft = this.handlePos.xPos - this.handlePos.xStart;
+		// this.handlePos.xPos = e.clientX;
+		// console.log(this.handlePos);
+		const handle = this.shadowRoot.querySelector('#handle');
+		handle.style.left = this.handlePos.xLeft + 'px';
+	}
+
+	closeDragElement(e) {
+		const hp = this.handlePos;
+		hp.posRatio = (hp.xPos - hp.xStart) / (hp.xMax - hp.xStart);
+		console.log(hp.posRatio);
+		document.onmouseup = null;
+		document.onmousemove = null;
+		document.ontouchend = null;
+		document.ontouchmove = null;
+	}
+	// updateLoadingClass(loading) {
+	// 	if (loading) {
+	// 		this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader';
+	// 	} else {
+	// 		this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader hidden';
+	// 	}
+	// }
+	// onStateChanges(state) {
+	// 	this.updateLoadingClass(state.loading);
+	// }
+}
+window.customElements.define('ui-color-slider', ColorSlider);

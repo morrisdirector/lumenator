@@ -31,6 +31,8 @@ $navHeight: 40px;
 $itemHeight: 30px;
 $itemHeightSmall: 20px;
 
+$circleSize: 22px;
+
 %noTapHighlight {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* for removing the ios tap highlight */
 	-webkit-tap-highlight-color: transparent; /* for removing the android tap highlight */
@@ -271,6 +273,7 @@ table {
 	border: 0;
 	border-spacing: 0;
 	width: 100%;
+	margin: 0 0 $margin;
 	tr {
 		&.header-row {
 			background: grey;
@@ -293,6 +296,10 @@ table {
 	> div {
 		// display: blockl
 	}
+}
+
+#whiteSlider {
+	margin: 90px 0 0;
 }
 
 // --------- Components Below ---------- //
@@ -347,12 +354,12 @@ toggle-switch {
 	cursor: pointer;
 	.circle {
 		position: absolute;
-		top: calc((#{$itemHeight} - (#{$itemHeight} * #{$circleHeightRatio})) / 2);
+		top: calc((#{$itemHeight} - #{$circleSize}) / 2);
 		display: inline-block;
-		height: calc(#{$itemHeight} * #{$circleHeightRatio});
-		width: calc(#{$itemHeight} * #{$circleHeightRatio});
+		height: $circleSize;
+		width: $circleSize;
 		background-color: $white;
-		border-radius: calc(#{$itemHeight} * #{$circleHeightRatio} / 2);
+		border-radius: calc(#{$circleSize} / 2);
 	}
 	&.OFF {
 		background: $grey;
@@ -623,5 +630,22 @@ text-input {
 	100% {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
+	}
+}
+
+.color-slider {
+	background-image: linear-gradient(to right, white, rgb(250, 250, 140));
+	height: 40px;
+	width: 100%;
+	display: block;
+	position: relative;
+	border: 1px solid lighten($grey, 20%);
+	@extend %noTapHighlight;
+	#handle {
+		position: absolute;
+		top: -4px;
+		height: 44px;
+		width: 12px;
+		border: 2px solid $lightDark;
 	}
 }
