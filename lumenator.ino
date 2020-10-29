@@ -90,8 +90,8 @@ void initRoutes() {
   server.on("/icons.css", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/www/icons.css", "text/css");
   });
-  server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/www/script.js", "application/javascript");
+  server.on("/lumenator.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/www/lumenator.js", "application/javascript");
   });
   server.on("/components.js", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/www/components.js", "application/javascript");

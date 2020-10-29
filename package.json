@@ -1,0 +1,41 @@
+{
+  "name": "Lumenator",
+  "version": "1.0.0",
+  "description": "Add e1.31 streaming support to your ESP8266 based light bulbs",
+  "scripts": {
+    "dev": "parcel src/index.html src/style.scss",
+    "build": "rm -rf data/www/* && parcel build src/index.html src/style.scss src/lumenator.ts --dist-dir data/www --no-source-maps --no-content-hash"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morrisdirector/lumenator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/morrisdirector/lumenator/issues"
+  },
+  "homepage": "https://github.com/morrisdirector/lumenator#readme",
+  "dependencies": {
+    "@jaames/iro": "^5.2.3",
+    "components": "^0.1.0",
+    "settings": "^0.1.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.0.1",
+    "parcel": "2.0.0-beta.1",
+    "parcel-plugin-css-to-string": "^2.5.1",
+    "parcel-plugin-inline-source": "^1.0.0",
+    "postcss-modules": "^3.2.2",
+    "sass": "^1.27.0",
+    "typescript": "^4.0.5"
+  },
+  "parcel-plugin-css-to-string": {
+    "assetType": [
+      "scss"
+    ],
+    "minify": true,
+    "enableCSS": false
+  }
+}

@@ -1,0 +1,1 @@
+{"mappings":"AAAA;EACE,WAAW;AACb","sources":["./src/sass/test.module.scss"],"sourcesContent":["div {\n  color: pink;\n}"],"names":[],"version":3,"file":"lumenator.74108488.css.map","sourceRoot":"/__parcel_source_root/"}

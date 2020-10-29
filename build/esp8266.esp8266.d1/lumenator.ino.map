@@ -29710,7 +29710,7 @@ END GROUP
                 0x0000000040106ea8                _text_end = ABSOLUTE (.)
                 0x0000000040106ea8                _etext = .
 
-.rodata         0x000000003ffe8540     0x104c
+.rodata         0x000000003ffe8540     0x1050
                 0x000000003ffe8540                _rodata_start = ABSOLUTE (.)
  *(.sdk.version)
  .sdk.version   0x000000003ffe8540       0x13 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libmain.a(app_main.o)
@@ -29731,215 +29731,215 @@ END GROUP
  .rodata        0x000000003ffe8650        0xc /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libphy.a(phy_sleep.o)
  *(.rodata.*)
  .rodata.str1.1
-                0x000000003ffe865c      0x42f /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
-                                        0x492 (size before relaxing)
+                0x000000003ffe865c      0x432 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
+                                        0x498 (size before relaxing)
  .rodata._ZL11CONFIG_FILE
-                0x000000003ffe8a8b        0xd /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
+                0x000000003ffe8a8e        0xd /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
  .rodata.CSWTCH$105
-                0x000000003ffe8a98        0x6 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiSTA.cpp.o)
+                0x000000003ffe8a9b        0x6 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiSTA.cpp.o)
  .rodata.str1.1
-                0x000000003ffe8a9e      0x1be /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebRequest.cpp.o
+                0x000000003ffe8aa1      0x1be /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebRequest.cpp.o
                                         0x1c8 (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe8c5c      0x42b /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebResponses.cpp.o
+                0x000000003ffe8c5f      0x42b /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebResponses.cpp.o
                                         0x4a5 (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe9087        0x6 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebServer.cpp.o
+                0x000000003ffe908a        0x6 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebServer.cpp.o
                                           0xd (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe908d       0x2c /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/WebSocketsServer/WebSockets.cpp.o
+                0x000000003ffe9090       0x2c /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/WebSocketsServer/WebSockets.cpp.o
  .rodata.str1.1
-                0x000000003ffe90b9      0x2f6 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/WebSocketsServer/WebSocketsServer.cpp.o
+                0x000000003ffe90bc      0x2f6 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/WebSocketsServer/WebSocketsServer.cpp.o
                                         0x327 (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe93af        0x3 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(Print.cpp.o)
+                0x000000003ffe93b2        0x3 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(Print.cpp.o)
  .rodata.CSWTCH$9
-                0x000000003ffe93af       0x10 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(core_esp8266_flash_quirks.cpp.o)
- *fill*         0x000000003ffe93bf        0x1 
+                0x000000003ffe93b2       0x10 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(core_esp8266_flash_quirks.cpp.o)
+ *fill*         0x000000003ffe93c2        0x2 
  .rodata.str1.4
-                0x000000003ffe93c0        0xc /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(pm_for_bcn_only_mode.o)
+                0x000000003ffe93c4        0xc /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(pm_for_bcn_only_mode.o)
  .rodata.str1.4
-                0x000000003ffe93cc        0x8 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(pp.o)
+                0x000000003ffe93d0        0x8 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(pp.o)
                                          0x10 (size before relaxing)
  .rodata.str1.4
-                0x000000003ffe93d4        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(wdev.o)
+                0x000000003ffe93d8        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(wdev.o)
                                           0xc (size before relaxing)
  .rodata.str1.4
-                0x000000003ffe93d8        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(lmac.o)
+                0x000000003ffe93dc        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(lmac.o)
                                           0xc (size before relaxing)
  .rodata.str1.4
-                0x000000003ffe93dc        0x3 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(pm.o)
+                0x000000003ffe93e0        0x3 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libpp.a(pm.o)
                                           0xb (size before relaxing)
- *fill*         0x000000003ffe93df        0x1 
+ *fill*         0x000000003ffe93e3        0x1 
  .rodata.str1.4
-                0x000000003ffe93e0        0x3 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libnet80211.a(ieee80211_hostap.o)
+                0x000000003ffe93e4        0x3 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libnet80211.a(ieee80211_hostap.o)
                                           0x8 (size before relaxing)
  .rodata.str1.4
-                0x000000003ffe93e3        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libnet80211.a(ieee80211_sta.o)
+                0x000000003ffe93e7        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libnet80211.a(ieee80211_sta.o)
  .rodata.str1.4
-                0x000000003ffe93e3        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libnet80211.a(ieee80211_ie_vendor.o)
+                0x000000003ffe93e7        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libnet80211.a(ieee80211_ie_vendor.o)
  .rodata.str1.1
-                0x000000003ffe93e3        0x1 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
+                0x000000003ffe93e7        0x1 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
  .rodata.CSWTCH$19
-                0x000000003ffe93e3       0x10 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
+                0x000000003ffe93e7       0x10 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
  .rodata.CSWTCH$17
-                0x000000003ffe93f3       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
+                0x000000003ffe93f7       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
  .rodata.ethbroadcast
-                0x000000003ffe9404        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
-                0x000000003ffe9404                ethbroadcast
+                0x000000003ffe9408        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-esp.o)
+                0x000000003ffe9408                ethbroadcast
  .rodata.CSWTCH$14
-                0x000000003ffe940a       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-git.o)
+                0x000000003ffe940e       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-git.o)
  .rodata.CSWTCH$11
-                0x000000003ffe941b       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-git.o)
+                0x000000003ffe941f       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(lwip-git.o)
  .rodata.str1.1
-                0x000000003ffe942c       0x29 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(esp-dhcpserver.o)
+                0x000000003ffe9430       0x29 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(esp-dhcpserver.o)
  .rodata.ethzero
-                0x000000003ffe9455        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ethernet.o)
-                0x000000003ffe9455                ethzero
+                0x000000003ffe9459        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ethernet.o)
+                0x000000003ffe9459                ethzero
  .rodata.ethbroadcast_LWIP2
-                0x000000003ffe945b        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ethernet.o)
-                0x000000003ffe945b                ethbroadcast_LWIP2
- *fill*         0x000000003ffe9461        0x3 
+                0x000000003ffe945f        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ethernet.o)
+                0x000000003ffe945f                ethbroadcast_LWIP2
+ *fill*         0x000000003ffe9465        0x3 
  .rodata.memp_pools
-                0x000000003ffe9464       0x2c /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe9464                memp_pools
+                0x000000003ffe9468       0x2c /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
+                0x000000003ffe9468                memp_pools
  .rodata.memp_PBUF_POOL
-                0x000000003ffe9490        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe9490                memp_PBUF_POOL
- .rodata.memp_PBUF
-                0x000000003ffe9492        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe9492                memp_PBUF
- .rodata.memp_SYS_TIMEOUT
                 0x000000003ffe9494        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe9494                memp_SYS_TIMEOUT
- .rodata.memp_IGMP_GROUP
+                0x000000003ffe9494                memp_PBUF_POOL
+ .rodata.memp_PBUF
                 0x000000003ffe9496        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe9496                memp_IGMP_GROUP
- .rodata.memp_ARP_QUEUE
+                0x000000003ffe9496                memp_PBUF
+ .rodata.memp_SYS_TIMEOUT
                 0x000000003ffe9498        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe9498                memp_ARP_QUEUE
- .rodata.memp_REASSDATA
+                0x000000003ffe9498                memp_SYS_TIMEOUT
+ .rodata.memp_IGMP_GROUP
                 0x000000003ffe949a        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe949a                memp_REASSDATA
- .rodata.memp_TCP_SEG
+                0x000000003ffe949a                memp_IGMP_GROUP
+ .rodata.memp_ARP_QUEUE
                 0x000000003ffe949c        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe949c                memp_TCP_SEG
- .rodata.memp_TCP_PCB_LISTEN
+                0x000000003ffe949c                memp_ARP_QUEUE
+ .rodata.memp_REASSDATA
                 0x000000003ffe949e        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe949e                memp_TCP_PCB_LISTEN
- .rodata.memp_TCP_PCB
+                0x000000003ffe949e                memp_REASSDATA
+ .rodata.memp_TCP_SEG
                 0x000000003ffe94a0        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe94a0                memp_TCP_PCB
- .rodata.memp_UDP_PCB
+                0x000000003ffe94a0                memp_TCP_SEG
+ .rodata.memp_TCP_PCB_LISTEN
                 0x000000003ffe94a2        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe94a2                memp_UDP_PCB
- .rodata.memp_RAW_PCB
+                0x000000003ffe94a2                memp_TCP_PCB_LISTEN
+ .rodata.memp_TCP_PCB
                 0x000000003ffe94a4        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
-                0x000000003ffe94a4                memp_RAW_PCB
- *fill*         0x000000003ffe94a6        0x2 
+                0x000000003ffe94a4                memp_TCP_PCB
+ .rodata.memp_UDP_PCB
+                0x000000003ffe94a6        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
+                0x000000003ffe94a6                memp_UDP_PCB
+ .rodata.memp_RAW_PCB
+                0x000000003ffe94a8        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(memp.o)
+                0x000000003ffe94a8                memp_RAW_PCB
+ *fill*         0x000000003ffe94aa        0x2 
  .rodata.tcp_pcb_lists
-                0x000000003ffe94a8       0x10 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(tcp.o)
-                0x000000003ffe94a8                tcp_pcb_lists
+                0x000000003ffe94ac       0x10 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(tcp.o)
+                0x000000003ffe94ac                tcp_pcb_lists
  .rodata.tcp_persist_backoff
-                0x000000003ffe94b8        0x7 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(tcp.o)
+                0x000000003ffe94bc        0x7 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(tcp.o)
  .rodata.tcp_backoff
-                0x000000003ffe94bf        0xd /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(tcp.o)
+                0x000000003ffe94c3        0xd /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(tcp.o)
  .rodata.str1.1
-                0x000000003ffe94cc        0x7 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(dns.o)
- *fill*         0x000000003ffe94d3        0x1 
+                0x000000003ffe94d0        0x7 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(dns.o)
+ *fill*         0x000000003ffe94d7        0x1 
  .rodata.dns_mquery_v4group
-                0x000000003ffe94d4        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(dns.o)
-                0x000000003ffe94d4                dns_mquery_v4group
+                0x000000003ffe94d8        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(dns.o)
+                0x000000003ffe94d8                dns_mquery_v4group
  .rodata.dhcp_discover_request_options
-                0x000000003ffe94d8        0x5 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(dhcp.o)
- *fill*         0x000000003ffe94dd        0x3 
+                0x000000003ffe94dc        0x5 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(dhcp.o)
+ *fill*         0x000000003ffe94e1        0x3 
  .rodata.ip_addr_broadcast
-                0x000000003ffe94e0        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ip4_addr.o)
-                0x000000003ffe94e0                ip_addr_broadcast
- .rodata.ip_addr_any
                 0x000000003ffe94e4        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ip4_addr.o)
-                0x000000003ffe94e4                ip_addr_any
+                0x000000003ffe94e4                ip_addr_broadcast
+ .rodata.ip_addr_any
+                0x000000003ffe94e8        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/liblwip2-536-feat.a(ip4_addr.o)
+                0x000000003ffe94e8                ip_addr_any
  .rodata.str1.4
-                0x000000003ffe94e8        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libmain.a(app_main.o)
+                0x000000003ffe94ec        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libmain.a(app_main.o)
                                           0xc (size before relaxing)
  .rodata.str1.4
-                0x000000003ffe94ec        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libmain.a(ets_timer.o)
+                0x000000003ffe94f0        0x4 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/NONOSDK22x_190703/libmain.a(ets_timer.o)
                                           0xc (size before relaxing)
  .rodata._ZSt7nothrow
-                0x000000003ffe94f0        0x1 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/libstdc++.a(new_handler.o)
-                0x000000003ffe94f0                _ZSt7nothrow
+                0x000000003ffe94f4        0x1 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lib/libstdc++.a(new_handler.o)
+                0x000000003ffe94f4                _ZSt7nothrow
  .rodata.str1.1
-                0x000000003ffe94f1        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-impure.o)
+                0x000000003ffe94f5        0x2 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-impure.o)
  .rodata.str1.1
-                0x000000003ffe94f3       0x10 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-nano-vfprintf_float.o)
+                0x000000003ffe94f7       0x10 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-nano-vfprintf_float.o)
                                          0x12 (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe9503        0x5 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-nano-vfscanf_float.o)
+                0x000000003ffe9507        0x5 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-nano-vfscanf_float.o)
  .rodata.str1.1
-                0x000000003ffe9508        0x5 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-strtod.o)
+                0x000000003ffe950c        0x5 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-strtod.o)
                                           0xc (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe9508        0xd /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-dtoa.o)
+                0x000000003ffe950c        0xd /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-dtoa.o)
                                           0xf (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe9515        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-locale.o)
+                0x000000003ffe9519        0x6 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-locale.o)
                                           0xb (size before relaxing)
  .rodata.str1.1
-                0x000000003ffe951b       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-nano-svfprintf.o)
+                0x000000003ffe951f       0x11 /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/libc/xtensa-lx106-elf/lib/libc.a(lib_a-nano-svfprintf.o)
  *(.gnu.linkonce.r.*)
  *(.rodata1)
-                0x000000003ffe952c                __XT_EXCEPTION_TABLE__ = ABSOLUTE (.)
+                0x000000003ffe9530                __XT_EXCEPTION_TABLE__ = ABSOLUTE (.)
  *(.xt_except_table)
  *(.gcc_except_table)
  *(.gnu.linkonce.e.*)
  *(.gnu.version_r)
  *(.eh_frame)
-                0x000000003ffe952c                . = ((. + 0x3) & 0xfffffffffffffffc)
-                0x000000003ffe952c                __init_array_start = ABSOLUTE (.)
+                0x000000003ffe9530                . = ((. + 0x3) & 0xfffffffffffffffc)
+                0x000000003ffe9530                __init_array_start = ABSOLUTE (.)
  *crtbegin.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o) .ctors)
- .ctors         0x000000003ffe952c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
- .ctors         0x000000003ffe9530        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFi.cpp.o)
- .ctors         0x000000003ffe9534        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiGeneric.cpp.o)
- .ctors         0x000000003ffe9538        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiScan.cpp.o)
- .ctors         0x000000003ffe953c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebRequest.cpp.o
- .ctors         0x000000003ffe9540        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/Wire/Wire.cpp.o
- .ctors         0x000000003ffe9544        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(HardwareSerial.cpp.o)
- .ctors         0x000000003ffe9548        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(IPAddress.cpp.o)
- .ctors         0x000000003ffe954c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(Updater.cpp.o)
- .ctors         0x000000003ffe9550        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(WString.cpp.o)
- .ctors         0x000000003ffe9554        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(core_esp8266_si2c.cpp.o)
- .ctors         0x000000003ffe9558        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(spiffs_api.cpp.o)
- .ctors         0x000000003ffe955c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(sntp-lwip2.cpp.o)
+ .ctors         0x000000003ffe9530        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
+ .ctors         0x000000003ffe9534        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFi.cpp.o)
+ .ctors         0x000000003ffe9538        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiGeneric.cpp.o)
+ .ctors         0x000000003ffe953c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiScan.cpp.o)
+ .ctors         0x000000003ffe9540        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebRequest.cpp.o
+ .ctors         0x000000003ffe9544        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/Wire/Wire.cpp.o
+ .ctors         0x000000003ffe9548        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(HardwareSerial.cpp.o)
+ .ctors         0x000000003ffe954c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(IPAddress.cpp.o)
+ .ctors         0x000000003ffe9550        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(Updater.cpp.o)
+ .ctors         0x000000003ffe9554        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(WString.cpp.o)
+ .ctors         0x000000003ffe9558        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(core_esp8266_si2c.cpp.o)
+ .ctors         0x000000003ffe955c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(spiffs_api.cpp.o)
+ .ctors         0x000000003ffe9560        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(sntp-lwip2.cpp.o)
  *(SORT_BY_NAME(.ctors.*))
  *(.ctors)
-                0x000000003ffe9560                __init_array_end = ABSOLUTE (.)
+                0x000000003ffe9564                __init_array_end = ABSOLUTE (.)
  *crtbegin.o(.dtors)
  *(EXCLUDE_FILE(*crtend.o) .dtors)
- .dtors         0x000000003ffe9560        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
- .dtors         0x000000003ffe9564        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiGeneric.cpp.o)
- .dtors         0x000000003ffe9568        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiScan.cpp.o)
- .dtors         0x000000003ffe956c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebRequest.cpp.o
- .dtors         0x000000003ffe9570        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(HardwareSerial.cpp.o)
- .dtors         0x000000003ffe9574        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(Updater.cpp.o)
- .dtors         0x000000003ffe9578        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(WString.cpp.o)
- .dtors         0x000000003ffe957c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(spiffs_api.cpp.o)
- .dtors         0x000000003ffe9580        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(sntp-lwip2.cpp.o)
+ .dtors         0x000000003ffe9564        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/sketch/lumenator.ino.cpp.o
+ .dtors         0x000000003ffe9568        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiGeneric.cpp.o)
+ .dtors         0x000000003ffe956c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESP8266WiFi/ESP8266WiFi.a(ESP8266WiFiScan.cpp.o)
+ .dtors         0x000000003ffe9570        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-sketch-1B018C3AEDD1D29C323BC5025E01165D/libraries/ESPAsyncWebServer/WebRequest.cpp.o
+ .dtors         0x000000003ffe9574        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(HardwareSerial.cpp.o)
+ .dtors         0x000000003ffe9578        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(Updater.cpp.o)
+ .dtors         0x000000003ffe957c        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(WString.cpp.o)
+ .dtors         0x000000003ffe9580        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(spiffs_api.cpp.o)
+ .dtors         0x000000003ffe9584        0x4 /var/folders/r7/m2p0l1xd42zfvpdry22_zp380000gn/T/arduino-core-cache/core_692636cc32fa3b4623757d97dd37a23f.a(sntp-lwip2.cpp.o)
  *(SORT_BY_NAME(.dtors.*))
  *(.dtors)
-                0x000000003ffe9584                __XT_EXCEPTION_DESCS__ = ABSOLUTE (.)
+                0x000000003ffe9588                __XT_EXCEPTION_DESCS__ = ABSOLUTE (.)
  *(.xt_except_desc)
  *(.gnu.linkonce.h.*)
-                0x000000003ffe9584                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
+                0x000000003ffe9588                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
  *(.xt_except_desc_end)
  *(.dynamic)
  *(.gnu.version_d)
-                0x000000003ffe9584                . = ALIGN (0x4)
-                0x000000003ffe9584                _bss_table_start = ABSOLUTE (.)
-                0x000000003ffe9584        0x4 LONG 0x3ffe9590 _bss_start
-                0x000000003ffe9588        0x4 LONG 0x3fff0028 _bss_end
-                0x000000003ffe958c                _bss_table_end = ABSOLUTE (.)
-                0x000000003ffe958c                _rodata_end = ABSOLUTE (.)
+                0x000000003ffe9588                . = ALIGN (0x4)
+                0x000000003ffe9588                _bss_table_start = ABSOLUTE (.)
+                0x000000003ffe9588        0x4 LONG 0x3ffe9590 _bss_start
+                0x000000003ffe958c        0x4 LONG 0x3fff0028 _bss_end
+                0x000000003ffe9590                _bss_table_end = ABSOLUTE (.)
+                0x000000003ffe9590                _rodata_end = ABSOLUTE (.)
 
 .bss            0x000000003ffe9590     0x6a98
                 0x000000003ffe9590                . = ALIGN (0x8)

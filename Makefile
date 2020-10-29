@@ -1,7 +1,3 @@
-#BOARD = arduino:avr:diecimila:cpu=atmega328
-#BOARD = arduino:avr:mega:cpu=atmega1280
-#BOARD = arduino:avr:uno
-#BOARD = esp8266:esp8266:nodemcuv2:baud=460800
 BOARD = esp8266:esp8266:d1
 PORT  = /dev/cu.SLAB_USBtoUART 
 FQBN = esp8266:esp8266:d1:xtal=80,vt=flash,exception=disabled,ssl=all,eesz=4M1M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600
@@ -12,15 +8,19 @@ SKETCH_NAME   = $(shell basename $(CURDIR))
 MONITOR_SPEED = $(shell egrep Serial.begin $(SKETCH_FILE) | perl -pE 's/\D+//g' | head -n1)
 BUILD_DIR     = /tmp/arduino-build-$(SKETCH_NAME)/
 
-default: compile upload spiffs monitor
+default: compile upload web
 
-web: spiffs monitor
+refresh: kill compile upload web
+
+refresh_web: kill web
+
+web: parcel spiffs monitor
 
 compile: display_config
-	arduino-cli compile --fqbn $(FQBN) -p $(PORT) -v
+	arduino-cli compile --fqbn $(FQBN) -p $(PORT)
 
 upload: display_config
-	arduino-cli upload -p $(PORT) -b $(BOARD) -v
+	arduino-cli upload -p $(PORT) -b $(BOARD)
 
 monitor:
 	screen -S lumenator_monitor $(PORT) $(MONITOR_SPEED)
@@ -30,6 +30,9 @@ kill:
 
 clean:
 	rm -Rvf $(BUILD_DIR)
+
+parcel:
+	npm run build
 
 display_config:
 	@echo "BOARD         : $(BOARD)"

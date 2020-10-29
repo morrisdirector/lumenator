@@ -1,8 +1,13 @@
-'use strict';
+import './components.js';
+import { CustomElement } from './components/base-component';
+import { Mode } from './shared/enums/Mode';
+import { OnOff } from './shared/enums/OnOff';
+import * as iro from '@jaames/iro';
+
+// --- Debugging Mode
+const DEBUG = true;
 
 const errors = [];
-// const deviceModels = [ 'name' ];
-// const network = [ 'name' ];
 
 let websocket;
 let config;
@@ -10,8 +15,12 @@ let devicePresets;
 let mode = Mode.STANDBY;
 let rgbControlColorPicker;
 
+const element = (query: string): CustomElement => {
+	return document.querySelector(query) as CustomElement;
+};
+
 const setDomValue = (id, value) => {
-	const el = document.getElementById(id);
+	const el: CustomElement = document.getElementById(id) as CustomElement;
 	if (el) {
 		if (typeof el.updateValue === 'function') {
 			el.updateValue(value);
@@ -22,7 +31,7 @@ const setDomValue = (id, value) => {
 };
 
 const setComponentState = (id, state) => {
-	const component = document.getElementById(id);
+	const component: CustomElement = document.getElementById(id) as CustomElement;
 	if (component) {
 		component.setState(state);
 	}
@@ -48,7 +57,9 @@ const testData = () => {
 };
 
 const onWsError = (evt) => {
-	document.querySelector('#error-messages').setState({ text: 'Error establishing Web Socket connection' });
+	element('#error-messages').setState({
+		text: 'Error establishing Web Socket connection'
+	});
 	window.scrollTo(0, 0);
 	console.log(evt);
 };
@@ -77,7 +88,7 @@ const wsConnect = () => {
 };
 
 const showPassword = () => {
-	const el = document.getElementById('password');
+	const el: CustomElement = document.getElementById('password') as CustomElement;
 	const newState = el.state.type === 'password' ? 'text' : 'password';
 	setComponentState('password', { type: newState });
 	setDomValue('show-password-button', newState === 'password' ? 'Show' : 'Hide');
@@ -130,7 +141,7 @@ const loadConfigJson = () => {
 		.catch(function(e) {
 			console.warn('Something went wrong loading the config json file.', e);
 			window.scrollTo(0, 0);
-			document.querySelector('#error-messages').setState({ text: 'Error loading configuration' });
+			element('#error-messages').setState({ text: 'Error loading configuration' });
 		});
 };
 
@@ -149,7 +160,7 @@ const loadDevicePresets = () => {
 		.catch(function(e) {
 			console.warn('Something went wrong loading the device presets.', e);
 			window.scrollTo(0, 0);
-			document.querySelector('#error-messages').setState({ text: 'Error loading device presets' });
+			element('#error-messages').setState({ text: 'Error loading device presets' });
 		});
 };
 
@@ -160,10 +171,11 @@ const addEventListeners = () => {
 	// Mode Toggles
 	const modeToggleSwitches = Array.from(document.querySelectorAll('.mode-toggle'));
 	for (let toggle of modeToggleSwitches) {
-		toggle.addEventListener('onToggle', (e) => {
-			const state = e.target.state;
+		toggle.addEventListener('onToggle', (e: CustomEvent) => {
+			const state = (e.target as CustomElement).state;
 			if (state.state === 'ON') {
-				for (let t of modeToggleSwitches) {
+				for (let s of modeToggleSwitches) {
+					const t: CustomElement = s as CustomElement;
 					if (t.state.id !== state.id && t.state.state === 'ON') {
 						t.setState({ state: 'OFF' });
 					}
@@ -171,11 +183,11 @@ const addEventListeners = () => {
 				switch (state.id) {
 					case 'modeRgb':
 						mode = Mode.RGB;
-						document.querySelector('#rgb-warning').setState({
+						element('#rgb-warning').setState({
 							text:
 								'While manual RGB mode is enabled, Lumenator will not respond to external control commands.'
 						});
-						sendRgbColors();
+						// sendRgbColors();
 						break;
 					case 'modeWhite':
 						mode = Mode.WHITE;
@@ -183,7 +195,7 @@ const addEventListeners = () => {
 					default:
 						// GPIO Testing Mode
 						mode = Mode.GPIO_TESTING;
-						document.querySelector('#gpio-test-warning').setState({
+						element('#gpio-test-warning').setState({
 							text:
 								'While GPIO testing is enabled, Lumenator will not respond to external control commands.'
 						});
@@ -191,11 +203,11 @@ const addEventListeners = () => {
 				}
 			} else if (state.state === 'OFF') {
 				mode = Mode.STANDBY;
-				document.querySelector('#gpio-test-warning').setState({
+				element('#gpio-test-warning').setState({
 					visible: false,
 					text: null
 				});
-				document.querySelector('#rgb-warning').setState({
+				element('#rgb-warning').setState({
 					visible: false,
 					text: null
 				});
@@ -218,7 +230,7 @@ const saveConfiguration = () => {
 		dto[section] = {};
 		const props = Object.keys(config[section]);
 		props.forEach((prop) => {
-			dto[section][prop] = document.getElementById(prop).state.value;
+			dto[section][prop] = (document.getElementById(prop) as CustomElement).state.value;
 		});
 	});
 	fetch('config', {
@@ -233,22 +245,22 @@ const saveConfiguration = () => {
 		.then((res) => {
 			// document.querySelector('#loader').setState({ loading: false });
 			if (res.success) {
-				document
-					.querySelector('#info-messages')
-					.setState({ text: 'Updated Configuration Successfully', visible: true });
+				element('#info-messages').setState({ text: 'Updated Configuration Successfully', visible: true });
 				window.scrollTo(0, 0);
 			} else {
-				document
-					.querySelector('#error-messages')
-					.setState({ text: 'Something went wrong while saving the configuration', visible: true });
+				element('#error-messages').setState({
+					text: 'Something went wrong while saving the configuration',
+					visible: true
+				});
 				window.scrollTo(0, 0);
 			}
 		})
 		.catch((e) => {
 			console.log(e);
-			document
-				.querySelector('#error-messages')
-				.setState({ text: 'Something went wrong while saving the configuration', visible: true });
+			element('#error-messages').setState({
+				text: 'Something went wrong while saving the configuration',
+				visible: true
+			});
 			window.scrollTo(0, 0);
 		});
 };
@@ -257,12 +269,12 @@ const refresh = () => {
 	window.location.reload();
 };
 
-const sendRgbColors = () => {
+const sendRgbColors = (color: { r: number; g: number; b: number }) => {
 	if (mode !== Mode.RGB) {
 		mode = Mode.RGB;
-		document.querySelector('#modeRgb').setState({ state: 'ON' });
+		element('#modeRgb').setState({ state: 'ON' });
 	}
-	const color = rgbControlColorPicker.getCurColorRgb();
+	// const color = rgbControlColorPicker.getCurColorRgb();
 	const r = `00${color.r}`.slice(`00${color.r}`.length - 3);
 	const g = `00${color.g}`.slice(`00${color.g}`.length - 3);
 	const b = `00${color.b}`.slice(`00${color.b}`.length - 3);
@@ -273,26 +285,30 @@ const sendRgbColors = () => {
 };
 
 const loadColorPickers = () => {
-	// Control Page Color Picker
-	rgbControlColorPicker = new KellyColorPicker({
-		place: 'control-color-picker',
-		size: 225,
-		color: 'rgb(0, 0, 255)',
-		userEvents: {
-			mousemoveh: () => {
-				sendRgbColors();
-			},
-			mousemovesv: () => {
-				sendRgbColors();
-			},
-			mouseuph: () => {
-				sendRgbColors();
-			},
-			mouseupsv: () => {
-				sendRgbColors();
-			}
-		}
+	const colorPicker = iro.default.ColorPicker('#picker', null);
+	colorPicker.on('color:change', function(color) {
+		sendRgbColors(color.rgb);
 	});
+	// Control Page Color Picker
+	// rgbControlColorPicker = new KellyColorPicker({
+	// 	place: 'control-color-picker',
+	// 	size: 225,
+	// 	color: 'rgb(0, 0, 255)',
+	// 	userEvents: {
+	// 		mousemoveh: () => {
+	// 			sendRgbColors();
+	// 		},
+	// 		mousemovesv: () => {
+	// 			sendRgbColors();
+	// 		},
+	// 		mouseuph: () => {
+	// 			sendRgbColors();
+	// 		},
+	// 		mouseupsv: () => {
+	// 			sendRgbColors();
+	// 		}
+	// 	}
+	// });
 };
 
 const init = () => {
