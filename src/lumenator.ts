@@ -1,11 +1,11 @@
-import './components.js';
-import { CustomElement } from './components/base-component';
+import './components/index';
+import { CustomElement } from './components/BaseComponent/BaseComponent';
 import { Mode } from './shared/enums/Mode';
 import { OnOff } from './shared/enums/OnOff';
 import * as iro from '@jaames/iro';
 
-// --- Debugging Mode
-const DEBUG = true;
+// Development Mode
+const DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 const errors = [];
 
@@ -13,7 +13,6 @@ let websocket;
 let config;
 let devicePresets;
 let mode = Mode.STANDBY;
-let rgbControlColorPicker;
 
 const element = (query: string): CustomElement => {
 	return document.querySelector(query) as CustomElement;
@@ -124,7 +123,7 @@ const loadConfigJson = () => {
 		}
 	};
 
-	if (DEBUG) {
+	if (DEVELOPMENT) {
 		loadData(testData());
 		return;
 	}
@@ -146,7 +145,7 @@ const loadConfigJson = () => {
 };
 
 const loadDevicePresets = () => {
-	if (DEBUG) {
+	if (DEVELOPMENT) {
 		return;
 	}
 
@@ -285,7 +284,7 @@ const sendRgbColors = (color: { r: number; g: number; b: number }) => {
 };
 
 const loadColorPickers = () => {
-	const colorPicker = iro.default.ColorPicker('#picker', null);
+	const colorPicker = iro.default.ColorPicker('#rgb-color-picker', null);
 	colorPicker.on('color:change', function(color) {
 		sendRgbColors(color.rgb);
 	});
@@ -312,7 +311,7 @@ const loadColorPickers = () => {
 };
 
 const init = () => {
-	if (!DEBUG) {
+	if (!DEVELOPMENT) {
 		wsConnect();
 	}
 	addEventListeners();

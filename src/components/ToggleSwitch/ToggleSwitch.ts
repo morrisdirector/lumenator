@@ -1,5 +1,4 @@
-
-import { CustomElement } from './base-component';
+import { CustomElement } from '../BaseComponent/BaseComponent';
 
 const toggleTemplate = document.createElement('template');
 toggleTemplate.innerHTML = /*html*/ `
@@ -25,7 +24,7 @@ export class ToggleSwitch extends CustomElement {
 		});
 
 		this.dispatchEvent(onToggle);
-	}
+	};
 
 	onClick() {
 		this.setState({ state: this.state.state === 'ON' ? 'OFF' : 'ON' });

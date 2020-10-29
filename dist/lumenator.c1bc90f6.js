@@ -410,7 +410,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"31a87f0a6c67386c8de4c2d3ddbfa1e2":[function(require,module,exports) {
 "use strict";
 
-require("./components.js");
+require("./components/index");
 
 var _Mode = require("./shared/enums/Mode");
 
@@ -422,14 +422,13 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-// --- Debugging Mode
-const DEBUG = true;
+// Development Mode
+const DEVELOPMENT = "development" === 'development';
 const errors = [];
 let websocket;
 let config;
 let devicePresets;
 let mode = _Mode.Mode.STANDBY;
-let rgbControlColorPicker;
 
 const element = query => {
   return document.querySelector(query);
@@ -555,7 +554,7 @@ const loadConfigJson = () => {
     }
   };
 
-  if (DEBUG) {
+  if (DEVELOPMENT) {
     loadData(testData());
     return;
   }
@@ -576,7 +575,7 @@ const loadConfigJson = () => {
 };
 
 const loadDevicePresets = () => {
-  if (DEBUG) {
+  if (DEVELOPMENT) {
     return;
   }
 
@@ -725,7 +724,7 @@ const sendRgbColors = color => {
 };
 
 const loadColorPickers = () => {
-  const colorPicker = iro.default.ColorPicker('#picker', null);
+  const colorPicker = iro.default.ColorPicker('#rgb-color-picker', null);
   colorPicker.on('color:change', function (color) {
     sendRgbColors(color.rgb);
   }); // Control Page Color Picker
@@ -751,7 +750,7 @@ const loadColorPickers = () => {
 };
 
 const init = () => {
-  if (!DEBUG) {
+  if (!DEVELOPMENT) {
     wsConnect();
   }
 
@@ -762,615 +761,7 @@ const init = () => {
 };
 
 init();
-},{"./components.js":"df11130d82a2c685ce75c2d2928e602d","./shared/enums/Mode":"e610feade183caa462d6dfbd89d38ff2","./shared/enums/OnOff":"0a08f078b25f349f2b6780660688fdc2","@jaames/iro":"748d600a527db0de6e23229ea9731151"}],"df11130d82a2c685ce75c2d2928e602d":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ToggleSwitch = void 0;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-class CustomElement extends HTMLElement {
-  constructor(template) {
-    super();
-    this.state = {};
-    this.attachShadow({
-      mode: 'open'
-    });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  isObject(arg) {
-    return (typeof arg === 'object' || typeof arg === 'function' || Array.isArray(arg)) && !!arg;
-  }
-  /**
-   * Updates the state with a new state
-   * @param newState
-   */
-
-
-  setState(newState) {
-    const previousState = { ...this.state
-    };
-    Object.entries(newState).forEach(([key, value]) => {
-      this.state[key] = this.isObject(this.state[key]) && this.isObject(value) ? { ...this.state[key],
-        ...value
-      } : value;
-    });
-
-    if (typeof this.onStateChanges === 'function') {
-      this.onStateChanges(this.state, previousState);
-    }
-  }
-  /**
-   * Updates Value for form elements where ID is provided
-   * @param value
-   */
-
-
-  updateValue(value) {
-    if (this.state.id) {
-      this.setState({
-        [this.state.id]: value
-      });
-    }
-  }
-
-}
-/**
- * Alert Message Component
- */
-
-
-const alertMessageTemplate = document.createElement('template');
-alertMessageTemplate.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div class="alert-message">
-	<div id="message" class="info">
-		<span class="icon hidden"></span>
-		<span class="text"></span>
-		<button class="close">x</button>
-	</div>
-</div>
-`;
-
-class AlertMessage extends CustomElement {
-  constructor() {
-    super(alertMessageTemplate);
-    const text = this.getAttribute('text');
-    this.setState({
-      text: text,
-      icon: this.getAttribute('icon'),
-      type: this.getAttribute('type') || 'info',
-      closable: !!this.getAttribute('closable'),
-      visible: !!text
-    });
-    this.onClose = this.onClose.bind(this);
-  }
-
-  onStateChanges(state, previousState) {
-    if (!state.visible && state.text && state.text !== previousState.text) {
-      this.setState({
-        visible: true
-      });
-      return;
-    }
-
-    if (state.visible) {
-      const newClass = state.closable ? `closable ${state.type}` : state.type;
-      this.shadowRoot.querySelector('#message').className = newClass;
-      this.shadowRoot.querySelector('#message span.text').innerHTML = state.text;
-      this.shadowRoot.querySelector('.alert-message').className = 'alert-message';
-
-      if (state.icon) {
-        switch (state.icon) {
-          case 'info':
-          default:
-            this.shadowRoot.querySelector('#message span.icon').innerHTML = 'i';
-            break;
-        }
-
-        this.shadowRoot.querySelector('#message span.icon').className = 'icon';
-      } else {
-        this.shadowRoot.querySelector('#message span.icon').className = 'icon hidden';
-      }
-    } else {
-      this.shadowRoot.querySelector('.alert-message').className = 'alert-message hidden';
-    }
-  }
-
-  onClose() {
-    this.setState({
-      visible: false,
-      text: null
-    });
-  }
-
-  connectedCallback() {
-    this.shadowRoot.querySelector('button').addEventListener('click', this.onClose);
-  }
-
-  disconnectedCallback() {
-    this.shadowRoot.querySelector('button').removeEventListener('click', this.onClose);
-  }
-
-}
-
-window.customElements.define('alert-message', AlertMessage);
-/**
- * Nav Menu Component
- */
-
-const navMenu = document.createElement('template');
-navMenu.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<ul class='nav-menu-ul'><slot></slot></ul>
-`;
-
-class NavMenu extends CustomElement {
-  // activeTab;
-  constructor() {
-    super(navMenu);
-    this.activeTab = this.getAttribute('activeTab');
-  }
-
-  resetAllTabs(tabs) {
-    for (let tab of tabs) {
-      tab.shadowRoot.querySelector('.tab').className = 'tab hidden';
-      const tabId = tab.getAttribute('id');
-      const panel = document.getElementById(`panel-${tabId}`);
-
-      if (panel) {
-        panel.classList.add('hidden');
-        panel.classList.remove('active');
-      }
-    }
-  }
-
-  onClick(e) {
-    const tabId = e && e.target && e.target.id;
-
-    if (tabId) {
-      const tabs = Array.from(this.querySelectorAll('nav-menu-li'));
-      this.resetAllTabs(tabs);
-      const selected = tabs.find(t => t.getAttribute('id') === tabId);
-      selected.shadowRoot.querySelector('.tab').className = 'tab active';
-      const panel = document.getElementById(`panel-${tabId}`);
-
-      if (panel) {
-        panel.classList.remove('hidden');
-        panel.classList.add('active');
-      }
-    }
-  }
-
-  connectedCallback() {
-    this.addEventListener('click', this.onClick);
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener('click', this.onClick);
-  }
-
-}
-
-window.customElements.define('nav-menu', NavMenu);
-/**
- * Nav Menu Li Component
- */
-
-const navMenuLi = document.createElement('template');
-navMenuLi.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<li class="tab hidden"><slot></slot>
-</li>
-`;
-
-class NavMenuLi extends CustomElement {
-  constructor() {
-    super(navMenuLi);
-
-    if (this.getAttribute('active') !== null) {
-      this.shadowRoot.querySelector('.tab').className = 'tab active';
-    }
-  }
-
-}
-
-window.customElements.define('nav-menu-li', NavMenuLi);
-/**
- * Input
- */
-
-const textInput = document.createElement('template');
-textInput.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div class="input-container">
-	<input id="input" class="text-input">
-	<slot></slot>
-</div>
-`;
-
-class TextInput extends CustomElement {
-  constructor() {
-    super(textInput);
-    this.setState({
-      id: this.getAttribute('id'),
-      name: this.getAttribute('name'),
-      type: this.getAttribute('type') || 'text',
-      value: this.getAttribute('value') || null
-    });
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event) {
-    const value = event.target.value;
-    const storedVal = this.state.type === 'number' ? parseInt(value, 10) : value;
-    this.setState({
-      value: storedVal
-    });
-  }
-
-  onStateChanges(state) {
-    const input = this.shadowRoot.querySelector('#input');
-
-    if (state.value !== input.value) {
-      input.value = state.value;
-    }
-
-    this.shadowRoot.querySelector('#input').type = state.type;
-  }
-
-  connectedCallback() {
-    const el = this.shadowRoot.querySelector('#input');
-    el.addEventListener('change', this.onChange);
-  }
-
-  disconnectedCallback() {
-    const el = this.shadowRoot.querySelector('#input');
-    el.removeEventListener('change', this.onChange);
-  }
-
-}
-
-window.customElements.define('text-input', TextInput);
-/**
- * Dropdown Menu (select)
- */
-
-const dropdownMenuTemplate = document.createElement('template');
-dropdownMenuTemplate.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div class="dropdown-menu">
-<select id="select" class="placeholder"></select>
-<slot></slot>
-<div class="dropdown-indicator">
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 1000 1000' xmlns:xlink="http://www.w3.org/1999/xlink">
-		<metadata>IcoFont Icons</metadata>
-		<title>simple-down</title>
-		<glyph glyph-name="simple-down" unicode="&#xeab2;" horiz-adv-x="1000" />
-		<path
-			d="M200 392.6l300 300 300-300-85.10000000000002-85.10000000000002-214.89999999999998 214.79999999999995-214.89999999999998-214.89999999999998-85.10000000000002 85.20000000000005z" />
-	</svg>
-</div>
-</div>
-`;
-
-class DropdownMenu extends CustomElement {
-  constructor() {
-    super(dropdownMenuTemplate);
-    this.setState({
-      id: this.getAttribute('id'),
-      name: this.getAttribute('name'),
-      value: this.getAttribute('value') || null
-    });
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event) {
-    const value = event.target.value;
-    this.setState({
-      value: value
-    });
-  }
-
-  onStateChanges(state) {
-    const select = this.shadowRoot.querySelector('#select');
-
-    if (state.value !== select.value) {
-      select.value = state.value;
-    }
-
-    select.classList = !state.value ? 'placeholder' : '';
-  }
-
-  connectedCallback() {
-    const el = this.shadowRoot.querySelector('#select');
-    el.addEventListener('change', this.onChange);
-    this.shadowRoot.addEventListener('slotchange', () => {
-      const select = this.shadowRoot.querySelector('#select');
-      let node = this.querySelector('option');
-      node && select.append(node);
-    });
-  }
-
-  disconnectedCallback() {
-    const el = this.shadowRoot.querySelector('#select');
-    el.removeEventListener('change', this.onChange);
-    this.shadowRoot.removeEventListener('slotchange');
-  }
-
-}
-
-window.customElements.define('dropdown-menu', DropdownMenu);
-/**
- * Chip
- */
-
-const chipTemplate = document.createElement('template');
-chipTemplate.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div id="chip" class="chip hidden"></div>
-`;
-
-class Chip extends CustomElement {
-  constructor() {
-    super(chipTemplate);
-    this.setState({
-      id: this.getAttribute('id'),
-      text: this.getAttribute('text')
-    });
-  }
-
-  onStateChanges(state) {
-    if (state.text) {
-      this.shadowRoot.querySelector('#chip').innerHTML = state.text;
-      this.shadowRoot.querySelector('#chip').className = 'chip';
-    }
-  }
-
-}
-
-window.customElements.define('ui-chip', Chip);
-/**
- * Loader
- */
-
-const loaderTemplate = document.createElement('template');
-loaderTemplate.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div id="pageLoader" class="pageLoader hidden">
-	<div id="loader" class="loader">Loading...</div>
-</div>
-`;
-
-class Loader extends CustomElement {
-  constructor() {
-    super(loaderTemplate);
-    this.setState({
-      id: this.getAttribute('id'),
-      loading: this.getAttribute('loading')
-    });
-    this.updateLoadingClass(!!this.getAttribute('loading'));
-  }
-
-  updateLoadingClass(loading) {
-    if (loading) {
-      this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader';
-    } else {
-      this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader hidden';
-    }
-  }
-
-  onStateChanges(state) {
-    this.updateLoadingClass(state.loading);
-  }
-
-}
-
-window.customElements.define('ui-loader', Loader);
-/**
- * Color Slider
- */
-
-const colorSliderTemplate = document.createElement('template');
-colorSliderTemplate.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div id="color-slider" class="color-slider" ontouchstart="return true;">
-	<div id="handle"></div>
-</div>
-`;
-
-class ColorSlider extends CustomElement {
-  constructor() {
-    super(colorSliderTemplate);
-    this.handlePos = {
-      xLeft: 0,
-      xPos: 0,
-      xStart: 0,
-      xMax: 0,
-      posRatio: 0
-    };
-    this.shadowRoot.querySelector('#handle').onmousedown = this.onHandleGrab.bind(this);
-    this.shadowRoot.querySelector('#handle').ontouchstart = this.onHandleGrab.bind(this); // this.slideWidth = this.shadowRoot.querySelector('#color-slider').clientWidth;
-
-    window.onresize = () => {
-      const handleWidth = this.shadowRoot.querySelector('#handle').clientWidth;
-      const hp = this.handlePos;
-      const sliderRect = this.shadowRoot.querySelector('#color-slider').getBoundingClientRect();
-      const sliderWidth = sliderRect.right - sliderRect.left;
-      const leftOffset = sliderWidth * hp.posRatio - handleWidth - 3;
-      this.handlePos = {
-        xLeft: leftOffset,
-        xPos: sliderRect.left + leftOffset - handleWidth - 3,
-        xStart: sliderRect.left,
-        xMax: sliderRect.right - handleWidth - 3,
-        posRatio: hp.posRatio
-      };
-      console.log(this.handlePos);
-      this.shadowRoot.querySelector('#handle').style.left = this.handlePos.xLeft + 'px';
-    }; // this.setState({
-    // 	id: this.getAttribute('id'),
-    // 	loading: this.getAttribute('loading')
-    // });
-    // this.updateLoadingClass(!!this.getAttribute('loading'));
-
-
-    this.setPosition = this.setPosition.bind(this);
-    this.elementDrag = this.elementDrag.bind(this);
-    this.closeDragElement = this.closeDragElement.bind(this);
-  }
-
-  setPosition(e) {
-    let pos = e.clientX;
-    console.log('clientX:', pos);
-
-    if (pos < this.handlePos.xStart) {
-      pos = this.handlePos.xStart;
-    } else if (pos > this.handlePos.xMax) {
-      pos = this.handlePos.xMax;
-    }
-
-    console.log('final pos:', pos);
-    this.handlePos.xPos = pos;
-  }
-
-  onHandleGrab(e) {
-    if (!this.handlePos.xStart) {
-      this.handlePos.xStart = e.clientX;
-      this.handlePos.xMax = e.clientX + this.shadowRoot.querySelector('#color-slider').clientWidth - this.shadowRoot.querySelector('#handle').clientWidth - 3;
-    }
-
-    e.preventDefault();
-    this.setPosition(e);
-    document.onmouseup = this.closeDragElement;
-    document.onmousemove = this.elementDrag;
-    document.ontouchend = this.closeDragElement;
-    document.ontouchmove = this.elementDrag;
-  }
-
-  elementDrag(e) {
-    e.preventDefault();
-    this.setPosition(e);
-    this.handlePos.xLeft = this.handlePos.xPos - this.handlePos.xStart; // this.handlePos.xPos = e.clientX;
-    // console.log(this.handlePos);
-
-    const handle = this.shadowRoot.querySelector('#handle');
-    handle.style.left = this.handlePos.xLeft + 'px';
-  }
-
-  closeDragElement(e) {
-    const hp = this.handlePos;
-    hp.posRatio = (hp.xPos - hp.xStart) / (hp.xMax - hp.xStart);
-    console.log(hp.posRatio);
-    document.onmouseup = null;
-    document.onmousemove = null;
-    document.ontouchend = null;
-    document.ontouchmove = null;
-  } // updateLoadingClass(loading) {
-  // 	if (loading) {
-  // 		this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader';
-  // 	} else {
-  // 		this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader hidden';
-  // 	}
-  // }
-  // onStateChanges(state) {
-  // 	this.updateLoadingClass(state.loading);
-  // }
-
-
-}
-
-window.customElements.define('ui-color-slider', ColorSlider);
-/**
- * Toggle Switch
- */
-
-const toggleTemplate = document.createElement('template');
-toggleTemplate.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div class="toggle-switch on" ontouchstart="return true;">
-	<div class="circle"></div>
-</div>
-`;
-
-class ToggleSwitch extends CustomElement {
-  constructor() {
-    super(toggleTemplate);
-
-    _defineProperty(this, "onStateChanges", state => {
-      this.shadowRoot.querySelector('.toggle-switch').className = `toggle-switch ${state.state}`;
-      const onToggle = new CustomEvent('onToggle', {
-        bubbles: true,
-        detail: this.state
-      });
-      this.dispatchEvent(onToggle);
-    });
-
-    this.setState({
-      state: this.getAttribute('state') || 'OFF',
-      id: this.getAttribute('id')
-    });
-    this.shadowRoot.querySelector('.toggle-switch').className = `toggle-switch ${this.state.state}`;
-  }
-
-  onClick() {
-    this.setState({
-      state: this.state.state === 'ON' ? 'OFF' : 'ON'
-    });
-  }
-
-  connectedCallback() {
-    this.addEventListener('click', this.onClick);
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener('click', this.onClick);
-  }
-
-}
-
-exports.ToggleSwitch = ToggleSwitch;
-window.customElements.define('toggle-switch', ToggleSwitch);
-},{}],"e610feade183caa462d6dfbd89d38ff2":[function(require,module,exports) {
+},{"./shared/enums/Mode":"e610feade183caa462d6dfbd89d38ff2","./shared/enums/OnOff":"0a08f078b25f349f2b6780660688fdc2","@jaames/iro":"748d600a527db0de6e23229ea9731151","./components/index":"bc610deadc54a08eda6642f8b91e1a0d"}],"e610feade183caa462d6dfbd89d38ff2":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3926,6 +3317,545 @@ var define;
   var iro$1 = iro;
   return iro$1;
 });
-},{}]},{},["8b4bfeaf75520f084108ee54b72ccee9","31a87f0a6c67386c8de4c2d3ddbfa1e2"], null)
+},{}],"bc610deadc54a08eda6642f8b91e1a0d":[function(require,module,exports) {
+"use strict";
+
+require("./BaseComponent/BaseComponent");
+
+require("./ToggleSwitch/ToggleSwitch");
+
+require("./AlertMessage/AlertMessage");
+
+require("./NavMenu/NavMenu");
+
+require("./NavMenu/NavMenuLi");
+
+require("./Input/Input");
+
+require("./DropdownMenu/DropdownMenu");
+
+require("./Chip/Chip");
+
+require("./Loader/Loader");
+},{"./BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca","./ToggleSwitch/ToggleSwitch":"f950ca2b7efd5de1dc33110fddfba1a1","./NavMenu/NavMenu":"ee37db9ffc178431b390a2a6bce60a08","./Input/Input":"f16e4310ce85a6c81aa6b47f4a0a5009","./DropdownMenu/DropdownMenu":"3d353cfa83d5579ed7fd41adbac69e2d","./Chip/Chip":"7e49abc801f0b9fa6422206b0e6ae15c","./Loader/Loader":"69399345e20d695acf23fd5194d43f45","./AlertMessage/AlertMessage":"f74ff145124e5eb2d2576af082923763","./NavMenu/NavMenuLi":"e233c2f6847c7d5bebd6273d189325ae"}],"3fe1e7ae545b4275e4fee3b611ef65ca":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CustomElement = void 0;
+
+class CustomElement extends HTMLElement {
+  constructor(template) {
+    super();
+    this.state = {};
+    this.attachShadow({
+      mode: 'open'
+    });
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+
+  isObject(arg) {
+    return (typeof arg === 'object' || typeof arg === 'function' || Array.isArray(arg)) && !!arg;
+  }
+  /**
+   * Updates the state with a new state
+   * @param newState 
+   */
+
+
+  setState(newState) {
+    const previousState = { ...this.state
+    };
+    Object.entries(newState).forEach(([key, value]) => {
+      this.state[key] = this.isObject(this.state[key]) && this.isObject(value) ? { ...this.state[key],
+        ...value
+      } : value;
+    });
+
+    if (typeof this.onStateChanges === 'function') {
+      this.onStateChanges(this.state, previousState);
+    }
+  }
+  /**
+   * Updates Value for form elements where ID is provided
+   * @param value 
+   */
+
+
+  updateValue(value) {
+    if (this.state.id) {
+      this.setState({
+        [this.state.id]: value
+      });
+    }
+  }
+
+}
+
+exports.CustomElement = CustomElement;
+},{}],"f950ca2b7efd5de1dc33110fddfba1a1":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ToggleSwitch = void 0;
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const toggleTemplate = document.createElement('template');
+toggleTemplate.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div class="toggle-switch on" ontouchstart="return true;">
+	<div class="circle"></div>
+</div>
+`;
+
+class ToggleSwitch extends _BaseComponent.CustomElement {
+  constructor() {
+    super(toggleTemplate);
+
+    _defineProperty(this, "onStateChanges", state => {
+      this.shadowRoot.querySelector('.toggle-switch').className = `toggle-switch ${state.state}`;
+      const onToggle = new CustomEvent('onToggle', {
+        bubbles: true,
+        detail: this.state
+      });
+      this.dispatchEvent(onToggle);
+    });
+
+    this.setState({
+      state: this.getAttribute('state') || 'OFF',
+      id: this.getAttribute('id')
+    });
+    this.shadowRoot.querySelector('.toggle-switch').className = `toggle-switch ${this.state.state}`;
+  }
+
+  onClick() {
+    this.setState({
+      state: this.state.state === 'ON' ? 'OFF' : 'ON'
+    });
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', this.onClick);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.onClick);
+  }
+
+}
+
+exports.ToggleSwitch = ToggleSwitch;
+window.customElements.define('toggle-switch', ToggleSwitch);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"ee37db9ffc178431b390a2a6bce60a08":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<ul class='nav-menu-ul'><slot></slot></ul>
+`;
+
+class NavMenu extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+    this.activeTab = this.getAttribute('activeTab');
+  }
+
+  resetAllTabs(tabs) {
+    for (let tab of tabs) {
+      tab.shadowRoot.querySelector('.tab').className = 'tab hidden';
+      const tabId = tab.getAttribute('id');
+      const panel = document.getElementById(`panel-${tabId}`);
+
+      if (panel) {
+        panel.classList.add('hidden');
+        panel.classList.remove('active');
+      }
+    }
+  }
+
+  onClick(e) {
+    const tabId = e && e.target && e.target.id;
+
+    if (tabId) {
+      const tabs = Array.from(this.querySelectorAll('nav-menu-li'));
+      this.resetAllTabs(tabs);
+      const selected = tabs.find(t => t.getAttribute('id') === tabId);
+      selected.shadowRoot.querySelector('.tab').className = 'tab active';
+      const panel = document.getElementById(`panel-${tabId}`);
+
+      if (panel) {
+        panel.classList.remove('hidden');
+        panel.classList.add('active');
+      }
+    }
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', this.onClick);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.onClick);
+  }
+
+}
+
+window.customElements.define('nav-menu', NavMenu);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"f16e4310ce85a6c81aa6b47f4a0a5009":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const textInput = document.createElement('template');
+textInput.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div class="input-container">
+	<input id="input" class="text-input">
+	<slot></slot>
+</div>
+`;
+
+class TextInput extends _BaseComponent.CustomElement {
+  constructor() {
+    super(textInput);
+
+    _defineProperty(this, "onStateChanges", state => {
+      const input = this.shadowRoot.querySelector('#input');
+
+      if (state.value !== input.value) {
+        input.value = state.value;
+      }
+
+      this.shadowRoot.querySelector('#input').type = state.type;
+    });
+
+    this.setState({
+      id: this.getAttribute('id'),
+      name: this.getAttribute('name'),
+      type: this.getAttribute('type') || 'text',
+      value: this.getAttribute('value') || null
+    });
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(event) {
+    const value = event.target.value;
+    const storedVal = this.state.type === 'number' ? parseInt(value, 10) : value;
+    this.setState({
+      value: storedVal
+    });
+  }
+
+  connectedCallback() {
+    const el = this.shadowRoot.querySelector('#input');
+    el.addEventListener('change', this.onChange);
+  }
+
+  disconnectedCallback() {
+    const el = this.shadowRoot.querySelector('#input');
+    el.removeEventListener('change', this.onChange);
+  }
+
+}
+
+window.customElements.define('text-input', TextInput);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"3d353cfa83d5579ed7fd41adbac69e2d":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div class="dropdown-menu">
+<select id="select" class="placeholder"></select>
+<slot></slot>
+<div class="dropdown-indicator">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox='0 0 1000 1000' xmlns:xlink="http://www.w3.org/1999/xlink">
+		<metadata>IcoFont Icons</metadata>
+		<title>simple-down</title>
+		<glyph glyph-name="simple-down" unicode="&#xeab2;" horiz-adv-x="1000" />
+		<path
+			d="M200 392.6l300 300 300-300-85.10000000000002-85.10000000000002-214.89999999999998 214.79999999999995-214.89999999999998-214.89999999999998-85.10000000000002 85.20000000000005z" />
+	</svg>
+</div>
+</div>
+`;
+
+class DropdownMenu extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+
+    _defineProperty(this, "onStateChanges", state => {
+      const select = this.shadowRoot.querySelector('#select');
+
+      if (state.value !== select.value) {
+        select.value = state.value;
+      }
+
+      select.classList.value = !state.value ? 'placeholder' : '';
+    });
+
+    this.setState({
+      id: this.getAttribute('id'),
+      name: this.getAttribute('name'),
+      value: this.getAttribute('value') || null
+    });
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(event) {
+    const value = event.target.value;
+    this.setState({
+      value: value
+    });
+  }
+
+  connectedCallback() {
+    const el = this.shadowRoot.querySelector('#select');
+    el.addEventListener('change', this.onChange);
+    this.shadowRoot.addEventListener('slotchange', () => {
+      const select = this.shadowRoot.querySelector('#select');
+      let node = this.querySelector('option');
+      node && select.append(node);
+    });
+  }
+
+  disconnectedCallback() {
+    const el = this.shadowRoot.querySelector('#select');
+    el.removeEventListener('change', this.onChange);
+    this.shadowRoot.removeEventListener('slotchange', null);
+  }
+
+}
+
+window.customElements.define('dropdown-menu', DropdownMenu);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"7e49abc801f0b9fa6422206b0e6ae15c":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div id="chip" class="chip hidden"></div>
+`;
+
+class Chip extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+
+    _defineProperty(this, "onStateChanges", state => {
+      if (state.text) {
+        this.shadowRoot.querySelector('#chip').innerHTML = state.text;
+        this.shadowRoot.querySelector('#chip').className = 'chip';
+      }
+    });
+
+    this.setState({
+      id: this.getAttribute('id'),
+      text: this.getAttribute('text')
+    });
+  }
+
+}
+
+window.customElements.define('ui-chip', Chip);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"69399345e20d695acf23fd5194d43f45":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const loaderTemplate = document.createElement('template');
+loaderTemplate.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div id="pageLoader" class="pageLoader hidden">
+	<div id="loader" class="loader">Loading...</div>
+</div>
+`;
+
+class Loader extends _BaseComponent.CustomElement {
+  constructor() {
+    super(loaderTemplate);
+
+    _defineProperty(this, "onStateChanges", state => {
+      this.updateLoadingClass(state.loading);
+    });
+
+    this.setState({
+      id: this.getAttribute('id'),
+      loading: this.getAttribute('loading')
+    });
+    this.updateLoadingClass(!!this.getAttribute('loading'));
+  }
+
+  updateLoadingClass(loading) {
+    if (loading) {
+      this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader';
+    } else {
+      this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader hidden';
+    }
+  }
+
+}
+
+window.customElements.define('ui-loader', Loader);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"f74ff145124e5eb2d2576af082923763":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div class="alert-message">
+	<div id="message" class="info">
+		<span class="icon hidden"></span>
+		<span class="text"></span>
+		<button class="close">x</button>
+	</div>
+</div>
+`;
+
+class AlertMessage extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+
+    _defineProperty(this, "onStateChanges", (state, previousState) => {
+      if (!state.visible && state.text && state.text !== previousState.text) {
+        this.setState({
+          visible: true
+        });
+        return;
+      }
+
+      if (state.visible) {
+        const newClass = state.closable ? `closable ${state.type}` : state.type;
+        this.shadowRoot.querySelector('#message').className = newClass;
+        this.shadowRoot.querySelector('#message span.text').innerHTML = state.text;
+        this.shadowRoot.querySelector('.alert-message').className = 'alert-message';
+
+        if (state.icon) {
+          switch (state.icon) {
+            case 'info':
+            default:
+              this.shadowRoot.querySelector('#message span.icon').innerHTML = 'i';
+              break;
+          }
+
+          this.shadowRoot.querySelector('#message span.icon').className = 'icon';
+        } else {
+          this.shadowRoot.querySelector('#message span.icon').className = 'icon hidden';
+        }
+      } else {
+        this.shadowRoot.querySelector('.alert-message').className = 'alert-message hidden';
+      }
+    });
+
+    const text = this.getAttribute('text');
+    this.setState({
+      text: text,
+      icon: this.getAttribute('icon'),
+      type: this.getAttribute('type') || 'info',
+      closable: !!this.getAttribute('closable'),
+      visible: !!text
+    });
+    this.onClose = this.onClose.bind(this);
+  }
+
+  onClose() {
+    this.setState({
+      visible: false,
+      text: null
+    });
+  }
+
+  connectedCallback() {
+    this.shadowRoot.querySelector('button').addEventListener('click', this.onClose);
+  }
+
+  disconnectedCallback() {
+    this.shadowRoot.querySelector('button').removeEventListener('click', this.onClose);
+  }
+
+}
+
+window.customElements.define('alert-message', AlertMessage);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"e233c2f6847c7d5bebd6273d189325ae":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<li class="tab hidden"><slot></slot>
+</li>
+`;
+
+class NavMenuLi extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+
+    if (this.getAttribute('active') !== null) {
+      this.shadowRoot.querySelector('.tab').className = 'tab active';
+    }
+  }
+
+}
+
+window.customElements.define('nav-menu-li', NavMenuLi);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}]},{},["8b4bfeaf75520f084108ee54b72ccee9","31a87f0a6c67386c8de4c2d3ddbfa1e2"], null)
 
 //# sourceMappingURL=lumenator.c1bc90f6.js.map
