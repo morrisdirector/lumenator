@@ -260,15 +260,21 @@ table {
 }
 
 .color-picker {
-	display: flex;
-	justify-content: center;
-	> div {
-		// display: blockl
+	.IroWheel,
+	.IroSlider {
+		margin: 0 auto;
+	}
+	#white-value-picker {
+		.IroSlider {
+			margin: 12px auto 0;
+		}
 	}
 }
 
-#whiteSlider {
-	margin: 90px 0 0;
+#white-warning,
+#rgb-warning {
+	margin: 10px auto 0;
+	max-width: 300px;
 }
 
 // --------- Components Below ---------- //

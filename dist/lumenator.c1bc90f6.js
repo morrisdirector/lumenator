@@ -425,6 +425,46 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 // Development Mode
 const DEVELOPMENT = "development" === 'development';
 const errors = [];
+const rgbColorPicker = iro.default.ColorPicker('#rgb-color-picker', {
+  borderWidth: 2,
+  layout: [{
+    component: iro.default.ui.Wheel,
+    options: {
+      borderColor: '#d1d1d1'
+    }
+  }, {
+    component: iro.default.ui.Slider,
+    options: {
+      borderColor: '#d1d1d1',
+      sliderType: 'value'
+    }
+  }]
+});
+const kelvinMin = 4000;
+const kelvinMax = 9000;
+const whiteColorPicker = iro.default.ColorPicker('#white-color-picker', {
+  borderWidth: 2,
+  layout: [{
+    component: iro.default.ui.Slider,
+    options: {
+      borderColor: '#d1d1d1',
+      minTemperature: kelvinMin,
+      maxTemperature: kelvinMax,
+      sliderType: 'kelvin',
+      sliderShape: 'circle'
+    }
+  }]
+});
+const whiteValuePicker = iro.default.ColorPicker('#white-value-picker', {
+  borderWidth: 2,
+  layout: [{
+    component: iro.default.ui.Slider,
+    options: {
+      borderColor: '#d1d1d1',
+      sliderType: 'value'
+    }
+  }]
+});
 let websocket;
 let config;
 let devicePresets;
@@ -619,12 +659,19 @@ const addEventListeners = () => {
             mode = _Mode.Mode.RGB;
             element('#rgb-warning').setState({
               text: 'While manual RGB mode is enabled, Lumenator will not respond to external control commands.'
-            }); // sendRgbColors();
-
+            });
+            sendRgbColors(rgbColorPicker.color.rgb);
             break;
 
           case 'modeWhite':
             mode = _Mode.Mode.WHITE;
+            element('#white-warning').setState({
+              text: 'While manual white mode is enabled, Lumenator will not respond to external control commands.'
+            });
+            sendWhiteLevels({
+              kelvin: whiteColorPicker.color.kelvin,
+              value: whiteValuePicker.color.value
+            });
             break;
 
           default:
@@ -642,6 +689,10 @@ const addEventListeners = () => {
           text: null
         });
         element('#rgb-warning').setState({
+          visible: false,
+          text: null
+        });
+        element('#white-warning').setState({
           visible: false,
           text: null
         });
@@ -705,48 +756,66 @@ const refresh = () => {
   window.location.reload();
 };
 
+const withLeadingZeros = (value, zeros) => {
+  return `00${value}`.slice(`00${value}`.length - zeros);
+};
+
 const sendRgbColors = color => {
   if (mode !== _Mode.Mode.RGB) {
     mode = _Mode.Mode.RGB;
     element('#modeRgb').setState({
       state: 'ON'
     });
-  } // const color = rgbControlColorPicker.getCurColorRgb();
+  }
 
-
-  const r = `00${color.r}`.slice(`00${color.r}`.length - 3);
-  const g = `00${color.g}`.slice(`00${color.g}`.length - 3);
-  const b = `00${color.b}`.slice(`00${color.b}`.length - 3);
+  const r = withLeadingZeros(color.r, 3);
+  const g = withLeadingZeros(color.g, 3);
+  const b = withLeadingZeros(color.b, 3);
 
   if (websocket) {
     websocket.send(`rgbctrl:r:${r}:g:${g}:b:${b}`);
   }
 };
 
-const loadColorPickers = () => {
-  const colorPicker = iro.default.ColorPicker('#rgb-color-picker', null);
-  colorPicker.on('color:change', function (color) {
+const sendWhiteLevels = level => {
+  if (mode !== _Mode.Mode.WHITE) {
+    mode = _Mode.Mode.WHITE;
+    element('#modeWhite').setState({
+      state: 'ON'
+    });
+  }
+
+  const multiplier = level.value / 100; // Brightness Slider Multiplier
+
+  const max = kelvinMax - kelvinMin;
+  const relativeVal = level.kelvin - kelvinMin;
+  const wMultiplier = Math.round(relativeVal / max * 100) / 100;
+  const wVal = Math.round(255 * wMultiplier);
+  const wwVal = 255 - wVal < 0 ? 0 : 255 - wVal;
+  const w = withLeadingZeros((wVal * multiplier).toFixed(0), 3);
+  const ww = withLeadingZeros((wwVal * multiplier).toFixed(0), 3);
+
+  if (websocket) {
+    websocket.send(`whitectrl:w:${w}:ww:${ww}`);
+  }
+};
+
+const setupColorPickers = () => {
+  rgbColorPicker.on('color:change', color => {
     sendRgbColors(color.rgb);
-  }); // Control Page Color Picker
-  // rgbControlColorPicker = new KellyColorPicker({
-  // 	place: 'control-color-picker',
-  // 	size: 225,
-  // 	color: 'rgb(0, 0, 255)',
-  // 	userEvents: {
-  // 		mousemoveh: () => {
-  // 			sendRgbColors();
-  // 		},
-  // 		mousemovesv: () => {
-  // 			sendRgbColors();
-  // 		},
-  // 		mouseuph: () => {
-  // 			sendRgbColors();
-  // 		},
-  // 		mouseupsv: () => {
-  // 			sendRgbColors();
-  // 		}
-  // 	}
-  // });
+  });
+  whiteColorPicker.on('color:change', color => {
+    sendWhiteLevels({
+      kelvin: color.kelvin,
+      value: whiteValuePicker.color.value
+    });
+  });
+  whiteValuePicker.on('color:change', color => {
+    sendWhiteLevels({
+      kelvin: whiteColorPicker.color.kelvin,
+      value: color.value
+    });
+  });
 };
 
 const init = () => {
@@ -757,7 +826,7 @@ const init = () => {
   addEventListeners();
   loadConfigJson();
   loadDevicePresets();
-  loadColorPickers();
+  setupColorPickers();
 };
 
 init();
@@ -3337,7 +3406,7 @@ require("./DropdownMenu/DropdownMenu");
 require("./Chip/Chip");
 
 require("./Loader/Loader");
-},{"./BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca","./ToggleSwitch/ToggleSwitch":"f950ca2b7efd5de1dc33110fddfba1a1","./NavMenu/NavMenu":"ee37db9ffc178431b390a2a6bce60a08","./Input/Input":"f16e4310ce85a6c81aa6b47f4a0a5009","./DropdownMenu/DropdownMenu":"3d353cfa83d5579ed7fd41adbac69e2d","./Chip/Chip":"7e49abc801f0b9fa6422206b0e6ae15c","./Loader/Loader":"69399345e20d695acf23fd5194d43f45","./AlertMessage/AlertMessage":"f74ff145124e5eb2d2576af082923763","./NavMenu/NavMenuLi":"e233c2f6847c7d5bebd6273d189325ae"}],"3fe1e7ae545b4275e4fee3b611ef65ca":[function(require,module,exports) {
+},{"./BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca","./ToggleSwitch/ToggleSwitch":"f950ca2b7efd5de1dc33110fddfba1a1","./AlertMessage/AlertMessage":"f74ff145124e5eb2d2576af082923763","./NavMenu/NavMenu":"ee37db9ffc178431b390a2a6bce60a08","./NavMenu/NavMenuLi":"e233c2f6847c7d5bebd6273d189325ae","./Input/Input":"f16e4310ce85a6c81aa6b47f4a0a5009","./DropdownMenu/DropdownMenu":"3d353cfa83d5579ed7fd41adbac69e2d","./Chip/Chip":"7e49abc801f0b9fa6422206b0e6ae15c","./Loader/Loader":"69399345e20d695acf23fd5194d43f45"}],"3fe1e7ae545b4275e4fee3b611ef65ca":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3456,6 +3525,93 @@ class ToggleSwitch extends _BaseComponent.CustomElement {
 
 exports.ToggleSwitch = ToggleSwitch;
 window.customElements.define('toggle-switch', ToggleSwitch);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"f74ff145124e5eb2d2576af082923763":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<div class="alert-message">
+	<div id="message" class="info">
+		<span class="icon hidden"></span>
+		<span class="text"></span>
+		<button class="close">x</button>
+	</div>
+</div>
+`;
+
+class AlertMessage extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+
+    _defineProperty(this, "onStateChanges", (state, previousState) => {
+      if (!state.visible && state.text && state.text !== previousState.text) {
+        this.setState({
+          visible: true
+        });
+        return;
+      }
+
+      if (state.visible) {
+        const newClass = state.closable ? `closable ${state.type}` : state.type;
+        this.shadowRoot.querySelector('#message').className = newClass;
+        this.shadowRoot.querySelector('#message span.text').innerHTML = state.text;
+        this.shadowRoot.querySelector('.alert-message').className = 'alert-message';
+
+        if (state.icon) {
+          switch (state.icon) {
+            case 'info':
+            default:
+              this.shadowRoot.querySelector('#message span.icon').innerHTML = 'i';
+              break;
+          }
+
+          this.shadowRoot.querySelector('#message span.icon').className = 'icon';
+        } else {
+          this.shadowRoot.querySelector('#message span.icon').className = 'icon hidden';
+        }
+      } else {
+        this.shadowRoot.querySelector('.alert-message').className = 'alert-message hidden';
+      }
+    });
+
+    const text = this.getAttribute('text');
+    this.setState({
+      text: text,
+      icon: this.getAttribute('icon'),
+      type: this.getAttribute('type') || 'info',
+      closable: !!this.getAttribute('closable'),
+      visible: !!text
+    });
+    this.onClose = this.onClose.bind(this);
+  }
+
+  onClose() {
+    this.setState({
+      visible: false,
+      text: null
+    });
+  }
+
+  connectedCallback() {
+    this.shadowRoot.querySelector('button').addEventListener('click', this.onClose);
+  }
+
+  disconnectedCallback() {
+    this.shadowRoot.querySelector('button').removeEventListener('click', this.onClose);
+  }
+
+}
+
+window.customElements.define('alert-message', AlertMessage);
 },{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"ee37db9ffc178431b390a2a6bce60a08":[function(require,module,exports) {
 "use strict";
 
@@ -3518,6 +3674,34 @@ class NavMenu extends _BaseComponent.CustomElement {
 }
 
 window.customElements.define('nav-menu', NavMenu);
+},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"e233c2f6847c7d5bebd6273d189325ae":[function(require,module,exports) {
+"use strict";
+
+var _BaseComponent = require("../BaseComponent/BaseComponent");
+
+const template = document.createElement('template');
+template.innerHTML =
+/*html*/
+`
+<style>
+	@import "style.css";
+</style>
+<li class="tab hidden"><slot></slot>
+</li>
+`;
+
+class NavMenuLi extends _BaseComponent.CustomElement {
+  constructor() {
+    super(template);
+
+    if (this.getAttribute('active') !== null) {
+      this.shadowRoot.querySelector('.tab').className = 'tab active';
+    }
+  }
+
+}
+
+window.customElements.define('nav-menu-li', NavMenuLi);
 },{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"f16e4310ce85a6c81aa6b47f4a0a5009":[function(require,module,exports) {
 "use strict";
 
@@ -3741,121 +3925,6 @@ class Loader extends _BaseComponent.CustomElement {
 }
 
 window.customElements.define('ui-loader', Loader);
-},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"f74ff145124e5eb2d2576af082923763":[function(require,module,exports) {
-"use strict";
-
-var _BaseComponent = require("../BaseComponent/BaseComponent");
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-const template = document.createElement('template');
-template.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<div class="alert-message">
-	<div id="message" class="info">
-		<span class="icon hidden"></span>
-		<span class="text"></span>
-		<button class="close">x</button>
-	</div>
-</div>
-`;
-
-class AlertMessage extends _BaseComponent.CustomElement {
-  constructor() {
-    super(template);
-
-    _defineProperty(this, "onStateChanges", (state, previousState) => {
-      if (!state.visible && state.text && state.text !== previousState.text) {
-        this.setState({
-          visible: true
-        });
-        return;
-      }
-
-      if (state.visible) {
-        const newClass = state.closable ? `closable ${state.type}` : state.type;
-        this.shadowRoot.querySelector('#message').className = newClass;
-        this.shadowRoot.querySelector('#message span.text').innerHTML = state.text;
-        this.shadowRoot.querySelector('.alert-message').className = 'alert-message';
-
-        if (state.icon) {
-          switch (state.icon) {
-            case 'info':
-            default:
-              this.shadowRoot.querySelector('#message span.icon').innerHTML = 'i';
-              break;
-          }
-
-          this.shadowRoot.querySelector('#message span.icon').className = 'icon';
-        } else {
-          this.shadowRoot.querySelector('#message span.icon').className = 'icon hidden';
-        }
-      } else {
-        this.shadowRoot.querySelector('.alert-message').className = 'alert-message hidden';
-      }
-    });
-
-    const text = this.getAttribute('text');
-    this.setState({
-      text: text,
-      icon: this.getAttribute('icon'),
-      type: this.getAttribute('type') || 'info',
-      closable: !!this.getAttribute('closable'),
-      visible: !!text
-    });
-    this.onClose = this.onClose.bind(this);
-  }
-
-  onClose() {
-    this.setState({
-      visible: false,
-      text: null
-    });
-  }
-
-  connectedCallback() {
-    this.shadowRoot.querySelector('button').addEventListener('click', this.onClose);
-  }
-
-  disconnectedCallback() {
-    this.shadowRoot.querySelector('button').removeEventListener('click', this.onClose);
-  }
-
-}
-
-window.customElements.define('alert-message', AlertMessage);
-},{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}],"e233c2f6847c7d5bebd6273d189325ae":[function(require,module,exports) {
-"use strict";
-
-var _BaseComponent = require("../BaseComponent/BaseComponent");
-
-const template = document.createElement('template');
-template.innerHTML =
-/*html*/
-`
-<style>
-	@import "style.css";
-</style>
-<li class="tab hidden"><slot></slot>
-</li>
-`;
-
-class NavMenuLi extends _BaseComponent.CustomElement {
-  constructor() {
-    super(template);
-
-    if (this.getAttribute('active') !== null) {
-      this.shadowRoot.querySelector('.tab').className = 'tab active';
-    }
-  }
-
-}
-
-window.customElements.define('nav-menu-li', NavMenuLi);
 },{"../BaseComponent/BaseComponent":"3fe1e7ae545b4275e4fee3b611ef65ca"}]},{},["8b4bfeaf75520f084108ee54b72ccee9","31a87f0a6c67386c8de4c2d3ddbfa1e2"], null)
 
 //# sourceMappingURL=lumenator.c1bc90f6.js.map

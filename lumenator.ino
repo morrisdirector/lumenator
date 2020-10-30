@@ -87,23 +87,8 @@ void initRoutes() {
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/www/style.css", "text/css");
   });
-  server.on("/icons.css", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/www/icons.css", "text/css");
-  });
   server.on("/lumenator.js", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/www/lumenator.js", "application/javascript");
-  });
-  server.on("/components.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/www/components.js", "application/javascript");
-  });
-  server.on("/settings.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/www/settings.js", "application/javascript");
-  });
-  server.on("/utils.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/www/utils.js", "application/javascript");
-  });
-  server.on("/cp.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/www/cp.js", "application/javascript");
   });
   // Data:
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -291,6 +276,24 @@ void rgbCtrlCommand(char *command) {
   analogWrite(deviceConfig.gpio_b, bVal);
 }
 
+void whiteCtrlCommand(char *command) {
+  if (ctrlMode != CTRL_WHITE) {
+    ctrlMode = CTRL_WHITE;
+    resetGpios();
+  }
+
+  String white;
+  white = command;
+  String w = white.substring(12, 15);
+  String ww = white.substring(19, 22);
+
+  int wVal = w.toInt();
+  int wwVal = ww.toInt();
+
+  analogWrite(deviceConfig.gpio_w, wVal);
+  analogWrite(deviceConfig.gpio_ww, wwVal);
+}
+
 // Callback: receiving any WebSocket message
 void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_t length) {
 
@@ -329,6 +332,9 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     } else if (strncmp(text, "rgbctrl", 7) == 0) {
       // rgbctrl command:
       rgbCtrlCommand(text);
+    } else if (strncmp(text, "whitectrl", 9) == 0) {
+      // white command:
+      whiteCtrlCommand(text);
     } else if (strncmp(text, "standby", 7) == 0) {
       // Standby Mode
       resetGpios();
@@ -465,6 +471,7 @@ void setup() {
 
   // Start web server
   server.begin();
+  server.serveStatic("/", SPIFFS, "/www/").setCacheControl("max-age=10");
 
   // Start WebSocket server and assign callback
   webSocket.begin();

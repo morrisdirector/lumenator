@@ -9,6 +9,54 @@ const DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 const errors = [];
 
+const rgbColorPicker = iro.default.ColorPicker('#rgb-color-picker', {
+	borderWidth: 2,
+	layout: [
+		{
+			component: iro.default.ui.Wheel,
+			options: {
+				borderColor: '#d1d1d1'
+			}
+		},
+		{
+			component: iro.default.ui.Slider,
+			options: {
+				borderColor: '#d1d1d1',
+				sliderType: 'value'
+			}
+		}
+	]
+});
+const kelvinMin = 4000;
+const kelvinMax = 9000;
+const whiteColorPicker = iro.default.ColorPicker('#white-color-picker', {
+	borderWidth: 2,
+	layout: [
+		{
+			component: iro.default.ui.Slider,
+			options: {
+				borderColor: '#d1d1d1',
+				minTemperature: kelvinMin,
+				maxTemperature: kelvinMax,
+				sliderType: 'kelvin',
+				sliderShape: 'circle'
+			}
+		}
+	]
+});
+const whiteValuePicker = iro.default.ColorPicker('#white-value-picker', {
+	borderWidth: 2,
+	layout: [
+		{
+			component: iro.default.ui.Slider,
+			options: {
+				borderColor: '#d1d1d1',
+				sliderType: 'value'
+			}
+		}
+	]
+});
+
 let websocket;
 let config;
 let devicePresets;
@@ -186,10 +234,15 @@ const addEventListeners = () => {
 							text:
 								'While manual RGB mode is enabled, Lumenator will not respond to external control commands.'
 						});
-						// sendRgbColors();
+						sendRgbColors(rgbColorPicker.color.rgb);
 						break;
 					case 'modeWhite':
 						mode = Mode.WHITE;
+						element('#white-warning').setState({
+							text:
+								'While manual white mode is enabled, Lumenator will not respond to external control commands.'
+						});
+						sendWhiteLevels({ kelvin: whiteColorPicker.color.kelvin, value: whiteValuePicker.color.value });
 						break;
 					default:
 						// GPIO Testing Mode
@@ -207,6 +260,10 @@ const addEventListeners = () => {
 					text: null
 				});
 				element('#rgb-warning').setState({
+					visible: false,
+					text: null
+				});
+				element('#white-warning').setState({
 					visible: false,
 					text: null
 				});
@@ -268,46 +325,54 @@ const refresh = () => {
 	window.location.reload();
 };
 
+const withLeadingZeros = (value: string | number, zeros: number): string => {
+	return `00${value}`.slice(`00${value}`.length - zeros);
+};
+
 const sendRgbColors = (color: { r: number; g: number; b: number }) => {
 	if (mode !== Mode.RGB) {
 		mode = Mode.RGB;
 		element('#modeRgb').setState({ state: 'ON' });
 	}
-	// const color = rgbControlColorPicker.getCurColorRgb();
-	const r = `00${color.r}`.slice(`00${color.r}`.length - 3);
-	const g = `00${color.g}`.slice(`00${color.g}`.length - 3);
-	const b = `00${color.b}`.slice(`00${color.b}`.length - 3);
+	const r = withLeadingZeros(color.r, 3);
+	const g = withLeadingZeros(color.g, 3);
+	const b = withLeadingZeros(color.b, 3);
 
 	if (websocket) {
 		websocket.send(`rgbctrl:r:${r}:g:${g}:b:${b}`);
 	}
 };
 
-const loadColorPickers = () => {
-	const colorPicker = iro.default.ColorPicker('#rgb-color-picker', null);
-	colorPicker.on('color:change', function(color) {
+const sendWhiteLevels = (level: { kelvin: number; value: number }) => {
+	if (mode !== Mode.WHITE) {
+		mode = Mode.WHITE;
+		element('#modeWhite').setState({ state: 'ON' });
+	}
+
+	const multiplier = level.value / 100; // Brightness Slider Multiplier
+	const max = kelvinMax - kelvinMin;
+	const relativeVal = level.kelvin - kelvinMin;
+	const wMultiplier = Math.round(relativeVal / max * 100) / 100;
+	const wVal = Math.round(255 * wMultiplier);
+	const wwVal = 255 - wVal < 0 ? 0 : 255 - wVal;
+	const w = withLeadingZeros((wVal * multiplier).toFixed(0), 3);
+	const ww = withLeadingZeros((wwVal * multiplier).toFixed(0), 3);
+
+	if (websocket) {
+		websocket.send(`whitectrl:w:${w}:ww:${ww}`);
+	}
+};
+
+const setupColorPickers = () => {
+	rgbColorPicker.on('color:change', (color) => {
 		sendRgbColors(color.rgb);
 	});
-	// Control Page Color Picker
-	// rgbControlColorPicker = new KellyColorPicker({
-	// 	place: 'control-color-picker',
-	// 	size: 225,
-	// 	color: 'rgb(0, 0, 255)',
-	// 	userEvents: {
-	// 		mousemoveh: () => {
-	// 			sendRgbColors();
-	// 		},
-	// 		mousemovesv: () => {
-	// 			sendRgbColors();
-	// 		},
-	// 		mouseuph: () => {
-	// 			sendRgbColors();
-	// 		},
-	// 		mouseupsv: () => {
-	// 			sendRgbColors();
-	// 		}
-	// 	}
-	// });
+	whiteColorPicker.on('color:change', (color) => {
+		sendWhiteLevels({ kelvin: color.kelvin, value: whiteValuePicker.color.value });
+	});
+	whiteValuePicker.on('color:change', (color) => {
+		sendWhiteLevels({ kelvin: whiteColorPicker.color.kelvin, value: color.value });
+	});
 };
 
 const init = () => {
@@ -317,7 +382,7 @@ const init = () => {
 	addEventListeners();
 	loadConfigJson();
 	loadDevicePresets();
-	loadColorPickers();
+	setupColorPickers();
 };
 
 init();

@@ -349,12 +349,18 @@ table tr th {
   text-align: left;
 }
 
-.color-picker {
-  display: flex;
-  justify-content: center;
+.color-picker .IroWheel,
+.color-picker .IroSlider {
+  margin: 0 auto;
 }
-#whiteSlider {
-  margin: 90px 0 0;
+.color-picker #white-value-picker .IroSlider {
+  margin: 12px auto 0;
+}
+
+#white-warning,
+#rgb-warning {
+  margin: 10px auto 0;
+  max-width: 300px;
 }
 
 ul.nav-menu-ul {

@@ -52,7 +52,12 @@
                             <div class="form-group">
                                 <label for="modeWhite">White Mode</label>
                                 <toggle-switch id="modeWhite" class="mode-toggle"></toggle-switch>
-                                <ui-color-slider id="whiteSlider"></ui-color-slider>
+                                <div class="color-picker">
+                                    <div id="white-color-picker"></div>
+                                    <div id="white-value-picker"></div>
+                                </div>
+                                <alert-message id="white-warning" icon="info">
+                                </alert-message>
                             </div>
 
                         </div>
