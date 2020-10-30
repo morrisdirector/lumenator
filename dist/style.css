@@ -88,6 +88,7 @@ button:active {
 .alert-message .alert button:hover,
 .alert-message .danger button:hover {
   font-weight: bold;
+  background: transparent;
 }
 .alert-message .info.closable button,
 .alert-message .alert.closable button,

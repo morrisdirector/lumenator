@@ -1,6 +1,3 @@
-// @import '../colors';
-// @import '../sizes';
-
 .alert-message {
 	font-size: $textSizeNormal;
 	font-weight: bold;
@@ -54,6 +51,7 @@
 			cursor: pointer;
 			&:hover {
 				font-weight: bold;
+				background: transparent;
 			}
 		}
 		&.closable {
