@@ -1,0 +1,17 @@
+text-input {
+	button {
+		margin: 0 0 0 $marginSmall;
+	}
+}
+.input-container {
+	display: flex;
+	justify-content: flex-start;
+	.text-input {
+		flex-grow: 1;
+		width: 100%;
+		box-sizing: border-box;
+		font-size: 14px;
+		padding: $padding;
+		@extend %white-emboss-box;
+	}
+}

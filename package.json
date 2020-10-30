@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Add e1.31 streaming support to your ESP8266 based light bulbs",
   "scripts": {
-    "dev": "parcel src/index.html src/style.scss",
+    "dev": "parcel src/index.html src/style.scss --no-cache",
     "build": "rm -rf data/www/* && parcel build src/index.html src/style.scss src/lumenator.ts --dist-dir data/www --no-source-maps --no-content-hash"
   },
   "repository": {

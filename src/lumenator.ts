@@ -276,6 +276,11 @@ const addEventListeners = () => {
 			}
 		});
 	}
+
+	// Buttons
+	element('#show-password-button').addEventListener('click', showPassword);
+	element('#save-network-configuration').addEventListener('click', saveConfiguration);
+	element('#save-device-configuration').addEventListener('click', saveConfiguration);
 };
 
 const saveConfiguration = () => {
