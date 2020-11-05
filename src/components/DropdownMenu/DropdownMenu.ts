@@ -28,6 +28,20 @@ class DropdownMenu extends CustomElement {
 			value: this.getAttribute('value') || null
 		});
 		this.onChange = this.onChange.bind(this);
+		this.updateOptions = this.updateOptions.bind(this);
+	}
+
+	updateOptions(): void {
+		const select: HTMLSelectElement = this.shadowRoot.querySelector('#select');
+		const node: HTMLOptionElement = this.querySelector('option');
+		if (this.state.value && node) {
+			if (this.state.value === node.value) {
+				node.selected = true;
+			} else {
+				node.selected = false;
+			}
+		}
+		node && select.append(node);
 	}
 
 	onChange(event) {
@@ -46,11 +60,7 @@ class DropdownMenu extends CustomElement {
 	connectedCallback() {
 		const el = this.shadowRoot.querySelector('#select');
 		el.addEventListener('change', this.onChange);
-		this.shadowRoot.addEventListener('slotchange', () => {
-			const select = this.shadowRoot.querySelector('#select');
-			let node = this.querySelector('option');
-			node && select.append(node);
-		});
+		this.shadowRoot.addEventListener('slotchange', this.updateOptions);
 	}
 
 	disconnectedCallback() {
