@@ -37,7 +37,7 @@
             <main>
                 <alert-message id="info-messages" type="info" closable="true"></alert-message>
                 <alert-message id="error-messages" type="alert" closable="true"></alert-message>
-                <div id="panel-1" class="panel active">
+                <div id="panel-1" class="panel hidden">
                     <section>
                         <div class="grid-large">
                             <div class="form-group">
@@ -63,7 +63,7 @@
                         </div>
                     </section>
                 </div>
-                <div id="panel-2" class="panel hidden">
+                <div id="panel-2" class="panel active">
                     <section>
                         <div class="grid-large">
                             <div class="form-group">
@@ -73,11 +73,11 @@
                             <div class="form-group">
                                 <label for="map_preset">Device Preset</label>
                                 <dropdown-menu id="map_preset">
-                                    <option class="placeholder" disabled selected>Select a device preset
+                                    <option value="" class="placeholder" disabled selected>Select a device preset
                                     </option>
-                                    <option class="placeholder" disabled>---------------------------</option>
+                                    <option value="" class="placeholder" disabled>---------------------------</option>
                                     <option value="custom">Custom Configuration</option>
-                                    <option class="placeholder" disabled>---------------------------</option>
+                                    <option value="" class="placeholder" disabled>---------------------------</option>
                                     <option value="wemos">Wemos D1 Mini</option>
                                 </dropdown-menu>
                             </div>
@@ -88,7 +88,7 @@
                         <div class="grid-large">
                             <div class="form-group">
                                 <label for="name">Device Type</label>
-                                <dropdown-menu id="device_type">
+                                <dropdown-menu id="device_type" type="number">
                                     <option value="" class="placeholder" disabled selected>Select a device type</option>
                                     <option value="" class="placeholder" disabled>---------------------------</option>
                                     <option value="0">RGBWW (RGB w/ Cool / Warm White)</option>

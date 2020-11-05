@@ -24,18 +24,32 @@ class DropdownMenu extends CustomElement {
 		super(template);
 		this.setState({
 			id: this.getAttribute('id'),
+			type: this.getAttribute('type') || 'text',
 			name: this.getAttribute('name'),
-			value: this.getAttribute('value') || null
+			value: this.trueValue(this.getAttribute('value')) || null
 		});
+		console.log('Initial State: ', this.state);
 		this.onChange = this.onChange.bind(this);
 		this.updateOptions = this.updateOptions.bind(this);
+	}
+
+	isNullValue(value: string | number): boolean {
+		return value === undefined || value === null || value === '';
+	}
+
+	trueValue(value: string): string | number | void {
+		if (this.isNullValue(value)) {
+			return null;
+		}
+		return this.state.type === 'number' ? parseInt(value, 10) : value;
 	}
 
 	updateOptions(): void {
 		const select: HTMLSelectElement = this.shadowRoot.querySelector('#select');
 		const node: HTMLOptionElement = this.querySelector('option');
-		if (this.state.value && node) {
-			if (this.state.value === node.value) {
+		if (this.state.value !== null && this.state.value !== undefined && node) {
+			// console.log('True Value of Node: ', this.trueValue(node.value));
+			if (this.state.value === this.trueValue(node.value)) {
 				node.selected = true;
 			} else {
 				node.selected = false;
@@ -46,15 +60,16 @@ class DropdownMenu extends CustomElement {
 
 	onChange(event) {
 		const value = event.target.value;
-		this.setState({ value: value });
+		this.setState({ value: this.trueValue(value) });
 	}
 
 	onStateChanges = (state) => {
 		const select: HTMLSelectElement = this.shadowRoot.querySelector('#select');
-		if (state.value !== select.value) {
-			select.value = state.value;
+		if (state.value !== this.trueValue(select.value)) {
+			select.value = `${state.value}`;
 		}
-		select.classList.value = !state.value ? 'placeholder' : '';
+		console.log(state.value);
+		select.classList.value = this.isNullValue(state.value) ? 'placeholder' : '';
 	};
 
 	connectedCallback() {
