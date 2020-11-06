@@ -28,7 +28,6 @@ class DropdownMenu extends CustomElement {
 			name: this.getAttribute('name'),
 			value: this.trueValue(this.getAttribute('value')) || null
 		});
-		console.log('Initial State: ', this.state);
 		this.onChange = this.onChange.bind(this);
 		this.updateOptions = this.updateOptions.bind(this);
 	}
@@ -48,7 +47,6 @@ class DropdownMenu extends CustomElement {
 		const select: HTMLSelectElement = this.shadowRoot.querySelector('#select');
 		const node: HTMLOptionElement = this.querySelector('option');
 		if (this.state.value !== null && this.state.value !== undefined && node) {
-			// console.log('True Value of Node: ', this.trueValue(node.value));
 			if (this.state.value === this.trueValue(node.value)) {
 				node.selected = true;
 			} else {
@@ -68,7 +66,6 @@ class DropdownMenu extends CustomElement {
 		if (state.value !== this.trueValue(select.value)) {
 			select.value = `${state.value}`;
 		}
-		console.log(state.value);
 		select.classList.value = this.isNullValue(state.value) ? 'placeholder' : '';
 	};
 

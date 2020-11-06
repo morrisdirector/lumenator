@@ -74,6 +74,10 @@ section {
 	}
 }
 
+.no-margin {
+	margin: 0 !important;
+}
+
 .grid-tiny {
 	display: grid;
 	grid-column-gap: $marginSmall;
@@ -96,6 +100,19 @@ section {
 	display: grid;
 	grid-column-gap: $marginSmall;
 	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.flex-row {
+	display: flex;
+	> * {
+		width: auto !important;
+		&:not(:first-child) {
+			margin-left: $marginSmall !important;
+		}
+	}
+	> .flex-grow-1 {
+		flex-grow: 1;
+	}
 }
 
 .page-action-buttons {
@@ -147,7 +164,15 @@ hr {
 	position: relative;
 	width: 100%;
 	padding: 0;
-	margin: 10px 0 0 0;
+	margin: $baseSpacer 0 0 0;
+
+	&.inline {
+		margin: 0;
+		flex-direction: row;
+		> :not(label) {
+			margin: 0;
+		}
+	}
 	label {
 		font-size: 14px;
 		font-weight: bold;
@@ -158,6 +183,16 @@ hr {
 	}
 	&.centered {
 		align-items: center;
+	}
+	> toggle-switch {
+		margin-top: 12px;
+	}
+	.helper-text {
+		display: block;
+		position: relative;
+		color: $lightDark;
+		font-size: 12px;
+		font-style: italic;
 	}
 }
 

@@ -7,6 +7,7 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
+#include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 #include <WebSocketsServer.h>
 #include <Wire.h>
 #include <credentials.h>
@@ -23,6 +24,9 @@
 //  D8  15
 //  TX  1
 //  RX  3
+
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
 
 /* ------- NETWORK CREDENTIALS ------- */
 /* Fallback configuration if config.json is empty or fails */
@@ -51,12 +55,22 @@ struct DeviceConfig {
   uint8_t gpio_b;
 };
 
+struct MqttConfig {
+  bool mqtt_enabled;
+  uint8_t mqtt_ip[4];
+  uint16_t mqtt_port;
+  String mqtt_client_name;
+  String mqtt_user;
+  String mqtt_password;
+};
+
 struct NetworkConfig {
   String ssid;
   String password;
 };
 
 DeviceConfig deviceConfig;
+MqttConfig mqttConfig;
 NetworkConfig networkConfig;
 
 // Web Server port 80
@@ -240,8 +254,7 @@ bool saveConfiguration(String dto) {
     return false;
   }
 
-  deserializeDeviceConfig(json.as<JsonObject>());
-  deserializeNetworkConfig(json.as<JsonObject>());
+  deserializeAll(json);
 
   // Serialize JSON to file
   if (serializeJson(json, file) == 0) {
@@ -355,7 +368,7 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
   }
 }
 
-void deserializeDeviceConfig(const JsonObject &json) {
+void dsDeviceConfig(const JsonObject &json) {
   if (json.containsKey("device")) {
     JsonObject deviceJson = json["device"];
     deviceConfig.name = deviceJson["name"].as<String>();
@@ -371,7 +384,23 @@ void deserializeDeviceConfig(const JsonObject &json) {
   }
 }
 
-void deserializeNetworkConfig(const JsonObject &json) {
+void dsMqttConfig(const JsonObject &json) {
+  if (json.containsKey("mqtt")) {
+    JsonObject mqttJson = json["mqtt"];
+    mqttConfig.mqtt_enabled = mqttJson["mqtt_enabled"].as<bool>();
+    mqttConfig.mqtt_client_name = mqttJson["mqtt_client_name"].as<String>();
+    mqttConfig.mqtt_user = mqttJson["mqtt_user"].as<String>();
+    mqttConfig.mqtt_password = mqttJson["mqtt_password"].as<String>();
+    for (int i = 0; i < 4; i++) {
+      mqttConfig.mqtt_ip[i] = mqttJson["mqtt_ip"][i];
+    }
+    mqttConfig.mqtt_port = mqttJson["mqtt_port"].as<uint16_t>();
+  } else {
+    Serial.println("No mqtt settings found.");
+  }
+}
+
+void dsNetworkConfig(const JsonObject &json) {
   if (json.containsKey("network")) {
     JsonObject networkJson = json["network"];
 
@@ -396,6 +425,12 @@ void deserializeNetworkConfig(const JsonObject &json) {
   }
 }
 
+void deserializeAll(DynamicJsonDocument json) {
+  dsDeviceConfig(json.as<JsonObject>());
+  dsMqttConfig(json.as<JsonObject>());
+  dsNetworkConfig(json.as<JsonObject>());
+}
+
 void readConfigJson() {
   File file = SPIFFS.open(CONFIG_FILE, "r");
   size_t size = file.size();
@@ -411,8 +446,7 @@ void readConfigJson() {
     return;
   }
 
-  deserializeDeviceConfig(json.as<JsonObject>());
-  deserializeNetworkConfig(json.as<JsonObject>());
+  deserializeAll(json);
 }
 
 void startWiFi() {
@@ -447,6 +481,51 @@ void setupHardwareConfiguration() {
   }
 }
 
+void mqttCallback(char *topic, byte *payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+void setupMqtt() {
+  IPAddress ipAddr = IPAddress(mqttConfig.mqtt_ip[0], mqttConfig.mqtt_ip[1], mqttConfig.mqtt_ip[2],
+                               mqttConfig.mqtt_ip[3]);
+  mqttClient.setServer(ipAddr, mqttConfig.mqtt_port);
+  mqttClient.setCallback(mqttCallback);
+}
+
+void reconnectMqtt() {
+  while (!mqttClient.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    const int client_nameL = mqttConfig.mqtt_client_name.length() + 1;
+    const int userL = mqttConfig.mqtt_user.length() + 1;
+    const int passwordL = mqttConfig.mqtt_password.length() + 1;
+    char client_name[client_nameL];
+    char user[userL];
+    char password[passwordL];
+    mqttConfig.mqtt_client_name.toCharArray(client_name, client_nameL);
+    mqttConfig.mqtt_user.toCharArray(user, userL);
+    mqttConfig.mqtt_password.toCharArray(password, passwordL);
+    if (mqttClient.connect(client_name, user, password)) {
+      Serial.println("connected");
+      Serial.println("----------------------------");
+      // Once connected, publish an announcement...
+      mqttClient.publish("lumenator", "TVON");
+      // ... and resubscribe
+      mqttClient.subscribe("inTopic");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(mqttClient.state());
+      Serial.println(" try again in 5 seconds");
+      delay(5000);
+    }
+  }
+}
+
 void setup() {
   // Serial port for debugging purposes
   Serial.begin(115200);
@@ -476,9 +555,20 @@ void setup() {
   // Start WebSocket server and assign callback
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
+
+  if (mqttConfig.mqtt_enabled == true) {
+    setupMqtt();
+  }
 }
 
 void loop() {
-  // Look for and handle WebSocket data
+  // Websockets:
   webSocket.loop();
+  // MQTT:
+  if (mqttConfig.mqtt_enabled == true) {
+    if (!mqttClient.connected()) {
+      reconnectMqtt();
+    }
+    mqttClient.loop();
+  }
 }

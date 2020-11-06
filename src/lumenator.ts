@@ -3,6 +3,7 @@ import { CustomElement } from './components/BaseComponent/BaseComponent';
 import { Mode } from './shared/enums/Mode';
 import { OnOff } from './shared/enums/OnOff';
 import * as iro from '@jaames/iro';
+import { testData } from './shared/MockData';
 
 // Development Mode
 const DEVELOPMENT = process.env.NODE_ENV === 'development';
@@ -84,25 +85,6 @@ const setComponentState = (id, state) => {
 	}
 };
 
-const testData = () => {
-	return {
-		device: {
-			name: 'Bulb Test 1',
-			map_preset: 'wemos',
-			device_type: 0,
-			gpio_w: 15,
-			gpio_ww: 13,
-			gpio_r: 12,
-			gpio_g: 14,
-			gpio_b: 16
-		},
-		network: {
-			ssid: 'Fake SSID',
-			password: 'password'
-		}
-	};
-};
-
 const onWsError = (evt) => {
 	element('#error-messages').setState({
 		text: 'Error establishing Web Socket connection'
@@ -141,6 +123,13 @@ const showPassword = () => {
 	setDomValue('show-password-button', newState === 'password' ? 'Show' : 'Hide');
 };
 
+const showMqttPassword = () => {
+	const el: CustomElement = document.getElementById('mqtt_password') as CustomElement;
+	const newState = el.state.type === 'password' ? 'text' : 'password';
+	setComponentState('mqtt_password', { type: newState });
+	setDomValue('show-mqtt-password-button', newState === 'password' ? 'Show' : 'Hide');
+};
+
 const setDeviceModels = () => {
 	const deviceModels = Object.keys(config.device);
 	deviceModels.forEach((model) => {
@@ -159,12 +148,27 @@ const setNetworkModels = () => {
 	});
 };
 
+const setMqttModels = () => {
+	const mqttModels = Object.keys(config.mqtt);
+	mqttModels.forEach((model) => {
+		if (model === 'mqtt_enabled') {
+			const enabledState = config.mqtt[model] === true ? 'ON' : 'OFF';
+			setComponentState(model, { state: enabledState });
+		} else {
+			setComponentState(model, { value: config.mqtt[model] });
+		}
+	});
+};
+
 const loadConfigJson = () => {
 	const loadData = (data) => {
 		config = data;
 		console.log(config);
 		if (config.device) {
 			setDeviceModels();
+		}
+		if (config.mqtt) {
+			setMqttModels();
 		}
 		if (config.network) {
 			setNetworkModels();
@@ -279,6 +283,7 @@ const addEventListeners = () => {
 
 	// Buttons
 	element('#show-password-button').addEventListener('click', showPassword);
+	element('#show-mqtt-password-button').addEventListener('click', showMqttPassword);
 	element('#save-network-configuration').addEventListener('click', saveConfiguration);
 	element('#save-device-configuration').addEventListener('click', saveConfiguration);
 };

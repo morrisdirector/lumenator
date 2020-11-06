@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 
-    "Lumenator" Version 1.0
+    "Lumenator"
     by Patrick Morris 
 -->
 <html>
@@ -29,9 +29,10 @@
             </header>
             <nav id="nav-menu">
                 <nav-menu>
-                    <nav-menu-li id="1" active>Control</nav-menu-li>
+                    <nav-menu-li id="1">Control</nav-menu-li>
                     <nav-menu-li id="2">Device</nav-menu-li>
-                    <nav-menu-li id="3">Network</nav-menu-li>
+                    <nav-menu-li id="3" active>MQTT</nav-menu-li>
+                    <nav-menu-li id="4">Network</nav-menu-li>
                 </nav-menu>
             </nav>
             <main>
@@ -40,7 +41,7 @@
                 <div id="panel-1" class="panel hidden">
                     <section>
                         <div class="grid-large">
-                            <div class="form-group">
+                            <div class="form-group no-margin">
                                 <label for="modeRgb">RGB Mode</label>
                                 <toggle-switch id="modeRgb" class="mode-toggle"></toggle-switch>
                                 <div class="color-picker">
@@ -49,7 +50,7 @@
                                 <alert-message id="rgb-warning" icon="info">
                                 </alert-message>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group no-margin">
                                 <label for="modeWhite">White Mode</label>
                                 <toggle-switch id="modeWhite" class="mode-toggle"></toggle-switch>
                                 <div class="color-picker">
@@ -63,14 +64,14 @@
                         </div>
                     </section>
                 </div>
-                <div id="panel-2" class="panel active">
+                <div id="panel-2" class="panel hidden">
                     <section>
                         <div class="grid-large">
-                            <div class="form-group">
+                            <div class="form-group no-margin">
                                 <label for="name">Device Name</label>
                                 <text-input id="name"></text-input>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group no-margin">
                                 <label for="map_preset">Device Preset</label>
                                 <dropdown-menu id="map_preset">
                                     <option value="" class="placeholder" disabled selected>Select a device preset
@@ -86,7 +87,7 @@
                     <section>
                         <h4>Configuration</h4>
                         <div class="grid-large">
-                            <div class="form-group">
+                            <div class="form-group no-margin">
                                 <label for="name">Device Type</label>
                                 <dropdown-menu id="device_type" type="number">
                                     <option value="" class="placeholder" disabled selected>Select a device type</option>
@@ -157,29 +158,72 @@
                                 </alert-message>
                             </div>
                         </div>
+                        <div class="action-buttons">
+                            <button class="primary" id="save-device-configuration">Save Configuration</button>
+                        </div>
                     </section>
-                    <div class="page-action-buttons">
-                        <button class="primary" id="save-device-configuration">Save Configuration</button>
-                    </div>
+
                 </div>
-                <div id="panel-3" class="panel hidden">
+                <div id="panel-3" class="panel active">
                     <section>
                         <div class="grid-large">
+                            <div class="form-group no-margin">
+                                <label for="mqtt_enabled">Enabled</label>
+                                <toggle-switch id="mqtt_enabled"></toggle-switch>
+                            </div>
+                        </div>
+                        <div class="grid-large">
                             <div class="form-group">
+                                <label for="mqtt_client_name">Client Name</label>
+                                <text-input id="mqtt_client_name"></text-input>
+                                <!-- <div class="helper-text">
+                                    * no spaces, use underscores instead. Example: my_device
+                                </div> -->
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="mqtt_client_name">Client Name</label>
+                                <text-input id="mqtt_client_name"></text-input> -->
+                                <div class="helper-text">
+                                    * no spaces, use underscores instead. Example: my_device
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-large">
+                            <div class="form-group">
+                                <label for="mqtt_user">Username</label>
+                                <text-input id="mqtt_user"></text-input>
+                            </div>
+                            <div class="form-group">
+                                <label for="mqtt_password">Password</label>
+                                <text-input id="mqtt_password" type="password">
+                                    <button id="show-mqtt-password-button">Show</button>
+                                </text-input>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="primary" id="save-network-configuration">Save Configuration</button>
+                        </div>
+                    </section>
+                </div>
+                <div id="panel-4" class="panel hidden">
+                    <section>
+                        <div class="grid-large">
+                            <div class="form-group no-margin">
                                 <label for="ssid">SSID</label>
                                 <text-input id="ssid"></text-input>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group no-margin">
                                 <label for="password">Password</label>
                                 <text-input id="password" type="password">
                                     <button id="show-password-button">Show</button>
                                 </text-input>
                             </div>
                         </div>
+                        <div class="action-buttons">
+                            <button class="primary" id="save-network-configuration">Save Configuration</button>
+                        </div>
                     </section>
-                    <div class="page-action-buttons">
-                        <button class="primary" id="save-network-configuration">Save Configuration</button>
-                    </div>
+
                 </div>
 
             </main>
