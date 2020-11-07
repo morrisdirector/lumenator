@@ -3,14 +3,17 @@
   by Patrick Morris
 */
 #include <ArduinoJson.h>
+#include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
 #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 #include <WebSocketsServer.h>
+#include <WiFiUdp.h>
 #include <Wire.h>
-#include <credentials.h>
+#include <officecredentials.h>
 
 //  D1 Mini Pin Number Reference:
 //  D0  16
@@ -30,8 +33,8 @@ PubSubClient mqttClient(espClient);
 
 /* ------- NETWORK CREDENTIALS ------- */
 /* Fallback configuration if config.json is empty or fails */
-const char *ssid = mySSID;
-const char *password = myPASSWORD;
+const char *fallbackSsid = mySSID;
+const char *fallbackPassword = myPASSWORD;
 /* ----------------------------------- */
 
 const char CONFIG_FILE[] = "/config.json";
@@ -76,23 +79,14 @@ NetworkConfig networkConfig;
 // Web Server port 80
 AsyncWebServer server(80);
 
+// To make Arduino IDE autodetect OTA device
+WiFiServer TelnetServer(8266);
+
 // WebSockets Server port 1337
 WebSocketsServer webSocket = WebSocketsServer(1337);
 char msg_buf[10];
 
-// Replaces placeholder with LED state value
-String processor(const String &var) {
-  Serial.println(var);
-  // if (var == "STATE") {
-  //   if (digitalRead(ledPin)) {
-  //     ledState = "ON";
-  //   } else {
-  //     ledState = "OFF";
-  //   }
-  //   Serial.print(ledState);
-  //   return ledState;
-  // }
-}
+String processor(const String &var) { Serial.println(var); }
 
 void initRoutes() {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -407,21 +401,8 @@ void dsNetworkConfig(const JsonObject &json) {
     // Fallback to embedded ssid and password if null in config
     networkConfig.ssid = networkJson["ssid"].as<String>();
     networkConfig.password = networkJson["password"].as<String>();
-    if (!networkConfig.ssid.length() || !networkConfig.password.length()) {
-      networkConfig.ssid = ssid;
-      networkConfig.password = password;
-      Serial.println("No network credentials found in config.json.");
-      Serial.println("Using fallback for credentials:");
-
-    } else {
-      Serial.println();
-      Serial.println("Network credentials found in config.json:");
-    }
-    Serial.print("SSID: ");
-    Serial.println(networkConfig.ssid);
-
   } else {
-    Serial.println("No network settings found.");
+    Serial.println("No network settings found in config.json.");
   }
 }
 
@@ -450,6 +431,19 @@ void readConfigJson() {
 }
 
 void startWiFi() {
+  Serial.println();
+  if (!networkConfig.ssid.length() || !networkConfig.password.length()) {
+    networkConfig.ssid = fallbackSsid;
+    networkConfig.password = fallbackPassword;
+    Serial.println("No network credentials found in config.json.");
+    Serial.println("Using fallback for credentials:");
+
+  } else {
+    Serial.println("Network credentials found in config.json:");
+  }
+  Serial.print("SSID: ");
+  Serial.println(networkConfig.ssid);
+
   // Connect to Wi-Fi
   Serial.println(" ");
   Serial.println("Connecting to WiFi:");
@@ -526,6 +520,32 @@ void reconnectMqtt() {
   }
 }
 
+void startOTAServer() {
+  TelnetServer.begin();
+  ArduinoOTA.onStart([]() { Serial.println("OTA Start"); });
+  ArduinoOTA.onEnd([]() {
+    Serial.println("OTA End");
+    Serial.println("Rebooting...");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r\n", (progress / (total / 100)));
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR)
+      Serial.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR)
+      Serial.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR)
+      Serial.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR)
+      Serial.println("Receive Failed");
+    else if (error == OTA_END_ERROR)
+      Serial.println("End Failed");
+  });
+  ArduinoOTA.begin();
+}
+
 void setup() {
   // Serial port for debugging purposes
   Serial.begin(115200);
@@ -559,6 +579,8 @@ void setup() {
   if (mqttConfig.mqtt_enabled == true) {
     setupMqtt();
   }
+
+  startOTAServer();
 }
 
 void loop() {
@@ -571,4 +593,6 @@ void loop() {
     }
     mqttClient.loop();
   }
+
+  ArduinoOTA.handle();
 }

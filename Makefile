@@ -1,5 +1,6 @@
 BOARD = esp8266:esp8266:d1
 PORT  = /dev/cu.SLAB_USBtoUART 
+# PORT  = /dev/cu.wchusbserial145430
 FQBN = esp8266:esp8266:d1:xtal=80,vt=flash,exception=disabled,ssl=all,eesz=4M1M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600
 
 ###########################################################
@@ -8,11 +9,17 @@ SKETCH_NAME   = $(shell basename $(CURDIR))
 MONITOR_SPEED = $(shell egrep Serial.begin $(SKETCH_FILE) | perl -pE 's/\D+//g' | head -n1)
 BUILD_DIR     = /tmp/arduino-build-$(SKETCH_NAME)/
 
-default: compile upload web
+default: sketch web
 
-refresh: kill compile upload web
+refresh: kill sketch web
+
+refresh_sketch: kill sketch_only
 
 refresh_web: kill web
+
+sketch_only: sketch monitor
+
+sketch: compile upload
 
 web: parcel spiffs monitor
 
