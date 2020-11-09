@@ -570,7 +570,7 @@ void setup() {
 
   // Start web server
   server.begin();
-  server.serveStatic("/", SPIFFS, "/www/").setCacheControl("max-age=10");
+  // server.serveStatic("/", SPIFFS, "/www/");
 
   // Start WebSocket server and assign callback
   webSocket.begin();
