@@ -30,7 +30,8 @@ class Modal extends CustomElement {
 		this.setState({
 			open: this.getAttribute('open') === 'true',
 			header: this.getAttribute('header'),
-			closeOnDimmerClick: this.getAttribute('closeOnDimmerClick') !== 'false'
+			closeOnDimmerClick: this.getAttribute('closeOnDimmerClick') !== 'false',
+			minHeight: this.getAttribute('minHeight') ? this.getAttribute('minHeight') + 'px' : null
 		} as IModalProps);
 	}
 
@@ -48,7 +49,7 @@ class Modal extends CustomElement {
 		}
 	};
 
-	onStateChanges = (state, previousState) => {
+	onStateChanges = (state, previous) => {
 		this.addClass('noScroll', null, document.body);
 		if (!!state.open) {
 			this.addClass('noScroll', null, document.body);

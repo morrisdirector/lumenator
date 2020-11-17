@@ -24,10 +24,14 @@
 	box-shadow: inset 0.7px 0.7px 0px 1.2px rgba(0, 0, 0, 0.2), 1px 1px 0px .5px rgba(255, 255, 255, .6);
 }
 
+%dimmer-base {
+	background: rgba(0, 0, 0, .85);
+}
+
 %dimmer {
+	@extend %dimmer-base;
 	display: block;
 	position: fixed;
-	background: rgba(0, 0, 0, .75);
 	width: 100vw;
 	height: 100vh;
 	top: 0;

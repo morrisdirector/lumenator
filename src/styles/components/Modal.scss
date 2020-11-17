@@ -3,6 +3,15 @@
 	&.closed {
 		display: none;
 	}
+	&.loading {
+		.modal-wrapper {
+			.modal-col {
+				.modal {
+					min-height: 200px;
+				}
+			}
+		}
+	}
 	.modal-wrapper {
 		display: flex;
 		justify-content: center;
@@ -15,6 +24,8 @@
 			margin: 135px 0 0;
 			flex-grow: 1;
 			.modal {
+				display: flex;
+				flex-direction: column;
 				border-radius: $borderRadius;
 				overflow: hidden;
 				box-shadow: 0px 0px 7px 4px rgba(0, 0, 0, .2);
@@ -23,6 +34,7 @@
 				background: $white;
 
 				.modal-header {
+					position: relative;
 					display: flex;
 					justify-content: space-between;
 					background: lighten($grey, 20%);
@@ -45,15 +57,17 @@
 					}
 				}
 				.modal-body {
+					flex-grow: 1;
+					position: relative;
 					padding: $baseSpacerSmall $baseSpacer;
 					background: $white;
 					width: calc(100% - #{($baseSpacer * 2)});
-
 					p {
 						padding-top: 0;
 					}
 				}
 				.modal-footer {
+					position: relative;
 					width: 100%;
 				}
 			}
