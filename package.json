@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "Add e1.31 streaming support to your ESP8266 based light bulbs",
   "scripts": {
-    "dev": "parcel src/index.html src/style.scss --no-cache",
-    "build": "rm -rf data/www/* && parcel build src/index.html src/style.scss src/lumenator.ts --dist-dir data/www --no-source-maps --no-content-hash"
+    "dev": "parcel src/index.html src/setup.html src/style.scss --no-cache",
+    "build": "rm -rf data/build/* && parcel build src/index.html src/setup.html src/style.scss src/lumenator.ts --dist-dir data/build --no-source-maps --no-content-hash --no-cache && npm run gzip && npm run dump",
+    "minifyConfig": "cd ./src && python -c 'import json, sys;json.dump(json.load(sys.stdin), sys.stdout, separators=(\",\",\":\"))'  < default-config.json > ../data/build/default-config.min.json",
+    "gzip": "cd ./data/build && gzip -kf index.html && gzip -kf setup.html && gzip -kf lumenator.js && gzip -kf style.css",
+    "dump": "cd ./data/build && xxd -i -u index.html.gz >> index.html.h && xxd -i -u setup.html.gz >> setup.html.h && xxd -i -u lumenator.js.gz >> lumenator.js.h && xxd -i -u style.css.gz >> style.css.h"
   },
   "repository": {
     "type": "git",

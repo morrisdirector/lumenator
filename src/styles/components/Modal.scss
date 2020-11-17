@@ -1,0 +1,62 @@
+.lum-modal {
+	@extend %dimmer;
+	&.closed {
+		display: none;
+	}
+	.modal-wrapper {
+		display: flex;
+		justify-content: center;
+		height: 100vh;
+		.modal-col {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+			margin: 135px 0 0;
+			flex-grow: 1;
+			.modal {
+				border-radius: $borderRadius;
+				overflow: hidden;
+				box-shadow: 0px 0px 7px 4px rgba(0, 0, 0, .2);
+				max-width: calc(#{$maxWidth - 80});
+				width: 100%;
+				background: $white;
+
+				.modal-header {
+					display: flex;
+					justify-content: space-between;
+					background: lighten($grey, 20%);
+					width: 100%;
+					h4 {
+						margin: 0;
+						padding: $baseSpacer;
+					}
+					button {
+						background: transparent;
+						color: lighten($text, 30%);
+						font-weight: bold;
+						padding-right: $baseSpacer;
+						box-shadow: none !important;
+						transition: color 100ms linear;
+						&:hover {
+							transition: color 100ms linear;
+							color: $text;
+						}
+					}
+				}
+				.modal-body {
+					padding: $baseSpacerSmall $baseSpacer;
+					background: $white;
+					width: calc(100% - #{($baseSpacer * 2)});
+
+					p {
+						padding-top: 0;
+					}
+				}
+				.modal-footer {
+					width: 100%;
+				}
+			}
+		}
+	}
+}

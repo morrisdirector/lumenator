@@ -1,4 +1,19 @@
-ul.nav-menu-ul {
+%li-tab {
+	@extend %noTapHighlight;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 14px;
+	cursor: pointer;
+	color: #ffffff;
+	height: $navHeight;
+	line-height: $navHeight;
+	margin: 0;
+	padding: 0 $padding;
+}
+
+ul.nav-menu-ul,
+.nav-title-area {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -11,17 +26,7 @@ ul.nav-menu-ul {
 }
 
 li.tab {
-	@extend %noTapHighlight;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 14px;
-	cursor: pointer;
-	color: #ffffff;
-	height: $navHeight;
-	line-height: $navHeight;
-	margin: 0;
-	padding: 0 $padding;
+	@extend %li-tab;
 
 	&:hover {
 		background: lighten($lightDark, 10%);
@@ -29,5 +34,15 @@ li.tab {
 
 	&.active {
 		color: $highlight;
+	}
+}
+
+.nav-title {
+	@extend %li-tab;
+}
+
+#nav-menu {
+	&.thin {
+		min-height: 10px;
 	}
 }

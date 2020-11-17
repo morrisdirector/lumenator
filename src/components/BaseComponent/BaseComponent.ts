@@ -1,5 +1,4 @@
 export class CustomElement extends HTMLElement {
-
 	public state;
 	public onStateChanges;
 
@@ -22,11 +21,32 @@ export class CustomElement extends HTMLElement {
 		const previousState = { ...this.state };
 		Object.entries(newState).forEach(([ key, value ]) => {
 			this.state[key] =
-				this.isObject(this.state[key]) && this.isObject(value) ? { ...this.state[key], ...(value as object) } : value;
+				this.isObject(this.state[key]) && this.isObject(value)
+					? { ...this.state[key], ...value as object }
+					: value;
 		});
 		if (typeof this.onStateChanges === 'function') {
 			this.onStateChanges(this.state, previousState);
 		}
+	}
+
+	private getEl(selector?: string, context: ShadowRoot | HTMLElement = this.shadowRoot): HTMLElement {
+		return selector ? context.querySelector(selector) : context as HTMLElement;
+	}
+
+	addClass(add: string, selector?: string, context: ShadowRoot | HTMLElement = this.shadowRoot) {
+		const el: HTMLElement = this.getEl(selector, context);
+		const classList = el.className.split(' ');
+		if (!classList.find((c) => c === add)) {
+			classList.push(add);
+		}
+		el.className = classList.join(' ');
+	}
+
+	removeClass(remove: string, selector?: string, context: ShadowRoot | HTMLElement = this.shadowRoot) {
+		const el: HTMLElement = this.getEl(selector, context);
+		const classList = el.className.split(' ').filter((c) => c !== remove);
+		el.className = classList.join(' ');
 	}
 
 	/**

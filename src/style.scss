@@ -1,6 +1,7 @@
 @import './styles/colors';
 @import './styles/sizes';
 @import './styles/silent-classes';
+@import './styles/buttons';
 @import './styles/components';
 
 body {
@@ -9,10 +10,21 @@ body {
 	color: $text;
 	font-family: Arial, Helvetica, sans-serif;
 	box-sizing: border-box;
+
+	&.noScroll {
+		overflow-y: hidden;
+		overflow-x: hidden;
+	}
 }
 
 h4 {
 	margin: 0 0 $margin;
+}
+
+p {
+	font-size: $textSizeNormal;
+	color: $lightDark;
+	line-height: $textLineHeightNormal;
 }
 
 header {
@@ -115,16 +127,6 @@ section {
 	}
 }
 
-.page-action-buttons {
-	position: relative;
-	max-width: $maxWidth;
-	margin: 0 auto $margin;
-	padding: 0;
-	display: flex;
-	justify-content: flex-end;
-	gap: $marginSmall;
-}
-
 .chip {
 	&.hidden {
 		display: none;
@@ -190,54 +192,20 @@ hr {
 	.helper-text {
 		display: block;
 		position: relative;
-		color: $lightDark;
+		color: $grey;
 		font-size: 12px;
 		font-style: italic;
 	}
 }
 
-button {
-	margin: 0;
-	padding: 10px 15px 10px 15px;
-	border-radius: 5px;
-	font-size: 14px;
-	font-weight: 200;
-	color: $white;
-	border: 0;
-	cursor: pointer;
-	background-color: $grey;
-	transition: background 100ms linear;
-	@extend %extrude;
-}
-
-button:active {
-	@extend %emboss;
-	background: darken($grey, 10%);
-	transition: background 0ms linear;
-}
-
-button:hover {
-	outline: 0 transparent solid;
-	&:not(:active) {
-		transition: background 100ms linear;
-		background: lighten($grey, 10%);
-	}
-}
-
-button.primary {
-	font-weight: bold;
-	background-color: $highlight;
-	color: $text;
-}
-
-button.primary:hover {
-	&:not(:active) {
-		background: lighten($highlight, 10%);
-	}
-}
-
-button.primary:active {
-	background: darken($highlight, 10%);
+.page-action-buttons {
+	position: relative;
+	max-width: $maxWidth;
+	margin: 0 auto $margin;
+	padding: 0;
+	display: flex;
+	justify-content: flex-end;
+	gap: $marginSmall;
 }
 
 .toggle {
@@ -259,6 +227,7 @@ table {
 		td {
 			// border-top: 1px solid grey;
 			padding: 5px;
+			width: 100%;
 		}
 		th {
 			text-align: left;

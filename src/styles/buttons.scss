@@ -1,0 +1,47 @@
+button {
+	margin: 0;
+	padding: 10px 15px;
+	border-radius: 5px;
+	font-size: 14px;
+	font-weight: 200;
+	color: $white;
+	border: 0;
+	cursor: pointer;
+	background-color: $grey;
+	transition: background 100ms linear;
+	@extend %extrude;
+
+	&.compact {
+		padding: 5px 10px;
+	}
+}
+
+button:active {
+	@extend %emboss;
+	background: darken($grey, 10%);
+	transition: background 0ms linear;
+}
+
+button:hover {
+	outline: 0 transparent solid;
+	&:not(:active) {
+		transition: background 100ms linear;
+		background: lighten($grey, 10%);
+	}
+}
+
+button.primary {
+	font-weight: bold;
+	background-color: $highlight;
+	color: $text;
+}
+
+button.primary:hover {
+	&:not(:active) {
+		background: lighten($highlight, 10%);
+	}
+}
+
+button.primary:active {
+	background: darken($highlight, 10%);
+}

@@ -7,3 +7,4 @@ import './Input/Input';
 import './DropdownMenu/DropdownMenu';
 import './Chip/Chip';
 import './Loader/Loader';
+import './Modal/Modal';

@@ -1,10 +1,5 @@
-.pageLoader {
-	display: block;
-	position: fixed;
-	background: rgba(0, 0, 0, .75);
-	width: 100vw;
-	height: 100vh;
-	z-index: 1000;
+.ui-loader {
+	@extend %dimmer;
 	&.hidden {
 		display: none;
 	}

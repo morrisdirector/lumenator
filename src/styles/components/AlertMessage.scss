@@ -8,6 +8,14 @@
 		display: none;
 	}
 
+	&.margin-top {
+		margin: $margin 0 0;
+	}
+
+	&.margin-bottom {
+		margin: 0 0 $margin;
+	}
+
 	.info,
 	.alert,
 	.danger {
@@ -15,7 +23,6 @@
 		border-radius: $borderRadius;
 		padding: $padding;
 		color: $text;
-		margin: 0 0 $margin;
 		display: flex;
 		justify-content: flex-start;
 		.icon {

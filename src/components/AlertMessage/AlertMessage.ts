@@ -1,4 +1,6 @@
+import { MarginType } from '../../shared/enums/MarginType';
 import { CustomElement } from '../BaseComponent/BaseComponent';
+import { AlertMessageType, IAlertMessageProps } from './IAlertMessageProps';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/ `
@@ -20,11 +22,13 @@ class AlertMessage extends CustomElement {
 		this.setState({
 			text: text,
 			icon: this.getAttribute('icon'),
-			type: this.getAttribute('type') || 'info',
+			type: this.getAttribute('type') || AlertMessageType.INFO,
 			closable: !!this.getAttribute('closable'),
-			visible: !!text
-		});
+			visible: !!text,
+			margin: this.getAttribute('margin') || MarginType.BOTTOM
+		} as IAlertMessageProps);
 
+		this.addClass('margin-' + this.state.margin, '.alert-message');
 		this.onClose = this.onClose.bind(this);
 	}
 
@@ -37,11 +41,11 @@ class AlertMessage extends CustomElement {
 			const newClass = state.closable ? `closable ${state.type}` : state.type;
 			this.shadowRoot.querySelector('#message').className = newClass;
 			this.shadowRoot.querySelector('#message span.text').innerHTML = state.text;
-			this.shadowRoot.querySelector('.alert-message').className = 'alert-message';
+			this.removeClass('hidden', '.alert-message');
 
 			if (state.icon) {
 				switch (state.icon) {
-					case 'info':
+					case AlertMessageType.INFO:
 					default:
 						this.shadowRoot.querySelector('#message span.icon').innerHTML = 'i';
 						break;
@@ -51,7 +55,7 @@ class AlertMessage extends CustomElement {
 				this.shadowRoot.querySelector('#message span.icon').className = 'icon hidden';
 			}
 		} else {
-			this.shadowRoot.querySelector('.alert-message').className = 'alert-message hidden';
+			this.addClass('hidden', '.alert-message');
 		}
 	};
 

@@ -1,11 +1,12 @@
 import { CustomElement } from '../BaseComponent/BaseComponent';
+import { ILoaderProps } from './ILoaderProps';
 
 const loaderTemplate = document.createElement('template');
 loaderTemplate.innerHTML = /*html*/ `
 <style>
 	@import "style.css";
 </style>
-<div id="pageLoader" class="pageLoader hidden">
+<div id="ui-loader" class="ui-loader hidden">
 	<div id="loader" class="loader">Loading...</div>
 </div>
 `;
@@ -14,19 +15,25 @@ class Loader extends CustomElement {
 		super(loaderTemplate);
 		this.setState({
 			id: this.getAttribute('id'),
-			loading: this.getAttribute('loading')
-		});
+			loading: this.getAttribute('loading') === 'true',
+			variant: this.getAttribute('variant') || 'page'
+		} as ILoaderProps);
 		this.updateLoadingClass(!!this.getAttribute('loading'));
 	}
 	updateLoadingClass(loading) {
 		if (loading) {
-			this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader';
+			this.removeClass('hidden', '#ui-loader');
 		} else {
-			this.shadowRoot.querySelector('#pageLoader').className = 'pageLoader hidden';
+			this.addClass('hidden', '#ui-loader');
 		}
 	}
-	onStateChanges = (state) => {
+	onStateChanges = (state, previous) => {
 		this.updateLoadingClass(state.loading);
+		if (!previous.variant || state.variant !== previous.variant) {
+			this.removeClass('page', '#ui-loader');
+			this.removeClass('container', '#ui-loader');
+			this.addClass(state.variant, '#ui-loader');
+		}
 	};
 }
 window.customElements.define('ui-loader', Loader);
