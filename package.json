@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Add e1.31 streaming support to your ESP8266 based light bulbs",
   "scripts": {
+    "start": "parcel src/index.html",
+    "testBuild": "parcel build src/index.html",
     "dev": "parcel src/index.html src/setup.html src/style.scss --no-cache",
     "build": "rm -rf data/build/* && parcel build src/index.html src/setup.html src/style.scss src/lumenator.ts --dist-dir data/build --no-source-maps --no-content-hash --no-cache && npm run gzip && npm run dump",
     "minifyConfig": "cd ./src && python -c 'import json, sys;json.dump(json.load(sys.stdin), sys.stdout, separators=(\",\",\":\"))'  < default-config.json > ../data/build/default-config.min.json",
@@ -21,9 +23,11 @@
   },
   "homepage": "https://github.com/morrisdirector/lumenator#readme",
   "dependencies": {
+    "@babel/preset-typescript": "^7.12.7",
     "@jaames/iro": "^5.2.3",
     "@types/node": "^14.14.6",
     "components": "^0.1.0",
+    "preact": "^10.5.7",
     "settings": "^0.1.1"
   },
   "devDependencies": {

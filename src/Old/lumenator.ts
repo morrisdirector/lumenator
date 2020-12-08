@@ -1,4 +1,4 @@
-import './components/index';
+import '../components/index';
 import { LumenatorApp } from './lumenator-app';
 import { LumenatorSetup } from './lumenator-setup';
 

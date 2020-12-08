@@ -1,4 +1,4 @@
-import { CustomElement } from './components/BaseComponent/BaseComponent';
+import { CustomElement } from '../components/BaseComponent/BaseComponent';
 
 export class LumenatorBase {
 	constructor() {}

@@ -1,9 +1,9 @@
-import './components/index';
-import { CustomElement } from './components/BaseComponent/BaseComponent';
-import { Mode } from './shared/enums/Mode';
-import { OnOff } from './shared/enums/OnOff';
+import '../components/index';
+import { CustomElement } from '../components/BaseComponent/BaseComponent';
+import { Mode } from '../shared/enums/Mode';
+import { OnOff } from '../shared/enums/OnOff';
 import * as iro from '@jaames/iro';
-import { testData } from './shared/MockData';
+import { testData } from '../shared/MockData';
 import { LumenatorBase } from './lumenator-base';
 
 export class LumenatorApp extends LumenatorBase {
