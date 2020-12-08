@@ -1,6 +1,11 @@
+import { IListenerConfig } from '../../shared/interfaces/ListenerConfig';
+import { ListenerType } from '../../shared/types/ListenerType';
+
 export class CustomElement extends HTMLElement {
 	public state;
 	public onStateChanges;
+
+	private _registeredListeners: Array<IListenerConfig> = []; // Array of ids
 
 	constructor(template) {
 		super();
@@ -47,6 +52,23 @@ export class CustomElement extends HTMLElement {
 		const el: HTMLElement = this.getEl(selector, context);
 		const classList = el.className.split(' ').filter((c) => c !== remove);
 		el.className = classList.join(' ');
+	}
+
+	watch(id: string, type: ListenerType, callback: () => void): void {
+		const registered = this._registeredListeners.find((i) => i.id === id);
+		if (!registered) {
+			if (typeof callback === 'function') {
+				this.shadowRoot.getElementById(id).addEventListener(type, callback);
+				this._registeredListeners.push({ id, type, callback });
+			}
+		}
+	}
+
+	cancelWatchers(): void {
+		console.log(this._registeredListeners);
+		this._registeredListeners.forEach((l) => {
+			this.shadowRoot.getElementById(l.id).removeEventListener(l.type, l.callback);
+		});
 	}
 
 	/**

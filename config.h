@@ -1,8 +1,10 @@
 #include <Arduino.h>
 
+enum DeviceType { LRGBWW, LRGBW, LRGB };
+
 struct DeviceConfig {
-  String name;
-  uint8_t type;
+  String name = "Lumenator";
+  DeviceType type;
 };
 
 struct NetworkConfig {
@@ -46,7 +48,7 @@ void deserializeDeviceConfig(const JsonObject &json) {
       deviceConfig.name = deviceJson["name"].as<String>();
 
     if (deviceJson.containsKey("type"))
-      deviceConfig.type = deviceJson["type"].as<uint8_t>();
+      deviceConfig.type = deviceJson["type"].as<DeviceType>();
 #ifdef DEBUG
     Serial.println("[DS]: * Device settings loaded");
 #endif

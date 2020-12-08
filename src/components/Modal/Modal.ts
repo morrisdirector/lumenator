@@ -1,5 +1,6 @@
+import { getUniqueId } from '../../shared/Utils';
 import { CustomElement } from '../BaseComponent/BaseComponent';
-import { IModalProps } from './IModalProps';
+import { IModalActionButton, IModalProps } from './IModalProps';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/ `
@@ -18,7 +19,8 @@ template.innerHTML = /*html*/ `
 					<slot></slot>
 					<ui-loader loading="true" class="modal-loader" variant="container"></ui-loader>
 				</div>
-				<div class="modal-footer hidden"></div>
+				<div id="modal-footer" class="modal-footer hidden">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -36,6 +38,7 @@ class Modal extends CustomElement {
 	}
 
 	private close = (): void => {
+		this.cancelWatchers();
 		this.setState({ open: false });
 	};
 
@@ -49,7 +52,17 @@ class Modal extends CustomElement {
 		}
 	};
 
-	onStateChanges = (state, previous) => {
+	private toggleVisible = (selector: string, visible: boolean): void => {
+		if (!!visible) {
+			this.addClass('visible', selector);
+			this.removeClass('hidden', selector);
+		} else {
+			this.removeClass('visible', selector);
+			this.addClass('hidden', selector);
+		}
+	};
+
+	onStateChanges = (state: IModalProps, previous: IModalProps) => {
 		this.addClass('noScroll', null, document.body);
 		if (!!state.open) {
 			this.addClass('noScroll', null, document.body);
@@ -61,14 +74,30 @@ class Modal extends CustomElement {
 			this.removeClass('open', '#lum-modal');
 		}
 		if (state.header) {
-			this.addClass('visible', '.modal-header');
-			this.removeClass('hidden', '.modal-header');
+			this.toggleVisible('.modal-header', true);
 			const h4 = this.shadowRoot.getElementById('modal-header-text');
 			h4.innerHTML = state.header;
 		} else {
-			this.addClass('hidden', '.modal-header');
-			this.removeClass('visible', '.modal-header');
+			this.toggleVisible('.modal-header', false);
 		}
+		if (state.actionButtons && state.actionButtons.length) {
+			this.toggleVisible('.modal-footer', true);
+			const footer = this.shadowRoot.getElementById('modal-footer');
+			footer.innerHTML = null;
+			state.actionButtons.forEach((button: IModalActionButton) => {
+				const id = getUniqueId();
+				const b = document.createElement('button');
+				b.setAttribute('id', id);
+				b.innerHTML = button.label || '';
+				footer.appendChild(b);
+				this.watch(id, 'click', () => {
+					debugger;
+				});
+			});
+		} else {
+			this.toggleVisible('.modal-header', false);
+		}
+		// console.log(state.loading);
 		if (!!state.loading) {
 			this.addClass('loading', '#lum-modal');
 		} else {
@@ -82,8 +111,9 @@ class Modal extends CustomElement {
 	}
 
 	disconnectedCallback() {
-		this.shadowRoot.getElementById('lum-modal').removeEventListener('click', this.onDimmerClick);
-		this.shadowRoot.getElementById('close').removeEventListener('click', this.close);
+		this.cancelWatchers();
+		// this.shadowRoot.getElementById('lum-modal').removeEventListener('click', this.onDimmerClick);
+		// this.shadowRoot.getElementById('close').removeEventListener('click', this.close);
 	}
 }
 window.customElements.define('lum-modal', Modal);

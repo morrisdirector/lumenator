@@ -37,7 +37,7 @@
 					position: relative;
 					display: flex;
 					justify-content: space-between;
-					background: lighten($grey, 20%);
+					background: $lighterGrey;
 					width: 100%;
 					h4 {
 						margin: 0;
@@ -68,7 +68,10 @@
 				}
 				.modal-footer {
 					position: relative;
-					width: 100%;
+					display: flex;
+					justify-content: flex-end;
+					border-top: 1px solid rgba(0, 0, 0, .1);
+					padding: $baseSpacerSmall $baseSpacer;
 				}
 			}
 		}

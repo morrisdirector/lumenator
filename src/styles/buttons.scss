@@ -3,11 +3,12 @@ button {
 	padding: 10px 15px;
 	border-radius: 5px;
 	font-size: 14px;
-	font-weight: 200;
-	color: $white;
+	// height: 34px;
+	font-weight: bold;
+	color: $text;
 	border: 0;
 	cursor: pointer;
-	background-color: $grey;
+	background-color: $lighterGrey;
 	transition: background 100ms linear;
 	@extend %extrude;
 
@@ -18,7 +19,7 @@ button {
 
 button:active {
 	@extend %emboss;
-	background: darken($grey, 10%);
+	background: darken($grey, 5%);
 	transition: background 0ms linear;
 }
 

@@ -1,5 +1,6 @@
 export interface IModalActionButton {
 	variant?: 'primary' | 'default';
+	label?: string;
 	callback?: () => {};
 }
 

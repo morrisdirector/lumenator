@@ -64,7 +64,6 @@ WiFiClient espClient;
 
 // Enums
 // enum ctrlModeSetting { STANDBY, CTRL_RGB, CTRL_WHITE, CTRL_GPIO };
-// enum deviceType { LRGBWW, LRGBW, LRGB };
 
 // int ctrlMode;
 
@@ -288,7 +287,7 @@ void startAccessPoint() {
   delay(100);
 
   WiFi.softAPConfig(apIP, apIP, apSubnet);
-  WiFi.softAP("Lumenator Setup", "entersetup");
+  WiFi.softAP("Lumenator Setup");
   delay(500); // Without delay I've seen the IP address blank
 
 #ifdef DEBUG

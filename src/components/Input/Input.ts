@@ -31,7 +31,11 @@ class TextInput extends CustomElement {
 	onStateChanges = (state) => {
 		const input: HTMLInputElement = this.shadowRoot.querySelector('#input');
 		if (state.value !== input.value) {
-			input.value = state.value;
+			if (state.value === undefined) {
+				input.value = null;
+			} else {
+				input.value = state.value;
+			}
 		}
 		(this.shadowRoot.querySelector('#input') as HTMLInputElement).type = state.type;
 	};
