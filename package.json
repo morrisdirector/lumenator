@@ -5,7 +5,7 @@
   "scripts": {
     "start": "parcel src/index.html",
     "testBuild": "parcel build src/index.html",
-    "dev": "parcel src/index.html src/setup.html src/style.scss --no-cache",
+    "dev": "parcel src/index.html --no-cache",
     "build": "rm -rf data/build/* && parcel build src/index.html src/setup.html src/style.scss src/lumenator.ts --dist-dir data/build --no-source-maps --no-content-hash --no-cache && npm run gzip && npm run dump",
     "minifyConfig": "cd ./src && python -c 'import json, sys;json.dump(json.load(sys.stdin), sys.stdout, separators=(\",\",\":\"))'  < default-config.json > ../data/build/default-config.min.json",
     "gzip": "cd ./data/build && gzip -kf index.html && gzip -kf setup.html && gzip -kf lumenator.js && gzip -kf style.css",
