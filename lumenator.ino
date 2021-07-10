@@ -74,7 +74,8 @@ WiFiClient espClient;
 // WebSocketsServer webSocket = WebSocketsServer(1337);
 // char msg_buf[10];
 
-void printWiFiStatus() {
+void printWiFiStatus()
+{
 #ifdef DEBUG
   Serial.println(" ");
   Serial.println("----------------------------");
@@ -276,7 +277,8 @@ void printWiFiStatus() {
 //   }
 // }
 
-void startAccessPoint() {
+void startAccessPoint()
+{
 
 #ifdef DEBUG
   Serial.println("Starting access point");
@@ -349,14 +351,16 @@ void startAccessPoint() {
   // Serial.println("over");
 }
 
-void startWiFi() {
+void startWiFi()
+{
 #ifdef DEBUG
   Serial.println();
   Serial.println("Connecting to WiFi:");
 #endif
   WiFi.begin(networkConfig.ssid, networkConfig.pass);
   int i = 0;
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(1000);
 #ifdef DEBUG
     Serial.print(".");
@@ -365,13 +369,16 @@ void startWiFi() {
       break;
     i = ++i;
   }
-  if (WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() == WL_CONNECTED)
+  {
 #ifdef DEBUG
     Serial.print("Status: ");
     Serial.println(WiFi.status());
     printWiFiStatus();
 #endif
-  } else {
+  }
+  else
+  {
 #ifdef DEBUG
     Serial.println("Failed");
 #endif
@@ -425,10 +432,12 @@ void startWiFi() {
 //   ArduinoOTA.begin();
 // }
 
-void readConfigJson(String configuration) {
+void readConfigJson(String configuration)
+{
   DynamicJsonDocument json(EEPROM_SIZE);
   DeserializationError error = deserializeJson(json, configuration);
-  if (error) {
+  if (error)
+  {
 #ifdef DEBUG
     Serial.println();
     Serial.println("----- Cannot Parse Configuration -----");
@@ -441,19 +450,22 @@ void readConfigJson(String configuration) {
   deserializeAll(json);
 }
 
-void loadConfiguration() {
+void loadConfiguration()
+{
 #ifdef DEBUG
   Serial.println();
   Serial.println("Reading device configuration from EEPROM");
 #endif
 
   String configuration;
-  for (int i = 0; i < EEPROM_SIZE; ++i) {
+  for (int i = 0; i < EEPROM_SIZE; ++i)
+  {
     configuration += char(EEPROM.read(i));
   }
 #ifdef DEBUG
   Serial.println();
-  if (configuration[0] != 0) {
+  if (configuration[0] != 0)
+  {
     Serial.println("Configuration Data: ");
     Serial.println(configuration);
   }
@@ -461,12 +473,14 @@ void loadConfiguration() {
   readConfigJson(configuration);
 }
 
-void clearEEPROM() {
+void clearEEPROM()
+{
 #ifdef DEBUG
   Serial.print("Erasing EEPROM contents...");
 #endif
 
-  for (int i = 0; i < EEPROM_SIZE; ++i) {
+  for (int i = 0; i < EEPROM_SIZE; ++i)
+  {
     EEPROM.write(i, 0);
   }
   EEPROM.commit();
@@ -475,7 +489,8 @@ void clearEEPROM() {
 #endif
 }
 
-void setup() {
+void setup()
+{
   analogWriteRange(255);
   analogWriteFreq(880);
 #ifdef DEBUG
@@ -495,7 +510,7 @@ void setup() {
   // delay(1000);
   // String myTest =
   //     "{\"device\":{\"name\":\"My "
-  //     "Device\"},\"network\":{\"ssid\":\"MorrisWifi_Office\",\"pass\":\"w8HEQfr1NF!s\"}}";
+  //     "Device\"},\"network\":{\"ssid\":\"MySSID\",\"pass\":\"xxxxx\"}}";
 
   // // String myTest = "HI there haha";
   // for (int i = 0; i < myTest.length(); ++i) {
@@ -507,9 +522,12 @@ void setup() {
 
   loadConfiguration();
 
-  if (networkConfig.ssid.length() && networkConfig.pass.length()) {
+  if (networkConfig.ssid.length() && networkConfig.pass.length())
+  {
     startWiFi();
-  } else {
+  }
+  else
+  {
   }
 
   // Setup HTTP server routes
@@ -542,7 +560,8 @@ void setup() {
   // Serial.println(String(data));
 }
 
-void loop() {
+void loop()
+{
   // Websockets:
   // webSocket.loop();
   // MQTT:
