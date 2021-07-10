@@ -1,8 +1,8 @@
 BOARD = esp8266:esp8266:d1
-PORT  = /dev/cu.SLAB_USBtoUART 
+PORT  = /dev/cu.usbserial-0147DD01
 # PORT  = /dev/cu.wchusbserial145430
 # PORT  = /dev/cu.wchusbserial1440
-FQBN = esp8266:esp8266:d1:xtal=80,vt=flash,exception=disabled,ssl=all,eesz=4M1M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600
+FQBN = esp8266:esp8266:d1:xtal=80,vt=flash,exception=legacy,ssl=all,eesz=4M2M,ip=lm2f,dbg=Disabled,lvl=None____,wipe=none,baud=921600
 
 ###########################################################
 SKETCH_FILE   = $(shell ls -1 $(CURDIR)/*.ino | head -n1)
