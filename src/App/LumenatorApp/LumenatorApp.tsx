@@ -1,19 +1,41 @@
 import { FunctionalComponent, h } from "preact";
 
-// import { Link } from "preact-router/match";
+import Chip from "../../lib/components/Chip/Chip";
+import { ControlMode } from "../../lib/enums/ControlMode";
+import ManualControl from "./ManualControl/ManualControl";
+import NavMenu from "../../lib/components/NavMenu/NavMenu";
+import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
+import { useState } from "preact/hooks";
 
 const LumenatorApp: FunctionalComponent<any> = () => {
+  const [controlMode, setControlMode] = useState(ControlMode.STANDBY);
+
+  const handleControlModeToggle = (newMode: ControlMode): void => {
+    setControlMode(newMode);
+  };
+
   return (
     <div id="lumenator-web-app">
       <header>
         <div class="header-container">
           <div class="header-items">
             <h2>Lumenator</h2>
-            {/* <ui-chip id="title-chip" text="test"></ui-chip> */}
+            <Chip text="test"></Chip>
             <div class="version">v1.0</div>
           </div>
         </div>
       </header>
+      <NavMenu activeId={1}>
+        <NavMenuTab id={1} title="Control">
+          <ManualControl
+            controlMode={controlMode}
+            onControlModeToggle={handleControlModeToggle}
+          ></ManualControl>
+        </NavMenuTab>
+        <NavMenuTab id={2} title="Device"></NavMenuTab>
+        <NavMenuTab id={3} title="MQTT"></NavMenuTab>
+        <NavMenuTab id={4} title="Network"></NavMenuTab>
+      </NavMenu>
     </div>
   );
 };

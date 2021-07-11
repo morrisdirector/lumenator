@@ -1,0 +1,47 @@
+@import "../../styles/colors.scss";
+@import "../../styles/sizes.scss";
+@import "../../styles/silent-classes.scss";
+
+%li-tab {
+  @extend %noTapHighlight;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  color: #ffffff;
+  height: $navHeight;
+  line-height: $navHeight;
+  margin: 0;
+  padding: 0 $padding;
+}
+
+.lum-Nav {
+  margin: 0;
+  background: $lightDark;
+  min-height: $navHeight;
+  padding: 0 $paddingLarge;
+  .lum-NavMenu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: $padding;
+    flex-wrap: wrap;
+    max-width: $maxWidth;
+    margin: 0 auto;
+    padding: 0;
+    min-height: $navHeight;
+
+    li.tab {
+      @extend %li-tab;
+
+      &:hover {
+        background: lighten($lightDark, 10%);
+      }
+
+      &.active {
+        color: $highlight;
+      }
+    }
+  }
+}
