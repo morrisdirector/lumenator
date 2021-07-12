@@ -1,8 +1,9 @@
 export interface IInputProps {
-  value?: string;
+  value?: string | number;
+  type?: "number" | "string";
   /**
    * Tab ID that is active on load
    */
   activeId?: number;
-  onChange?: (value: string) => void;
+  onChange?: (value: string | number | undefined) => void;
 }

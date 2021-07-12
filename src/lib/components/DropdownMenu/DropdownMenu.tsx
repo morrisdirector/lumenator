@@ -1,6 +1,7 @@
 import { Fragment, FunctionalComponent, h } from "preact";
 
 import { IDropdownMenuProps } from "./IDropdownMenuProps";
+import { strValToNumber } from "../../utils/utils";
 import { useState } from "preact/hooks";
 
 const DropdownMenu: FunctionalComponent<IDropdownMenuProps> = (props) => {
@@ -19,14 +20,8 @@ const DropdownMenu: FunctionalComponent<IDropdownMenuProps> = (props) => {
         }
         onChange={(event) => {
           const strValue = (event.target as HTMLSelectElement)?.value;
-          let val: string | number | undefined = strValue;
-          if (props.type === "number") {
-            if (strValue === "0") {
-              val = 0;
-            } else {
-              val = parseFloat(strValue);
-            }
-          }
+          const val =
+            props.type === "number" ? strValToNumber(strValue) : strValue;
           setSelectedValue(val);
           if (typeof props.onSelect === "function") {
             props.onSelect(val);

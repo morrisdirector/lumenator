@@ -2,6 +2,7 @@ import { Fragment, FunctionalComponent, h } from "preact";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { ControlMode } from "../../../lib/enums/ControlMode";
+import { DeviceType } from "../../../lib/enums/DeviceType";
 import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
 import { IConfigDevice } from "../../../lib/interfaces/IConfigJson";
 import { IDeviceSetupProps } from "./IDeviceSetupProps";
@@ -57,120 +58,168 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
               <option value="0">RGBWW (RGB w/ Cool / Warm White)</option>
               <option value="1">RGBW (RGB w/ White)</option>
               <option value="2">RGB</option>
+              <option value="3">WW (Cool / Warm White)</option>
+              <option value="4">W (White w/o Temp Control)</option>
             </DropdownMenu>
           </div>
-          {/* <div class="form-group no-margin">
-            <label for="map_preset">Device Preset</label>
-            <DropdownMenu>
-              <option value="" disabled selected>
-                Select a device preset
-              </option>
-              <option value="" disabled>
-                ---------------------------
-              </option>
-              <option value="custom">Custom Configuration</option>
-              <option value="" disabled>
-                ---------------------------
-              </option>
-              <option value="wemos">Wemos D1 Mini</option>
-            </DropdownMenu>
-          </div> */}
         </div>
-        {/* <div class="grid-large">
-                        <div class="form-group no-margin">
-                            <label for="name">Device Name</label>
-                            <text-input id="name"></text-input>
-                        </div>
-                        <div class="form-group no-margin">
-                            <label for="map_preset">Device Preset</label>
-                            <dropdown-menu id="map_preset">
-                                <option value="" class="placeholder" disabled selected>Select a device preset
-                                </option>
-                                <option value="" class="placeholder" disabled>---------------------------</option>
-                                <option value="custom">Custom Configuration</option>
-                                <option value="" class="placeholder" disabled>---------------------------</option>
-                                <option value="wemos">Wemos D1 Mini</option>
-                            </dropdown-menu>
-                        </div>
-                    </div> */}
       </section>
       <section>
-        {/* <h4>Configuration</h4>
-                    <div class="grid-large">
-                        <div class="form-group no-margin">
-                            <label for="name">Device Type</label>
-                            <dropdown-menu id="device_type" type="number">
-                                <option value="" class="placeholder" disabled selected>Select a device type</option>
-                                <option value="" class="placeholder" disabled>---------------------------</option>
-                                <option value="0">RGBWW (RGB w/ Cool / Warm White)</option>
-                                <option value="1">RGBW (RGB w/ White)</option>
-                                <option value="2">RGB</option>
-                            </dropdown-menu>
-                        </div>
-                    </div>
-                    <hr>
-                    <h4>GPIO Mapping</h4>
-                    <div class="grid-large">
-                        <div>
-                            <table>
-                                <tr class="header-row">
-                                    <th>Channel</th>
-                                    <th>GPIO</th>
-                                    <th>Test</th>
-                                </tr>
-                                <tr>
-                                    <td>Red</td>
-                                    <td>
-                                        <text-input id="gpio_r" type="number"></text-input>
-                                    </td>
-                                    <td>
-                                        <toggle-switch id="ctrl-r" class="mode-toggle"></toggle-switch>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Green</td>
-                                    <td>
-                                        <text-input id="gpio_g" type="number"></text-input>
-                                    </td>
-                                    <td>
-                                        <toggle-switch id="ctrl-g" class="mode-toggle"></toggle-switch>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Blue</td>
-                                    <td>
-                                        <text-input id="gpio_b" type="number"></text-input>
-                                    </td>
-                                    <td>
-                                        <toggle-switch id="ctrl-b" class="mode-toggle"></toggle-switch>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Cool White</td>
-                                    <td>
-                                        <text-input id="gpio_w" type="number"></text-input>
-                                    </td>
-                                    <td>
-                                        <toggle-switch id="ctrl-w" class="mode-toggle"></toggle-switch>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Warm White</td>
-                                    <td>
-                                        <text-input id="gpio_ww" type="number"></text-input>
-                                    </td>
-                                    <td>
-                                        <toggle-switch id="ctrl-ww" class="mode-toggle"></toggle-switch>
-                                    </td>
-                                </tr>
-                            </table>
-                            <alert-message id="gpio-test-warning" icon="info">
-                            </alert-message>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="primary" id="save-device-configuration">Save Configuration</button>
-                    </div> */}
+        <label>GPIO Mapping</label>
+        <div class="grid-large mt-small">
+          <div>
+            <table>
+              <tr class="header-row">
+                <th>Channel</th>
+                <th>GPIO</th>
+                <th>Test</th>
+              </tr>
+              {(props.config?.device_type === DeviceType.RGB ||
+                props.config?.device_type === DeviceType.RGBW ||
+                props.config?.device_type === DeviceType.RGBWW) && (
+                <Fragment>
+                  <tr>
+                    <td>Red</td>
+                    <td>
+                      <Input
+                        value={props.config?.gpio_r}
+                        type="number"
+                        onChange={(value) => {
+                          if (typeof props.onConfigUpdate === "function") {
+                            props.onConfigUpdate({
+                              ...(props.config as IConfigDevice),
+                              gpio_r: value as number,
+                            });
+                          }
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <ToggleSwitch
+                        on={props.controlMode === ControlMode.GPIO_R}
+                        onClick={() => {
+                          handleControlModeToggle(ControlMode.GPIO_R);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Green</td>
+                    <td>
+                      <Input
+                        value={props.config?.gpio_g}
+                        type="number"
+                        onChange={(value) => {
+                          if (typeof props.onConfigUpdate === "function") {
+                            props.onConfigUpdate({
+                              ...(props.config as IConfigDevice),
+                              gpio_g: value as number,
+                            });
+                          }
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <ToggleSwitch
+                        on={props.controlMode === ControlMode.GPIO_G}
+                        onClick={() => {
+                          handleControlModeToggle(ControlMode.GPIO_G);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Blue</td>
+                    <td>
+                      <Input
+                        value={props.config?.gpio_b}
+                        type="number"
+                        onChange={(value) => {
+                          if (typeof props.onConfigUpdate === "function") {
+                            props.onConfigUpdate({
+                              ...(props.config as IConfigDevice),
+                              gpio_b: value as number,
+                            });
+                          }
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <ToggleSwitch
+                        on={props.controlMode === ControlMode.GPIO_B}
+                        onClick={() => {
+                          handleControlModeToggle(ControlMode.GPIO_B);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                </Fragment>
+              )}
+              {props.config?.device_type !== DeviceType.RGB && (
+                <tr>
+                  <td>White</td>
+                  <td>
+                    <Input
+                      value={props.config?.gpio_w}
+                      type="number"
+                      onChange={(value) => {
+                        if (typeof props.onConfigUpdate === "function") {
+                          props.onConfigUpdate({
+                            ...(props.config as IConfigDevice),
+                            gpio_w: value as number,
+                          });
+                        }
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <ToggleSwitch
+                      on={props.controlMode === ControlMode.GPIO_W}
+                      onClick={() => {
+                        handleControlModeToggle(ControlMode.GPIO_W);
+                      }}
+                    />
+                  </td>
+                </tr>
+              )}
+              {(props.config?.device_type === DeviceType.RGBWW ||
+                props.config?.device_type === DeviceType.WW) && (
+                <tr>
+                  <td>Warm White</td>
+                  <td>
+                    <Input
+                      value={props.config?.gpio_ww}
+                      type="number"
+                      onChange={(value) => {
+                        if (typeof props.onConfigUpdate === "function") {
+                          props.onConfigUpdate({
+                            ...(props.config as IConfigDevice),
+                            gpio_ww: value as number,
+                          });
+                        }
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <ToggleSwitch
+                      on={props.controlMode === ControlMode.GPIO_WW}
+                      onClick={() => {
+                        handleControlModeToggle(ControlMode.GPIO_WW);
+                      }}
+                    />
+                  </td>
+                </tr>
+              )}
+            </table>
+            {/* <alert-message id="gpio-test-warning" icon="info"></alert-message> */}
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="primary" id="save-device-configuration">
+            Save Configuration
+          </button>
+        </div>
       </section>
     </Fragment>
   );

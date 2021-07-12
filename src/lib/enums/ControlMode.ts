@@ -2,5 +2,9 @@ export enum ControlMode {
   STANDBY,
   RGB,
   WHITE,
-  GPIO_TESTING,
+  GPIO_R,
+  GPIO_G,
+  GPIO_B,
+  GPIO_W,
+  GPIO_WW,
 }

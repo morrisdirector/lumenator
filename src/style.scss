@@ -57,6 +57,10 @@ section {
   margin: 0 !important;
 }
 
+.mt-small {
+  margin-top: $marginSmall;
+}
+
 .grid-tiny {
   display: grid;
   grid-column-gap: $marginSmall;
@@ -101,6 +105,11 @@ hr {
     0px -0.5px 0px 0.5px rgba(0, 0, 0, 0.15);
 }
 
+label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -117,10 +126,10 @@ hr {
       margin: 0;
     }
   }
-  label {
-    font-size: 14px;
-    font-weight: bold;
-  }
+  // label {
+  //   font-size: 14px;
+  //   font-weight: bold;
+  // }
   > :not(label) {
     display: block;
     margin: $marginSmall 0 0 0;
@@ -150,29 +159,24 @@ hr {
   gap: $marginSmall;
 }
 
-// .toggle {
-// 	position: relative;
-// 	float: right;
-// }
-
-// table {
-// 	border: 0;
-// 	border-spacing: 0;
-// 	width: 100%;
-// 	margin: 0 0 $margin;
-// 	tr {
-// 		&.header-row {
-// 			background: grey;
-// 			color: white;
-// 		}
-// 		th,
-// 		td {
-// 			// border-top: 1px solid grey;
-// 			padding: 5px;
-// 			width: 100%;
-// 		}
-// 		th {
-// 			text-align: left;
-// 		}
-// 	}
-// }
+table {
+  border: 0;
+  border-spacing: 0;
+  width: 100%;
+  margin: 0 0 $margin;
+  tr {
+    &.header-row {
+      background: grey;
+      color: white;
+    }
+    th,
+    td {
+      // border-top: 1px solid grey;
+      padding: 5px;
+      width: 100%;
+    }
+    th {
+      text-align: left;
+    }
+  }
+}
