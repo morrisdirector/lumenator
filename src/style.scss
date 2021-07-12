@@ -6,6 +6,8 @@
 @import "./lib/components/components.scss";
 
 @import "./App/LumenatorApp/LumenatorApp.scss";
+@import "./App/LumenatorApp/ManualControl/ManualControl.scss";
+@import "./App/LumenatorApp/DeviceSetup/DeviceSetup.scss";
 
 body {
   margin: 0;
@@ -92,32 +94,6 @@ section {
   }
 }
 
-// .chip {
-// 	&.hidden {
-// 		display: none;
-// 	}
-// 	display: flex;
-// 	align-items: center;
-// 	height: $itemHeightSmall;
-// 	padding: $paddingSmall $padding;
-// 	margin: 0 0 $marginSmall $margin;
-// 	background-color: $highlight;
-// 	border-radius: $borderRadius;
-// 	font-size: $textSizeNormal;
-// 	font-weight: bold;
-// 	i {
-// 		margin: 0 6px 0 0;
-// 	}
-// 	&.on {
-// 		background-color: $highlight;
-// 	}
-
-// 	&.off {
-// 		color: $white;
-// 		background-color: $grey;
-// 	}
-// }
-
 hr {
   margin: calc(#{$margin} * 2) 0 $margin;
   border: 0;
@@ -199,22 +175,4 @@ hr {
 // 			text-align: left;
 // 		}
 // 	}
-// }
-
-// .color-picker {
-// 	.IroWheel,
-// 	.IroSlider {
-// 		margin: 0 auto;
-// 	}
-// 	#white-value-picker {
-// 		.IroSlider {
-// 			margin: 12px auto 0;
-// 		}
-// 	}
-// }
-
-// #white-warning,
-// #rgb-warning {
-// 	margin: 10px auto 0;
-// 	max-width: 300px;
 // }

@@ -1,0 +1,41 @@
+@import "../../styles/colors.scss";
+@import "../../styles/sizes.scss";
+@import "../../styles/silent-classes.scss";
+
+.lum-DropdownMenu {
+  position: relative;
+  width: 100%;
+  select {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-style: normal;
+    padding: calc(#{$padding} - 1px) $padding;
+    @extend %white-emboss-box;
+    &.placeholder {
+      color: $grey;
+      font-style: italic;
+    }
+  }
+  .dropdown-indicator {
+    display: block;
+    position: absolute;
+    padding: 0 3px;
+    background: $white;
+    height: 20px;
+    width: 20px;
+    top: 9px;
+    right: 2px;
+    &::after {
+      content: "";
+      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23888b88' viewBox='0 0 1000 1000' xmlns:xlink='http://www.w3.org/1999/xlink'><metadata>IcoFont Icons</metadata><title>simple-down</title><glyph glyph-name='simple-down' horiz-adv-x='1000' /><path d='M200 392.6l300 300 300-300-85.10000000000002-85.10000000000002-214.89999999999998 214.79999999999995-214.89999999999998-214.89999999999998-85.10000000000002 85.20000000000005z' /></svg>")
+        no-repeat;
+      height: 20px;
+      width: 20px;
+      box-sizing: border-box;
+      position: absolute;
+    }
+  }
+}

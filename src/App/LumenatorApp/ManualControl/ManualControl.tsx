@@ -2,6 +2,7 @@ import * as iro from "@jaames/iro";
 
 import { FunctionalComponent, h } from "preact";
 
+import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { IManualControlProps } from "./IManualControlProps";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
@@ -93,11 +94,16 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
             onClick={() => {
               handleControlModeToggle(ControlMode.RGB);
             }}
-          ></ToggleSwitch>
+          />
           <div class="color-picker">
             <div id="rgb-color-picker"></div>
           </div>
-          {/* <alert-message id="rgb-warning" icon="info"></alert-message> */}
+          {props.controlMode === ControlMode.RGB && (
+            <AlertWarning
+              text="While manual RGB mode is enabled, Lumenator will not respond to external control commands."
+              showIcon={true}
+            />
+          )}
         </div>
         <div class="form-group no-margin">
           <label for="modeWhite">White Mode</label>
@@ -106,12 +112,17 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
             onClick={() => {
               handleControlModeToggle(ControlMode.WHITE);
             }}
-          ></ToggleSwitch>
+          />
           <div class="color-picker">
             <div id="white-color-picker"></div>
             <div id="white-value-picker"></div>
           </div>
-          {/* <alert-message id="white-warning" icon="info"></alert-message> */}
+          {props.controlMode === ControlMode.WHITE && (
+            <AlertWarning
+              text="While manual white mode is enabled, Lumenator will not respond to external control commands."
+              showIcon={true}
+            />
+          )}
         </div>
       </div>
     </section>

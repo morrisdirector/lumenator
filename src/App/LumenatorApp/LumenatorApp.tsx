@@ -2,6 +2,7 @@ import { FunctionalComponent, h } from "preact";
 
 import Chip from "../../lib/components/Chip/Chip";
 import { ControlMode } from "../../lib/enums/ControlMode";
+import DeviceSetup from "./DeviceSetup/DeviceSetup";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
@@ -25,14 +26,19 @@ const LumenatorApp: FunctionalComponent<any> = () => {
           </div>
         </div>
       </header>
-      <NavMenu activeId={1}>
+      <NavMenu activeId={2}>
         <NavMenuTab id={1} title="Control">
           <ManualControl
             controlMode={controlMode}
             onControlModeToggle={handleControlModeToggle}
           ></ManualControl>
         </NavMenuTab>
-        <NavMenuTab id={2} title="Device"></NavMenuTab>
+        <NavMenuTab id={2} title="Device">
+          <DeviceSetup
+            controlMode={controlMode}
+            onControlModeToggle={handleControlModeToggle}
+          ></DeviceSetup>
+        </NavMenuTab>
         <NavMenuTab id={3} title="MQTT"></NavMenuTab>
         <NavMenuTab id={4} title="Network"></NavMenuTab>
       </NavMenu>

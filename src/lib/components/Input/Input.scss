@@ -1,0 +1,21 @@
+@import "../../styles/colors.scss";
+@import "../../styles/sizes.scss";
+@import "../../styles/silent-classes.scss";
+
+// .lum-Input {
+// 	button {
+// 		margin: 1px 0 1px $marginSmall;
+// 	}
+// }
+.lum-Input {
+  display: flex;
+  justify-content: flex-start;
+  .lum-Input-input {
+    flex-grow: 1;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: $padding;
+    @extend %white-emboss-box;
+  }
+}
