@@ -1,50 +1,89 @@
-import { FunctionalComponent, h } from "preact";
+import { Component, h } from "preact";
 
 import Chip from "../../lib/components/Chip/Chip";
+import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
+import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
-import { useState } from "preact/hooks";
 
-const LumenatorApp: FunctionalComponent<any> = () => {
-  const [controlMode, setControlMode] = useState(ControlMode.STANDBY);
+interface ILumenatorAppState {
+  controlMode: ControlMode;
+  loading: boolean;
+  originalConfig?: IConfigJson;
+  config?: IConfigJson;
+}
+class LumenatorApp extends Component<null, ILumenatorAppState> {
+  private configService = new ConfigService();
 
-  const handleControlModeToggle = (newMode: ControlMode): void => {
-    setControlMode(newMode);
+  constructor() {
+    super();
+    this.state = { controlMode: ControlMode.STANDBY, loading: true };
+  }
+
+  private init = async (): Promise<any> => {
+    try {
+      const data = await this.configService.loadConfigJson();
+      if (data) {
+        this.setState({ originalConfig: { ...data }, config: { ...data } });
+      }
+    } catch (error) {
+      debugger;
+    }
   };
 
-  return (
-    <div id="lumenator-web-app">
-      <header>
-        <div class="header-container">
-          <div class="header-items">
-            <h2>Lumenator</h2>
-            <Chip text="test"></Chip>
-            <div class="version">v1.0</div>
+  componentDidMount() {
+    this.init();
+  }
+
+  private handleControlModeToggle = (newMode: ControlMode): void => {
+    this.setState({ controlMode: newMode });
+  };
+
+  render() {
+    return (
+      <div id="lumenator-web-app">
+        <header>
+          <div class="header-container">
+            <div class="header-items">
+              <h2>Lumenator</h2>
+              <Chip text="test"></Chip>
+              <div class="version">v1.0</div>
+            </div>
           </div>
-        </div>
-      </header>
-      <NavMenu activeId={2}>
-        <NavMenuTab id={1} title="Control">
-          <ManualControl
-            controlMode={controlMode}
-            onControlModeToggle={handleControlModeToggle}
-          ></ManualControl>
-        </NavMenuTab>
-        <NavMenuTab id={2} title="Device">
-          <DeviceSetup
-            controlMode={controlMode}
-            onControlModeToggle={handleControlModeToggle}
-          ></DeviceSetup>
-        </NavMenuTab>
-        <NavMenuTab id={3} title="MQTT"></NavMenuTab>
-        <NavMenuTab id={4} title="Network"></NavMenuTab>
-      </NavMenu>
-    </div>
-  );
-};
+        </header>
+        <NavMenu activeId={2}>
+          <NavMenuTab id={1} title="Control">
+            <ManualControl
+              controlMode={this.state.controlMode}
+              onControlModeToggle={this.handleControlModeToggle}
+            ></ManualControl>
+          </NavMenuTab>
+          <NavMenuTab id={2} title="Device">
+            <DeviceSetup
+              config={this.state.config?.device}
+              onConfigUpdate={(deviceConfig) => {
+                this.setState({
+                  config: {
+                    ...(this.state.config as IConfigJson),
+                    device: deviceConfig,
+                  },
+                });
+              }}
+              controlMode={this.state.controlMode}
+              onControlModeToggle={this.handleControlModeToggle}
+            ></DeviceSetup>
+          </NavMenuTab>
+          <NavMenuTab id={3} title="MQTT"></NavMenuTab>
+          <NavMenuTab id={4} title="Network"></NavMenuTab>
+        </NavMenu>
+        {JSON.stringify(this.state.config)}
+      </div>
+    );
+  }
+}
 
 export default LumenatorApp;
 

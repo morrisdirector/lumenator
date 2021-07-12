@@ -3,6 +3,7 @@ import { Fragment, FunctionalComponent, h } from "preact";
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
+import { IConfigDevice } from "../../../lib/interfaces/IConfigJson";
 import { IDeviceSetupProps } from "./IDeviceSetupProps";
 import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
@@ -26,9 +27,39 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
         <div class="grid-large">
           <div class="form-group no-margin">
             <label for="name">Device Name</label>
-            <Input />
+            <Input
+              value={props.config?.name}
+              onChange={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate({
+                    ...(props.config as IConfigDevice),
+                    name: value as string,
+                  });
+                }
+              }}
+            />
           </div>
           <div class="form-group no-margin">
+            <label for="name">Device Type</label>
+            <DropdownMenu
+              type="number"
+              placeholder="Select a device type"
+              value={props.config?.device_type}
+              onSelect={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate({
+                    ...(props.config as IConfigDevice),
+                    device_type: value as number,
+                  });
+                }
+              }}
+            >
+              <option value="0">RGBWW (RGB w/ Cool / Warm White)</option>
+              <option value="1">RGBW (RGB w/ White)</option>
+              <option value="2">RGB</option>
+            </DropdownMenu>
+          </div>
+          {/* <div class="form-group no-margin">
             <label for="map_preset">Device Preset</label>
             <DropdownMenu>
               <option value="" disabled selected>
@@ -43,15 +74,7 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
               </option>
               <option value="wemos">Wemos D1 Mini</option>
             </DropdownMenu>
-            {/* <dropdown-menu id="map_preset">
-                                <option value="" class="placeholder" disabled selected>Select a device preset
-                                </option>
-                                <option value="" class="placeholder" disabled>---------------------------</option>
-                                <option value="custom">Custom Configuration</option>
-                                <option value="" class="placeholder" disabled>---------------------------</option>
-                                <option value="wemos">Wemos D1 Mini</option>
-                            </dropdown-menu> */}
-          </div>
+          </div> */}
         </div>
         {/* <div class="grid-large">
                         <div class="form-group no-margin">

@@ -1,4 +1,5 @@
 export class DataService {
+  protected DEVELOPMENT = process.env.NODE_ENV === "development";
   constructor() {}
 
   protected jsonGET(path: string): Promise<any> {

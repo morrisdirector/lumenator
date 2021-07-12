@@ -1,6 +1,6 @@
 export interface IDropdownMenuProps {
-  /**
-   * Tab ID that is active on load
-   */
-  activeId?: number;
+  type?: "number" | "string";
+  value?: string | number;
+  placeholder?: string;
+  onSelect?: (value: string | number | undefined) => void;
 }
