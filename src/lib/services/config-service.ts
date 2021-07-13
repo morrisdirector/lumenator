@@ -9,17 +9,19 @@ export class ConfigService extends DataService {
 
   public loadConfigJson = (): Promise<IConfigJson> => {
     return new Promise((resolve, reject) => {
-      // if (this.DEVELOPMENT) {
-      resolve(testData());
-      // }
+      if (this.DEVELOPMENT) {
+        resolve(testData());
+      }
 
-      // this.jsonGET("config")
-      //   .then(function (data) {
-      //     resolve(data);
-      //   })
-      //   .catch(function (e) {
-      //     reject(e);
-      //   });
+      this.jsonGET("config")
+        .then(function (data) {
+          debugger;
+          resolve(data);
+        })
+        .catch(function (e) {
+          debugger;
+          reject(e);
+        });
 
       // fetch("config")
       //   .then(function (response) {

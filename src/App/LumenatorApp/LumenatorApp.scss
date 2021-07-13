@@ -19,7 +19,8 @@ header {
         padding: $paddingLarge 0 $padding 0;
       }
       .version {
-        font-size: $textSizeNormal;
+        color: $grey;
+        font-size: $textSizeSmall;
         margin: 0 0 calc(#{$paddingLarge} - #{$paddingSmall}) auto;
       }
     }

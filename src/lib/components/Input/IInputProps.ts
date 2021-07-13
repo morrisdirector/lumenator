@@ -1,5 +1,5 @@
 export interface IInputProps {
-  value?: string | number;
+  value?: string | number | undefined;
   type?: "number" | "string";
   /**
    * Tab ID that is active on load

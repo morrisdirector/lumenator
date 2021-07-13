@@ -11,7 +11,7 @@ const Input: FunctionalComponent<IInputProps> = (props) => {
         class="lum-Input-input"
         value={props.value}
         onChange={(event) => {
-          const strValue = (event.target as HTMLSelectElement)?.value;
+          const strValue = (event.target as HTMLSelectElement).value;
           const val =
             props.type === "number" ? strValToNumber(strValue) : strValue;
           if (typeof props.onChange === "function") {

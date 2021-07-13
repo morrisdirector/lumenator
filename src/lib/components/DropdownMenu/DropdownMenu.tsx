@@ -19,7 +19,7 @@ const DropdownMenu: FunctionalComponent<IDropdownMenuProps> = (props) => {
             : ""
         }
         onChange={(event) => {
-          const strValue = (event.target as HTMLSelectElement)?.value;
+          const strValue = (event.target as HTMLSelectElement).value;
           const val =
             props.type === "number" ? strValToNumber(strValue) : strValue;
           setSelectedValue(val);

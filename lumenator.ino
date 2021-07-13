@@ -76,7 +76,7 @@ WiFiClient espClient;
 
 void printWiFiStatus()
 {
-#ifdef DEBUG
+
   Serial.println(" ");
   Serial.println("----------------------------");
   Serial.println("Connected to wifi");
@@ -95,7 +95,6 @@ void printWiFiStatus()
   Serial.print("Networks: ");
   Serial.println(WiFi.scanNetworks());
   Serial.println("----------------------------");
-#endif
 }
 
 // void resetGpios() {
@@ -280,9 +279,7 @@ void printWiFiStatus()
 void startAccessPoint()
 {
 
-#ifdef DEBUG
   Serial.println("Starting access point");
-#endif
 
   apMode = true;
   WiFi.disconnect();
@@ -292,10 +289,8 @@ void startAccessPoint()
   WiFi.softAP("Lumenator Setup");
   delay(500); // Without delay I've seen the IP address blank
 
-#ifdef DEBUG
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
-#endif
 
   /* Setup the DNS server redirecting all the domains to the apIP */
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
@@ -353,35 +348,34 @@ void startAccessPoint()
 
 void startWiFi()
 {
-#ifdef DEBUG
+
   Serial.println();
   Serial.println("Connecting to WiFi:");
-#endif
+
   WiFi.begin(networkConfig.ssid, networkConfig.pass);
   int i = 0;
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(1000);
-#ifdef DEBUG
+
     Serial.print(".");
-#endif
+
     if (i >= 30)
       break;
     i = ++i;
   }
   if (WiFi.status() == WL_CONNECTED)
   {
-#ifdef DEBUG
+
     Serial.print("Status: ");
     Serial.println(WiFi.status());
     printWiFiStatus();
-#endif
   }
   else
   {
-#ifdef DEBUG
+
     Serial.println("Failed");
-#endif
+
     startAccessPoint();
   }
 }
@@ -438,11 +432,11 @@ void readConfigJson(String configuration)
   DeserializationError error = deserializeJson(json, configuration);
   if (error)
   {
-#ifdef DEBUG
+
     Serial.println();
     Serial.println("----- Cannot Parse Configuration -----");
     Serial.println();
-#endif
+
     if (configuration[0] != 0)
       clearEEPROM();
     return;
@@ -452,65 +446,67 @@ void readConfigJson(String configuration)
 
 void loadConfiguration()
 {
-#ifdef DEBUG
+
   Serial.println();
   Serial.println("Reading device configuration from EEPROM");
-#endif
 
   String configuration;
   for (int i = 0; i < EEPROM_SIZE; ++i)
   {
     configuration += char(EEPROM.read(i));
   }
-#ifdef DEBUG
+
   Serial.println();
   if (configuration[0] != 0)
   {
     Serial.println("Configuration Data: ");
     Serial.println(configuration);
   }
-#endif
+
   readConfigJson(configuration);
 }
 
 void clearEEPROM()
 {
-#ifdef DEBUG
+
   Serial.print("Erasing EEPROM contents...");
-#endif
 
   for (int i = 0; i < EEPROM_SIZE; ++i)
   {
     EEPROM.write(i, 0);
   }
   EEPROM.commit();
-#ifdef DEBUG
+
   Serial.println("Done");
-#endif
 }
 
 void setup()
 {
   analogWriteRange(255);
   analogWriteFreq(880);
-#ifdef DEBUG
+
   // Serial port for debugging purposes
   Serial.begin(115200);
   Serial.println();
   Serial.println("Starting Lumenator...");
   Serial.println();
   Serial.println("Disconnecting previously connected WiFi");
-#endif
+
   WiFi.disconnect();
   WiFi.softAPdisconnect(true);
   EEPROM.begin(EEPROM_SIZE); // Initialasing EEPROM
   delay(10);
 
   // clearEEPROM();
-  // delay(1000);
-  // String myTest =
-  //     "{\"device\":{\"name\":\"My "
-  //     "Device\"},\"network\":{\"ssid\":\"MySSID\",\"pass\":\"xxxxx\"}}";
+  delay(1000);
+  String myTest =
+      "{\"device\":{\"name\":\"My "
+      "Device\"},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"movies956chief9903\"}}";
+
+  Serial.println("Configuration Data: ");
+  Serial.println(myTest);
+
+  readConfigJson(myTest);
 
   // // String myTest = "HI there haha";
   // for (int i = 0; i < myTest.length(); ++i) {
@@ -520,7 +516,7 @@ void setup()
 
   // Serial.println();
 
-  loadConfiguration();
+  // loadConfiguration();
 
   if (networkConfig.ssid.length() && networkConfig.pass.length())
   {

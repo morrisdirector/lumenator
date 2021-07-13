@@ -4,7 +4,7 @@ import { IConfigJson } from "../interfaces/IConfigJson";
 export const testData = (): IConfigJson => {
   return {
     device: {
-      name: "My Lumenator",
+      name: "My Smart Bulb",
       device_type: DeviceType.RGBWW,
       gpio_w: 15,
       gpio_ww: 13,

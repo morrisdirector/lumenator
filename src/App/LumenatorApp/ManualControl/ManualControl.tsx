@@ -1,5 +1,9 @@
 import * as iro from "@jaames/iro";
 
+import {
+  AlertWarningIcon,
+  AlertWarningType,
+} from "../../../lib/components/AlertWarning/IAlertWarningProps";
 import { FunctionalComponent, h } from "preact";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
@@ -100,8 +104,8 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
           </div>
           {props.controlMode === ControlMode.RGB && (
             <AlertWarning
+              icon={AlertWarningIcon.INFO}
               text="While manual RGB mode is enabled, Lumenator will not respond to external control commands."
-              showIcon={true}
             />
           )}
         </div>
@@ -119,8 +123,8 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
           </div>
           {props.controlMode === ControlMode.WHITE && (
             <AlertWarning
+              icon={AlertWarningIcon.INFO}
               text="While manual white mode is enabled, Lumenator will not respond to external control commands."
-              showIcon={true}
             />
           )}
         </div>

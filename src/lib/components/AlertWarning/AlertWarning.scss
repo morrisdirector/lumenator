@@ -20,28 +20,69 @@
     margin: 0 0 $margin;
   }
 
+  &.icon {
+    .info,
+    .alert,
+    .danger,
+    .basic,
+    .basic-borderless {
+      .text {
+        margin: 0 14px 0 0;
+      }
+    }
+  }
+
   .info,
   .alert,
-  .danger {
+  .danger,
+  .basic,
+  .basic-borderless {
     position: relative;
     border-radius: $borderRadius;
     padding: $padding;
     color: $text;
     display: flex;
     justify-content: flex-start;
-    .icon {
+    span.icon {
       font-size: 14px;
+      width: 16px;
+      height: 16px;
       min-width: 16px;
-      max-height: 16px;
+      min-height: 16px;
       display: inline-block;
+      position: relative;
       text-align: center;
-      border: 1px solid $text;
-      border-radius: 9px;
       padding: 0px;
       margin: 0 8px 0 0;
+      border-radius: 0;
+      overflow: visible;
+      span {
+        width: 20px;
+        height: 20px;
+        display: block;
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        &::after {
+          content: "";
+          height: 20px;
+          width: 20px;
+          left: 0;
+          box-sizing: border-box;
+          position: absolute;
+        }
+      }
+      &.info span::after {
+        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' style='width:20px;height: 20px;px' viewBox='0 0 25 25' fill='%23727272'><path d='M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z' /></svg>")
+          no-repeat;
+      }
+      &.alert span::after {
+        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' style='width:20px;height: 20px;px' viewBox='0 0 25 25' fill='%23727272'><path d='M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z' /></svg>")
+          no-repeat;
+      }
     }
     .text {
-      margin: 0 14px 0 0;
+      margin: 0 14px;
     }
     button {
       font-size: 14px;
@@ -66,35 +107,42 @@
       }
     }
   }
-  .info {
+  div.info {
     color: darken($info, 40%);
     background: lighten($info, 10%);
-    .icon {
-      border: 1px solid darken($info, 40%);
-    }
     &,
     button {
       color: darken($info, 40%);
     }
   }
-  .alert {
+  div.alert {
     background: lighten($alert, 10%);
-    .icon {
-      border: 1px solid darken($alert, 40%);
-    }
     &,
     button {
       color: darken($alert, 40%);
     }
   }
-  .danger {
+  div.danger {
     background: lighten($highlight, 10%);
-    .icon {
-      border: 1px solid darken($highlight, 40%);
-    }
     &,
     button {
       color: darken($highlight, 40%);
+    }
+  }
+  div.basic {
+    font-weight: 600;
+    background: lighten($grey, 20%);
+    &,
+    button {
+      color: darken($grey, 20%);
+    }
+  }
+  div.basic-borderless {
+    font-weight: 600;
+    background: transparent;
+    &,
+    button {
+      color: darken($grey, 20%);
     }
   }
 }

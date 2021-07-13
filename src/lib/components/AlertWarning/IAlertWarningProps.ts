@@ -1,15 +1,22 @@
 import { MarginType } from "../../enums/MarginType";
 
-export enum AlertWarning {
+export enum AlertWarningType {
   INFO = "info",
   ALERT = "alert",
   DANGER = "danger",
+  BASIC = "basic",
+  BASIC_BORDERLESS = "basic-borderless",
+}
+
+export enum AlertWarningIcon {
+  ALERT = "alert",
+  INFO = "info",
 }
 
 export interface IAlertWarningProps {
   text?: string;
-  showIcon?: boolean;
-  type?: AlertWarning;
+  icon?: AlertWarningIcon;
+  type?: AlertWarningType;
   closable?: boolean;
   margin?: MarginType;
 }

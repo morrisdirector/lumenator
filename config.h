@@ -1,23 +1,34 @@
 #include <Arduino.h>
 
-enum DeviceType { LRGBWW, LRGBW, LRGB };
+enum DeviceType
+{
+  LRGBWW,
+  LRGBW,
+  LRGB,
+  LWW,
+  LW
+};
 
-struct DeviceConfig {
+struct DeviceConfig
+{
   String name = "Lumenator";
   DeviceType type;
 };
 
-struct NetworkConfig {
+struct NetworkConfig
+{
   String ssid;
   String pass;
 };
 
-struct AccessPointConfig {
+struct AccessPointConfig
+{
   String ssid = "Lumenator";
   String pass = "setup";
 };
 
-struct GpioConfig {
+struct GpioConfig
+{
   uint8_t r;
   uint8_t g;
   uint8_t b;
@@ -25,7 +36,8 @@ struct GpioConfig {
   uint8_t ww;
 };
 
-struct MqttConfig {
+struct MqttConfig
+{
   bool enabled;
   uint8_t ip[4];
   uint16_t port;
@@ -40,8 +52,14 @@ AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
-void deserializeDeviceConfig(const JsonObject &json) {
-  if (json.containsKey("device")) {
+const int configDeviceCapacity = JSON_OBJECT_SIZE(2);
+const int configNetworkCapacity = JSON_OBJECT_SIZE(2);
+const int configJsonTotalCapacity = configDeviceCapacity + configNetworkCapacity;
+
+void deserializeDeviceConfig(const JsonObject &json)
+{
+  if (json.containsKey("device"))
+  {
     JsonObject deviceJson = json["device"];
 
     if (deviceJson.containsKey("name"))
@@ -49,18 +67,20 @@ void deserializeDeviceConfig(const JsonObject &json) {
 
     if (deviceJson.containsKey("type"))
       deviceConfig.type = deviceJson["type"].as<DeviceType>();
-#ifdef DEBUG
+
     Serial.println("[DS]: * Device settings loaded");
-#endif
-  } else {
-#ifdef DEBUG
+  }
+  else
+  {
+
     Serial.println("[DS]:   No device settings found");
-#endif
   }
 }
 
-void deserializeGpioConfig(const JsonObject &json) {
-  if (json.containsKey("gpio")) {
+void deserializeGpioConfig(const JsonObject &json)
+{
+  if (json.containsKey("gpio"))
+  {
     JsonObject gpioJson = json["gpio"];
 
     if (gpioJson.containsKey("r"))
@@ -77,25 +97,29 @@ void deserializeGpioConfig(const JsonObject &json) {
 
     if (gpioJson.containsKey("ww"))
       gpioConfig.ww = gpioJson["ww"].as<uint8_t>();
-#ifdef DEBUG
+
     Serial.println("[DS]: * GPIO settings loaded");
-#endif
-  } else {
-#ifdef DEBUG
+  }
+  else
+  {
+
     Serial.println("[DS]:   No GPIO settings found");
-#endif
   }
 }
 
-void deserializeMqttConfig(const JsonObject &json) {
-  if (json.containsKey("mqtt")) {
+void deserializeMqttConfig(const JsonObject &json)
+{
+  if (json.containsKey("mqtt"))
+  {
     JsonObject mqttJson = json["mqtt"];
 
     if (mqttJson.containsKey("enabled"))
       mqttConfig.enabled = mqttJson["enabled"].as<bool>();
 
-    if (mqttJson.containsKey("ip")) {
-      for (int i = 0; i < 4; ++i) {
+    if (mqttJson.containsKey("ip"))
+    {
+      for (int i = 0; i < 4; ++i)
+      {
         mqttConfig.ip[i] = mqttJson["ip"][i];
       }
     }
@@ -111,18 +135,20 @@ void deserializeMqttConfig(const JsonObject &json) {
 
     if (mqttJson.containsKey("pass"))
       mqttConfig.pass = mqttJson["pass"].as<String>();
-#ifdef DEBUG
+
     Serial.println("[DS]: * MQTT settings loaded");
-#endif
-  } else {
-#ifdef DEBUG
+  }
+  else
+  {
+
     Serial.println("[DS]:   No MQTT settings found");
-#endif
   }
 }
 
-void deserializeNetworkConfig(const JsonObject &json) {
-  if (json.containsKey("network")) {
+void deserializeNetworkConfig(const JsonObject &json)
+{
+  if (json.containsKey("network"))
+  {
     JsonObject networkJson = json["network"];
 
     if (networkJson.containsKey("ssid"))
@@ -130,18 +156,20 @@ void deserializeNetworkConfig(const JsonObject &json) {
 
     if (networkJson.containsKey("pass"))
       networkConfig.pass = networkJson["pass"].as<String>();
-#ifdef DEBUG
+
     Serial.println("[DS]: * Network settings loaded");
-#endif
-  } else {
-#ifdef DEBUG
+  }
+  else
+  {
+
     Serial.println("[DS]:   No Network settings found");
-#endif
   }
 }
 
-void deserializeAccessPointConfig(const JsonObject &json) {
-  if (json.containsKey("accessPoint")) {
+void deserializeAccessPointConfig(const JsonObject &json)
+{
+  if (json.containsKey("accessPoint"))
+  {
     JsonObject accessPointJson = json["network"];
 
     if (accessPointJson.containsKey("ssid"))
@@ -149,21 +177,22 @@ void deserializeAccessPointConfig(const JsonObject &json) {
 
     if (accessPointJson.containsKey("pass"))
       accessPointConfig.pass = accessPointJson["pass"].as<String>();
-#ifdef DEBUG
+
     Serial.println("[DS]: * Access Point settings loaded");
-#endif
-  } else {
-#ifdef DEBUG
+  }
+  else
+  {
+
     Serial.println("[DS]:   No Access Point settings found");
-#endif
   }
 }
 
-void deserializeAll(DynamicJsonDocument json) {
+void deserializeAll(DynamicJsonDocument json)
+{
   // Compile with serial printouts
-#ifdef DEBUG
+
   Serial.println();
-#endif
+
   deserializeDeviceConfig(json.as<JsonObject>());
   deserializeNetworkConfig(json.as<JsonObject>());
   deserializeAccessPointConfig(json.as<JsonObject>());
@@ -171,7 +200,8 @@ void deserializeAll(DynamicJsonDocument json) {
   deserializeMqttConfig(json.as<JsonObject>());
 }
 
-bool saveConfiguration(String dto) {
+bool saveConfiguration(String dto)
+{
   // Serial.println();
   // Serial.println("Configuration Update DTO: ");
   // Serial.println(dto);

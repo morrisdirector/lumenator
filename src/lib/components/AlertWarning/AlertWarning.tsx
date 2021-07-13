@@ -8,9 +8,17 @@ const AlertWarning: FunctionalComponent<IAlertWarningProps> = (props) => {
   return (
     <Fragment>
       {!closed && (
-        <div class="lum-AlertWarning">
-          <div id="message" class="info">
-            {props.showIcon && <span class="icon">i</span>}
+        <div
+          class={`lum-AlertWarning${
+            props.icon && props.icon.length ? " icon" : ""
+          }`}
+        >
+          <div id="message" class={props.type ? props.type : "info"}>
+            {props.icon && props.icon.length && (
+              <span class={`icon ${props.icon}`}>
+                <span></span>
+              </span>
+            )}
             <span class="text">{props.text}</span>
             {props.closable && (
               <button

@@ -1,5 +1,10 @@
+import {
+  AlertWarningIcon,
+  AlertWarningType,
+} from "../../lib/components/AlertWarning/IAlertWarningProps";
 import { Component, h } from "preact";
 
+import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import Chip from "../../lib/components/Chip/Chip";
 import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
@@ -42,6 +47,12 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
     this.setState({ controlMode: newMode });
   };
 
+  private hasUnsavedChanges(): boolean {
+    const original = JSON.stringify(this.state.originalConfig);
+    const current = JSON.stringify(this.state.config);
+    return original !== current;
+  }
+
   render() {
     return (
       <div id="lumenator-web-app">
@@ -49,7 +60,9 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           <div class="header-container">
             <div class="header-items">
               <h2>Lumenator</h2>
-              <Chip text="test"></Chip>
+              {this.state.config && this.state.config.device.name && (
+                <Chip text={this.state.config.device.name}></Chip>
+              )}
               <div class="version">v1.0</div>
             </div>
           </div>
@@ -63,7 +76,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           </NavMenuTab>
           <NavMenuTab id={2} title="Device">
             <DeviceSetup
-              config={this.state.config?.device}
+              config={this.state.config && this.state.config.device}
               onConfigUpdate={(deviceConfig) => {
                 this.setState({
                   config: {
@@ -79,6 +92,29 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           <NavMenuTab id={3} title="MQTT"></NavMenuTab>
           <NavMenuTab id={4} title="Network"></NavMenuTab>
         </NavMenu>
+        {this.hasUnsavedChanges() && (
+          <section class="action-section">
+            <div>
+              <AlertWarning
+                icon={AlertWarningIcon.ALERT}
+                type={AlertWarningType.BASIC_BORDERLESS}
+                text="Unsaved Changes"
+              />
+            </div>
+            <div>
+              <button
+                onClick={() => {
+                  this.setState({
+                    config: { ...this.state.originalConfig } as IConfigJson,
+                  });
+                }}
+              >
+                Reset
+              </button>
+              <button class="primary">Save Configuration</button>
+            </div>
+          </section>
+        )}
         {JSON.stringify(this.state.config)}
       </div>
     );
