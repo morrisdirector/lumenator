@@ -24,7 +24,7 @@ export interface IConfigMQTT {
 
 export interface IConfigNetwork {
   ssid: string;
-  password: string;
+  pass: string;
 }
 
 export interface IConfigJson {

@@ -13,6 +13,7 @@ import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
+import NetworkSetup from "./NetworkSetup/NetworkSetup";
 
 interface ILumenatorAppState {
   controlMode: ControlMode;
@@ -67,7 +68,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
             </div>
           </div>
         </header>
-        <NavMenu activeId={2}>
+        <NavMenu activeId={3}>
           <NavMenuTab id={1} title="Control">
             <ManualControl
               controlMode={this.state.controlMode}
@@ -91,7 +92,19 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               onControlModeToggle={this.handleControlModeToggle}
             ></DeviceSetup>
           </NavMenuTab>
-          <NavMenuTab id={3} title="Network"></NavMenuTab>
+          <NavMenuTab id={3} title="Network">
+            <NetworkSetup
+              config={this.state.config && this.state.config.network}
+              onConfigUpdate={(networkConfig) => {
+                this.setState({
+                  config: {
+                    ...(this.state.config as IConfigJson),
+                    network: networkConfig,
+                  },
+                });
+              }}
+            ></NetworkSetup>
+          </NavMenuTab>
           {/* <NavMenuTab id={4} title="MQTT"></NavMenuTab> */}
         </NavMenu>
         {this.hasUnsavedChanges() && (

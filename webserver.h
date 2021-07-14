@@ -110,6 +110,9 @@ void initRoutes()
               doc["gpio"]["w"] = gpioConfig.w;
               doc["gpio"]["ww"] = gpioConfig.ww;
 
+              doc["network"]["ssid"] = networkConfig.ssid;
+              doc["network"]["pass"] = networkConfig.pass;
+
               serializeJson(doc, response);
               request->send(200, "application/json", response);
             });

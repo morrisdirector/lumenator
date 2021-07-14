@@ -55,7 +55,7 @@ GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
 const int configJsonTotalCapacity =
-    JSON_OBJECT_SIZE(3)    // Total sections at parent level
+    JSON_OBJECT_SIZE(10)   // Total sections at parent level plus buffer
     + JSON_OBJECT_SIZE(2)  // Total device props
     + JSON_OBJECT_SIZE(5)  // Total gpio props
     + JSON_OBJECT_SIZE(2); // Total network props

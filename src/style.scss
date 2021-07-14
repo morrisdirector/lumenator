@@ -61,6 +61,19 @@ section {
   margin-top: $marginSmall;
 }
 
+.ml-small {
+  margin-left: $marginSmall;
+}
+
+.flex-stretch {
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.flex-grow {
+  flex-grow: 2 !important;
+}
+
 .grid-tiny {
   display: grid;
   grid-column-gap: $marginSmall;
@@ -126,10 +139,11 @@ label {
       margin: 0;
     }
   }
-  // label {
-  //   font-size: 14px;
-  //   font-weight: bold;
-  // }
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+  }
   > :not(label) {
     display: block;
     margin: $marginSmall 0 0 0;

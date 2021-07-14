@@ -103,8 +103,7 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
                       <td>
                         <Input
                           value={
-                            (props.gpioConfig && props.gpioConfig.r) ||
-                            undefined
+                            props.gpioConfig ? props.gpioConfig.r : undefined
                           }
                           type="number"
                           onChange={(value) => {

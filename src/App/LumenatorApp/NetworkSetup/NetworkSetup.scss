@@ -1,0 +1,17 @@
+.color-picker {
+  .IroWheel,
+  .IroSlider {
+    margin: 0 auto;
+  }
+  #white-value-picker {
+    .IroSlider {
+      margin: 12px auto 0;
+    }
+  }
+}
+
+#white-warning,
+#rgb-warning {
+  margin: 10px auto 0;
+  max-width: 300px;
+}
