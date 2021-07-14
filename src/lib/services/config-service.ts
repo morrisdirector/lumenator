@@ -11,34 +11,33 @@ export class ConfigService extends DataService {
     return new Promise((resolve, reject) => {
       if (this.DEVELOPMENT) {
         resolve(testData());
+        return;
       }
-
       this.jsonGET("config")
         .then(function (data) {
-          debugger;
           resolve(data);
         })
         .catch(function (e) {
-          debugger;
           reject(e);
         });
+    });
+  };
 
-      // fetch("config")
-      //   .then(function (response) {
-      //     return response.json();
-      //   })
-      //   .then(function (data) {
-      //     if (data) {
-      //       loadData(data);
-      //     }
-      //   })
-      //   .catch(function (e) {
-      //     console.warn("Something went wrong loading the config json file.", e);
-      //     window.scrollTo(0, 0);
-      //     this.element("#error-messages").setState({
-      //       text: "Error loading configuration",
-      //     });
-      //   });
+  public saveConfigJson = (json: IConfigJson): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (this.DEVELOPMENT) {
+        resolve(true);
+        return;
+      }
+      this.jsonPOST("config", json)
+        .then(function (response) {
+          if (response.success === true) {
+            resolve(true);
+          }
+        })
+        .catch(function (e) {
+          reject(e);
+        });
     });
   };
 }

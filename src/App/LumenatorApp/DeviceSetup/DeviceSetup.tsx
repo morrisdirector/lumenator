@@ -1,10 +1,13 @@
 import { Fragment, FunctionalComponent, h } from "preact";
+import {
+  IConfigDevice,
+  IConfigGPIO,
+} from "../../../lib/interfaces/IConfigJson";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { DeviceType } from "../../../lib/enums/DeviceType";
 import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
-import { IConfigDevice } from "../../../lib/interfaces/IConfigJson";
 import { IDeviceSetupProps } from "./IDeviceSetupProps";
 import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
@@ -29,13 +32,20 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
           <div class="form-group no-margin">
             <label for="name">Device Name</label>
             <Input
-              value={(props.config && props.config.name) || undefined}
+              value={
+                (props.deviceConfig && props.deviceConfig.name) || undefined
+              }
               onChange={(value) => {
                 if (typeof props.onConfigUpdate === "function") {
-                  props.onConfigUpdate({
-                    ...(props.config as IConfigDevice),
-                    name: value as string,
-                  });
+                  props.onConfigUpdate(
+                    {
+                      ...(props.deviceConfig as IConfigDevice),
+                      name: value as string,
+                    },
+                    {
+                      ...(props.gpioConfig as IConfigGPIO),
+                    }
+                  );
                 }
               }}
             />
@@ -45,13 +55,22 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
             <DropdownMenu
               type="number"
               placeholder="Select a device type"
-              value={(props.config && props.config.device_type) || undefined}
+              value={
+                props.deviceConfig && props.deviceConfig.type !== undefined
+                  ? props.deviceConfig.type
+                  : undefined
+              }
               onSelect={(value) => {
                 if (typeof props.onConfigUpdate === "function") {
-                  props.onConfigUpdate({
-                    ...(props.config as IConfigDevice),
-                    device_type: value as number,
-                  });
+                  props.onConfigUpdate(
+                    {
+                      ...(props.deviceConfig as IConfigDevice),
+                      type: value as number,
+                    },
+                    {
+                      ...(props.gpioConfig as IConfigGPIO),
+                    }
+                  );
                 }
               }}
             >
@@ -74,25 +93,29 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
                 <th>GPIO</th>
                 <th>Test</th>
               </tr>
-              {props.config &&
-                (props.config.device_type === DeviceType.RGB ||
-                  props.config.device_type === DeviceType.RGBW ||
-                  props.config.device_type === DeviceType.RGBWW) && (
+              {props.deviceConfig &&
+                (props.deviceConfig.type === DeviceType.RGB ||
+                  props.deviceConfig.type === DeviceType.RGBW ||
+                  props.deviceConfig.type === DeviceType.RGBWW) && (
                   <Fragment>
                     <tr>
                       <td>Red</td>
                       <td>
                         <Input
                           value={
-                            (props.config && props.config.gpio_r) || undefined
+                            (props.gpioConfig && props.gpioConfig.r) ||
+                            undefined
                           }
                           type="number"
                           onChange={(value) => {
                             if (typeof props.onConfigUpdate === "function") {
-                              props.onConfigUpdate({
-                                ...(props.config as IConfigDevice),
-                                gpio_r: value as number,
-                              });
+                              props.onConfigUpdate(
+                                { ...(props.deviceConfig as IConfigDevice) },
+                                {
+                                  ...(props.gpioConfig as IConfigGPIO),
+                                  r: value as number,
+                                }
+                              );
                             }
                           }}
                         />
@@ -110,14 +133,19 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
                       <td>Green</td>
                       <td>
                         <Input
-                          value={props.config ? props.config.gpio_g : undefined}
+                          value={
+                            props.gpioConfig ? props.gpioConfig.g : undefined
+                          }
                           type="number"
                           onChange={(value) => {
                             if (typeof props.onConfigUpdate === "function") {
-                              props.onConfigUpdate({
-                                ...(props.config as IConfigDevice),
-                                gpio_g: value as number,
-                              });
+                              props.onConfigUpdate(
+                                { ...(props.deviceConfig as IConfigDevice) },
+                                {
+                                  ...(props.gpioConfig as IConfigGPIO),
+                                  g: value as number,
+                                }
+                              );
                             }
                           }}
                         />
@@ -135,14 +163,19 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
                       <td>Blue</td>
                       <td>
                         <Input
-                          value={props.config ? props.config.gpio_b : undefined}
+                          value={
+                            props.gpioConfig ? props.gpioConfig.b : undefined
+                          }
                           type="number"
                           onChange={(value) => {
                             if (typeof props.onConfigUpdate === "function") {
-                              props.onConfigUpdate({
-                                ...(props.config as IConfigDevice),
-                                gpio_b: value as number,
-                              });
+                              props.onConfigUpdate(
+                                { ...(props.deviceConfig as IConfigDevice) },
+                                {
+                                  ...(props.gpioConfig as IConfigGPIO),
+                                  b: value as number,
+                                }
+                              );
                             }
                           }}
                         />
@@ -158,48 +191,59 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
                     </tr>
                   </Fragment>
                 )}
-              {props.config && props.config.device_type !== DeviceType.RGB && (
-                <tr>
-                  <td>White</td>
-                  <td>
-                    <Input
-                      value={props.config ? props.config.gpio_w : undefined}
-                      type="number"
-                      onChange={(value) => {
-                        if (typeof props.onConfigUpdate === "function") {
-                          props.onConfigUpdate({
-                            ...(props.config as IConfigDevice),
-                            gpio_w: value as number,
-                          });
+              {props.deviceConfig &&
+                props.deviceConfig.type !== DeviceType.RGB && (
+                  <tr>
+                    <td>White</td>
+                    <td>
+                      <Input
+                        value={
+                          props.gpioConfig ? props.gpioConfig.w : undefined
                         }
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <ToggleSwitch
-                      on={props.controlMode === ControlMode.GPIO_W}
-                      onClick={() => {
-                        handleControlModeToggle(ControlMode.GPIO_W);
-                      }}
-                    />
-                  </td>
-                </tr>
-              )}
-              {props.config &&
-                (props.config.device_type === DeviceType.RGBWW ||
-                  props.config.device_type === DeviceType.WW) && (
+                        type="number"
+                        onChange={(value) => {
+                          if (typeof props.onConfigUpdate === "function") {
+                            props.onConfigUpdate(
+                              { ...(props.deviceConfig as IConfigDevice) },
+                              {
+                                ...(props.gpioConfig as IConfigGPIO),
+                                w: value as number,
+                              }
+                            );
+                          }
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <ToggleSwitch
+                        on={props.controlMode === ControlMode.GPIO_W}
+                        onClick={() => {
+                          handleControlModeToggle(ControlMode.GPIO_W);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                )}
+              {props.deviceConfig &&
+                (props.deviceConfig.type === DeviceType.RGBWW ||
+                  props.deviceConfig.type === DeviceType.WW) && (
                   <tr>
                     <td>Warm White</td>
                     <td>
                       <Input
-                        value={props.config ? props.config.gpio_ww : undefined}
+                        value={
+                          props.gpioConfig ? props.gpioConfig.ww : undefined
+                        }
                         type="number"
                         onChange={(value) => {
                           if (typeof props.onConfigUpdate === "function") {
-                            props.onConfigUpdate({
-                              ...(props.config as IConfigDevice),
-                              gpio_ww: value as number,
-                            });
+                            props.onConfigUpdate(
+                              { ...(props.deviceConfig as IConfigDevice) },
+                              {
+                                ...(props.gpioConfig as IConfigGPIO),
+                                ww: value as number,
+                              }
+                            );
                           }
                         }}
                       />

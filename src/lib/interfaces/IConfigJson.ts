@@ -2,12 +2,15 @@ import { DeviceType } from "../enums/DeviceType";
 
 export interface IConfigDevice {
   name: string;
-  device_type: DeviceType;
-  gpio_w: number;
-  gpio_ww: number;
-  gpio_r: number;
-  gpio_g: number;
-  gpio_b: number;
+  type: DeviceType;
+}
+
+export interface IConfigGPIO {
+  w: number;
+  ww: number;
+  r: number;
+  g: number;
+  b: number;
 }
 
 export interface IConfigMQTT {
@@ -26,6 +29,7 @@ export interface IConfigNetwork {
 
 export interface IConfigJson {
   device: IConfigDevice;
-  mqtt: IConfigMQTT;
+  gpio: IConfigGPIO;
+  // mqtt: IConfigMQTT;
   network: IConfigNetwork;
 }

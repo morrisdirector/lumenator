@@ -76,12 +76,14 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           </NavMenuTab>
           <NavMenuTab id={2} title="Device">
             <DeviceSetup
-              config={this.state.config && this.state.config.device}
-              onConfigUpdate={(deviceConfig) => {
+              deviceConfig={this.state.config && this.state.config.device}
+              gpioConfig={this.state.config && this.state.config.gpio}
+              onConfigUpdate={(deviceConfig, gpioConfig) => {
                 this.setState({
                   config: {
                     ...(this.state.config as IConfigJson),
                     device: deviceConfig,
+                    gpio: gpioConfig,
                   },
                 });
               }}
@@ -89,8 +91,8 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               onControlModeToggle={this.handleControlModeToggle}
             ></DeviceSetup>
           </NavMenuTab>
-          <NavMenuTab id={3} title="MQTT"></NavMenuTab>
-          <NavMenuTab id={4} title="Network"></NavMenuTab>
+          <NavMenuTab id={3} title="Network"></NavMenuTab>
+          {/* <NavMenuTab id={4} title="MQTT"></NavMenuTab> */}
         </NavMenu>
         {this.hasUnsavedChanges() && (
           <section class="action-section">
@@ -111,7 +113,27 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               >
                 Reset
               </button>
-              <button class="primary">Save Configuration</button>
+              <button
+                class="primary"
+                onClick={() => {
+                  if (this.state.config) {
+                    this.configService
+                      .saveConfigJson(this.state.config)
+                      .then((result) => {
+                        if (result === true) {
+                          debugger;
+                          this.setState({
+                            originalConfig: {
+                              ...this.state.config,
+                            } as IConfigJson,
+                          });
+                        }
+                      });
+                  }
+                }}
+              >
+                Save Configuration
+              </button>
             </div>
           </section>
         )}

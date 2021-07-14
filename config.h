@@ -52,9 +52,11 @@ AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
-const int configDeviceCapacity = JSON_OBJECT_SIZE(2);
-const int configNetworkCapacity = JSON_OBJECT_SIZE(2);
-const int configJsonTotalCapacity = configDeviceCapacity + configNetworkCapacity;
+const int configJsonTotalCapacity =
+    JSON_OBJECT_SIZE(3)    // Total sections at parent level
+    + JSON_OBJECT_SIZE(2)  // Total device props
+    + JSON_OBJECT_SIZE(5)  // Total gpio props
+    + JSON_OBJECT_SIZE(2); // Total network props
 
 void deserializeDeviceConfig(const JsonObject &json)
 {
@@ -202,35 +204,36 @@ void deserializeAll(DynamicJsonDocument json)
 
 bool saveConfiguration(String dto)
 {
-  // Serial.println();
-  // Serial.println("Configuration Update DTO: ");
-  // Serial.println(dto);
+  Serial.println();
+  Serial.println("Configuration Update DTO: ");
+  Serial.println(dto);
 
-  // // Open file for writing
+  // Open file for writing
   // File file = SPIFFS.open(CONFIG_FILE, "w");
   // if (!file) {
   //   Serial.println(F("Failed to create config.json file"));
   //   return false;
   // }
 
-  // DynamicJsonDocument json(1024);
-  // DeserializationError error = deserializeJson(json, dto);
-  // if (error) {
-  //   Serial.println("");
-  //   Serial.println("------- Save Configuration Parse Error -------");
-  //   return false;
-  // }
+  DynamicJsonDocument json(1024);
+  DeserializationError error = deserializeJson(json, dto);
+  if (error)
+  {
+    Serial.println("");
+    Serial.println("------- Save Configuration Parse Error -------");
+    return false;
+  }
 
-  // deserializeAll(json);
+  deserializeAll(json);
 
-  // // Serialize JSON to file
+  // Serialize JSON to file
   // if (serializeJson(json, file) == 0) {
   //   Serial.println(F("Failed to write to config.json file"));
   //   return false;
   // }
 
-  // // Close the file
+  // Close the file
   // file.close();
 
-  // return true;
+  return true;
 }

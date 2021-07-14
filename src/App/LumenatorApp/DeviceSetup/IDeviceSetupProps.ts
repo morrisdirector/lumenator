@@ -1,10 +1,18 @@
+import {
+  IConfigDevice,
+  IConfigGPIO,
+} from "../../../lib/interfaces/IConfigJson";
+
 import { ControlMode } from "../../../lib/enums/ControlMode";
-import { IConfigDevice } from "../../../lib/interfaces/IConfigJson";
 
 export interface IDeviceSetupProps {
-  config?: IConfigDevice;
+  deviceConfig?: IConfigDevice;
+  gpioConfig?: IConfigGPIO;
   newConfig?: IConfigDevice;
   controlMode?: ControlMode;
   onControlModeToggle?: (controlMode: ControlMode) => void;
-  onConfigUpdate?: (config: IConfigDevice) => void;
+  onConfigUpdate?: (
+    deviceConfig: IConfigDevice,
+    gpioConfig: IConfigGPIO
+  ) => void;
 }

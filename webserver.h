@@ -11,6 +11,8 @@
 // Web Server port 80
 AsyncWebServer server(80);
 
+String dtoBuffer;
+
 void onRequest(AsyncWebServerRequest *request)
 {
   if (!!WiFi.softAPIP())
@@ -98,39 +100,89 @@ void initRoutes()
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request)
             {
               String response;
-              // const int capacity = JSON_OBJECT_SIZE(3);
               StaticJsonDocument<configJsonTotalCapacity> doc;
-              doc["value"] = 42;
-              doc["lat"] = 48.748010;
-              doc["lon"] = 2.293491;
+              doc["device"]["name"] = deviceConfig.name;
+              doc["device"]["type"] = deviceConfig.type;
+
+              doc["gpio"]["r"] = gpioConfig.r;
+              doc["gpio"]["g"] = gpioConfig.g;
+              doc["gpio"]["b"] = gpioConfig.b;
+              doc["gpio"]["w"] = gpioConfig.w;
+              doc["gpio"]["ww"] = gpioConfig.ww;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);
             });
 
+  server.on(
+      "/config", HTTP_POST,
+      [](AsyncWebServerRequest *request)
+      {
+        if (dtoBuffer == "" || !saveConfiguration(dtoBuffer))
+        {
+          request->send(500, "application/json", "{\"success\": false}");
+        }
+        else
+        {
+          request->send(200, "application/json", "{\"success\": true}");
+        }
+      },
+      NULL,
+      [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+      {
+        if (index == 0)
+        {
+          dtoBuffer = "";
+        }
+        char *text;
+        text = (char *)data;
+
+        for (size_t i = 0; i < len; i++)
+        {
+          dtoBuffer.concat(text[i]);
+        }
+      });
+
+  // server.on(
+  //     "/update", HTTP_POST, [](AsyncWebServerRequest *request)
+  //     {
+  //       shouldReboot = !Update.hasError();
+  //       AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot ? "OK" : "FAIL");
+  //       response->addHeader("Connection", "close");
+  //       request->send(response);
+  //     },
+  //     [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final)
+  //     {
+  //       if (!index)
+  //       {
+  //         Serial.printf("Update Start: %s\n", filename.c_str());
+  //         Update.runAsync(true);
+  //         if (!Update.begin((ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000))
+  //         {
+  //           Update.printError(Serial);
+  //         }
+  //       }
+  //       if (!Update.hasError())
+  //       {
+  //         if (Update.write(data, len) != len)
+  //         {
+  //           Update.printError(Serial);
+  //         }
+  //       }
+  //       if (final)
+  //       {
+  //         if (Update.end(true))
+  //         {
+  //           Serial.printf("Update Success: %uB\n", index + len);
+  //         }
+  //         else
+  //         {
+  //           Update.printError(Serial);
+  //         }
+  //       }
+  //     });
+
   // server.on("/devicePresets", HTTP_GET, [](AsyncWebServerRequest *request) {
   //   request->send(SPIFFS, "/device-presets.json", "application/json");
   // });
-
-  // server.on(
-  //     "/config", HTTP_POST,
-  //     [](AsyncWebServerRequest *request) {
-  //       if (dtoBuffer == "" || !saveConfiguration(dtoBuffer)) {
-  //         request->send(500, "application/json", "{\"success\": false}");
-  //       } else {
-  //         request->send(200, "application/json", "{\"success\": true}");
-  //       }
-  //     },
-  //     NULL,
-  //     [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-  //       if (index == 0) {
-  //         dtoBuffer = "";
-  //       }
-  //       char *text;
-  //       text = (char *)data;
-
-  //       for (size_t i = 0; i < len; i++) {
-  //         dtoBuffer.concat(text[i]);
-  //       }
-  //     });
 }

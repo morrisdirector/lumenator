@@ -60,8 +60,6 @@ WiFiClient espClient;
 
 // const char CONFIG_FILE[] = "/config.json";
 
-// String dtoBuffer;
-
 // Enums
 // enum ctrlModeSetting { STANDBY, CTRL_RGB, CTRL_WHITE, CTRL_GPIO };
 
@@ -501,7 +499,7 @@ void setup()
   delay(1000);
   String myTest =
       "{\"device\":{\"name\":\"My "
-      "Device\"},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"movies956chief9903\"}}";
+      "Device\",\"type\":2},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"movies956chief9903\"}}";
 
   Serial.println("Configuration Data: ");
   Serial.println(myTest);
