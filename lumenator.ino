@@ -15,8 +15,6 @@
 // #include <WiFiUdp.h>
 // #include <Wire.h>
 
-#define EEPROM_SIZE 512
-
 // Compile with serial printouts
 #define DEBUG
 
@@ -29,6 +27,8 @@ IPAddress apSubnet(255, 255, 255, 0);
 #include "webserver.h"
 
 #include "mqtt.h"
+
+// #include "eeprom-service.h"
 
 // bool configured = false;
 
@@ -426,56 +426,23 @@ void startWiFi()
 
 void readConfigJson(String configuration)
 {
-  DynamicJsonDocument json(EEPROM_SIZE);
-  DeserializationError error = deserializeJson(json, configuration);
-  if (error)
+  if (configuration.length())
   {
+    DynamicJsonDocument json(EEPROM_SIZE);
+    DeserializationError error = deserializeJson(json, configuration);
+    if (error)
+    {
 
-    Serial.println();
-    Serial.println("----- Cannot Parse Configuration -----");
-    Serial.println();
+      Serial.println();
+      Serial.println("----- Cannot Parse Configuration -----");
+      Serial.println();
 
-    if (configuration[0] != 0)
-      clearEEPROM();
-    return;
+      if (configuration[0] != 0)
+        clearEEPROM();
+      return;
+    }
+    deserializeAll(json);
   }
-  deserializeAll(json);
-}
-
-void loadConfiguration()
-{
-
-  Serial.println();
-  Serial.println("Reading device configuration from EEPROM");
-
-  String configuration;
-  for (int i = 0; i < EEPROM_SIZE; ++i)
-  {
-    configuration += char(EEPROM.read(i));
-  }
-
-  Serial.println();
-  if (configuration[0] != 0)
-  {
-    Serial.println("Configuration Data: ");
-    Serial.println(configuration);
-  }
-
-  readConfigJson(configuration);
-}
-
-void clearEEPROM()
-{
-
-  Serial.print("Erasing EEPROM contents...");
-
-  for (int i = 0; i < EEPROM_SIZE; ++i)
-  {
-    EEPROM.write(i, 0);
-  }
-  EEPROM.commit();
-
-  Serial.println("Done");
 }
 
 void setup()
@@ -496,25 +463,26 @@ void setup()
   delay(10);
 
   // clearEEPROM();
-  delay(1000);
-  String myTest =
-      "{\"device\":{\"name\":\"My "
-      "Device\",\"type\":2},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"movies956chief9903\"}}";
+  // delay(1000);
+  // String myTest =
+  //     "{\"device\":{\"name\":\"My "
+  //     "Device\",\"type\":2},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"movies956chief9903\"}}";
 
-  Serial.println("Configuration Data: ");
-  Serial.println(myTest);
+  // Serial.println("Configuration Data: ");
+  // Serial.println(myTest);
 
-  readConfigJson(myTest);
+  // readConfigJson(myTest);
 
   // // String myTest = "HI there haha";
-  // for (int i = 0; i < myTest.length(); ++i) {
+  // for (int i = 0; i < myTest.length(); ++i)
+  // {
   //   EEPROM.write(i, myTest[i]);
   // }
   // EEPROM.commit();
 
   // Serial.println();
 
-  // loadConfiguration();
+  readConfigJson(readEEPROM());
 
   if (networkConfig.ssid.length() && networkConfig.pass.length())
   {
@@ -522,6 +490,7 @@ void setup()
   }
   else
   {
+    startAccessPoint();
   }
 
   // Setup HTTP server routes

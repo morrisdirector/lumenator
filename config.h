@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include "eeprom-service.h"
+
 enum DeviceType
 {
   LRGBWW,
@@ -208,13 +210,6 @@ bool saveConfiguration(String dto)
   Serial.println("Configuration Update DTO: ");
   Serial.println(dto);
 
-  // Open file for writing
-  // File file = SPIFFS.open(CONFIG_FILE, "w");
-  // if (!file) {
-  //   Serial.println(F("Failed to create config.json file"));
-  //   return false;
-  // }
-
   DynamicJsonDocument json(1024);
   DeserializationError error = deserializeJson(json, dto);
   if (error)
@@ -226,14 +221,8 @@ bool saveConfiguration(String dto)
 
   deserializeAll(json);
 
-  // Serialize JSON to file
-  // if (serializeJson(json, file) == 0) {
-  //   Serial.println(F("Failed to write to config.json file"));
-  //   return false;
-  // }
-
-  // Close the file
-  // file.close();
+  clearEEPROM();
+  writeEEPROM(dto);
 
   return true;
 }

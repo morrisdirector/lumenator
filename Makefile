@@ -14,6 +14,8 @@ default: sketch monitor
 
 refresh: kill sketch monitor
 
+refreshfirm: kill compile upload monitor
+
 # refresh_sketch: kill sketch_only
 
 # refresh_web: kill web
