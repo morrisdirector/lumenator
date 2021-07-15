@@ -27,9 +27,14 @@ export interface IConfigNetwork {
   pass: string;
 }
 
+export interface IConfigAccessPoint {
+  pass: string;
+}
+
 export interface IConfigJson {
   device: IConfigDevice;
   gpio: IConfigGPIO;
   // mqtt: IConfigMQTT;
   network: IConfigNetwork;
+  accessPoint: IConfigAccessPoint;
 }

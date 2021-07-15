@@ -4,7 +4,7 @@ import {
   AlertWarningIcon,
   AlertWarningType,
 } from "../../../lib/components/AlertWarning/IAlertWarningProps";
-import { FunctionalComponent, h } from "preact";
+import { Fragment, FunctionalComponent, h } from "preact";
 import { useLayoutEffect, useState } from "preact/hooks";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
@@ -18,53 +18,78 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <section>
-      <div class="grid-large">
-        <div class="form-group no-margin">
-          <label for="ssid">SSID</label>
-          <Input
-            id="ssid"
-            value={(props.config && props.config.ssid) || undefined}
-            onChange={(value) => {
-              if (typeof props.onConfigUpdate === "function") {
-                props.onConfigUpdate({
-                  ...(props.config as IConfigNetwork),
-                  ssid: value as string,
-                });
-              }
-            }}
-          />
-        </div>
-        <div class="form-group no-margin">
-          <label for="password">Password</label>
-          <div class="flex-stretch">
-            <div class="flex-grow">
-              <Input
-                id="password"
-                type={!showPassword ? "password" : "string"}
-                value={(props.config && props.config.pass) || undefined}
-                onChange={(value) => {
-                  if (typeof props.onConfigUpdate === "function") {
-                    props.onConfigUpdate({
-                      ...(props.config as IConfigNetwork),
-                      pass: value as string,
-                    });
-                  }
-                }}
-              />
-            </div>
-            <button
-              class="ml-small"
-              onClick={() => {
-                setShowPassword(!showPassword);
+    <Fragment>
+      <section>
+        <div class="grid-large">
+          <div class="form-group no-margin">
+            <label for="ssid">Network SSID</label>
+            <Input
+              id="ssid"
+              value={(props.config && props.config.ssid) || undefined}
+              onChange={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate({
+                    ...(props.config as IConfigNetwork),
+                    ssid: value as string,
+                  });
+                }
               }}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
+            />
+          </div>
+          <div class="form-group no-margin">
+            <label for="password">Network Password</label>
+            <div class="flex-stretch">
+              <div class="flex-grow">
+                <Input
+                  id="password"
+                  type={!showPassword ? "password" : "string"}
+                  value={(props.config && props.config.pass) || undefined}
+                  onChange={(value) => {
+                    if (typeof props.onConfigUpdate === "function") {
+                      props.onConfigUpdate({
+                        ...(props.config as IConfigNetwork),
+                        pass: value as string,
+                      });
+                    }
+                  }}
+                />
+              </div>
+              <button
+                class="ml-small"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <section>
+        <div class="grid-large">
+          <div class="form-group no-margin">
+            <label for="ssid">Access Point Security Password</label>
+            <Input
+              id="ssid"
+              value={(props.config && props.config.ssid) || undefined}
+              onChange={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate({
+                    ...(props.config as IConfigNetwork),
+                    ssid: value as string,
+                  });
+                }
+              }}
+            />
+          </div>
+          <div class="helper-text mt-large">
+            Password for the setup access point page when Lumenator cannot
+            connect to the network.
+          </div>
+        </div>
+      </section>
+    </Fragment>
   );
 };
 

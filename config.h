@@ -14,28 +14,27 @@ enum DeviceType
 struct DeviceConfig
 {
   String name = "Lumenator";
-  DeviceType type;
+  DeviceType type = 0;
 };
 
 struct NetworkConfig
 {
-  String ssid;
-  String pass;
+  String ssid = "SSID";
+  String pass = "password";
 };
 
 struct AccessPointConfig
 {
-  String ssid = "Lumenator";
-  String pass = "setup";
+  String pass;
 };
 
 struct GpioConfig
 {
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-  uint8_t w;
-  uint8_t ww;
+  uint8_t r = 0;
+  uint8_t g = 0;
+  uint8_t b = 0;
+  uint8_t w = 0;
+  uint8_t ww = 0;
 };
 
 struct MqttConfig
@@ -175,9 +174,6 @@ void deserializeAccessPointConfig(const JsonObject &json)
   if (json.containsKey("accessPoint"))
   {
     JsonObject accessPointJson = json["network"];
-
-    if (accessPointJson.containsKey("ssid"))
-      accessPointConfig.ssid = accessPointJson["ssid"].as<String>();
 
     if (accessPointJson.containsKey("pass"))
       accessPointConfig.pass = accessPointJson["pass"].as<String>();

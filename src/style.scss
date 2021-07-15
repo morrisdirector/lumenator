@@ -61,6 +61,10 @@ section {
   margin-top: $marginSmall;
 }
 
+.mt-large {
+  margin-top: $marginLarge;
+}
+
 .ml-small {
   margin-left: $marginSmall;
 }
@@ -154,13 +158,13 @@ label {
   > .lum-ToggleSwitch {
     margin-top: 12px;
   }
-  .helper-text {
-    display: block;
-    position: relative;
-    color: $grey;
-    font-size: 12px;
-    font-style: italic;
-  }
+}
+.helper-text {
+  display: block;
+  position: relative;
+  color: $grey;
+  font-size: 12px;
+  font-style: italic;
 }
 
 .page-action-buttons {
