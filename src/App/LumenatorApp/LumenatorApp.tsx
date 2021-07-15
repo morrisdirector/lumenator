@@ -10,6 +10,7 @@ import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
 import { IConfigJson } from "../../lib/interfaces/IConfigJson";
+import { IOnColorSetData } from "./ManualControl/IManualControlProps";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
@@ -20,6 +21,9 @@ interface ILumenatorAppState {
   loading: boolean;
   originalConfig?: IConfigJson;
   config?: IConfigJson;
+  rgbColor?: { r: number; g: number; b: number };
+  whiteColor?: { r: number; g: number; b: number };
+  whiteValueColor?: { r: number; g: number; b: number };
 }
 class LumenatorApp extends Component<null, ILumenatorAppState> {
   private configService = new ConfigService();
@@ -48,6 +52,18 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
     this.setState({ controlMode: newMode });
   };
 
+  private handleColorSet = (data: IOnColorSetData): void => {
+    if (data.type === "rgb") {
+      this.setState({ rgbColor: data.color });
+    }
+    if (data.type === "white") {
+      this.setState({ whiteColor: data.color });
+    }
+    if (data.type === "whiteValue") {
+      this.setState({ whiteValueColor: data.color });
+    }
+  };
+
   private hasUnsavedChanges(): boolean {
     const original = JSON.stringify(this.state.originalConfig);
     const current = JSON.stringify(this.state.config);
@@ -73,6 +89,10 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
             <ManualControl
               controlMode={this.state.controlMode}
               onControlModeToggle={this.handleControlModeToggle}
+              onColorSet={this.handleColorSet}
+              rgbColor={this.state.rgbColor}
+              whiteColor={this.state.whiteColor}
+              whiteValueColor={this.state.whiteValueColor}
             ></ManualControl>
           </NavMenuTab>
           <NavMenuTab id={2} title="Device">
@@ -507,44 +527,6 @@ export default LumenatorApp;
 
 // 	private refresh = () => {
 // 		window.location.reload();
-// 	};
-
-// 	private withLeadingZeros = (value: string | number, zeros: number): string => {
-// 		return `00${value}`.slice(`00${value}`.length - zeros);
-// 	};
-
-// 	private sendRgbColors = (color: { r: number; g: number; b: number }) => {
-// 		if (this.mode !== Mode.RGB) {
-// 			this.mode = Mode.RGB;
-// 			this.element('#modeRgb').setState({ state: 'ON' });
-// 		}
-// 		const r = this.withLeadingZeros(color.r, 3);
-// 		const g = this.withLeadingZeros(color.g, 3);
-// 		const b = this.withLeadingZeros(color.b, 3);
-
-// 		if (this.websocket) {
-// 			this.websocket.send(`rgbctrl:r:${r}:g:${g}:b:${b}`);
-// 		}
-// 	};
-
-// 	private sendWhiteLevels = (level: { kelvin: number; value: number }) => {
-// 		if (this.mode !== Mode.WHITE) {
-// 			this.mode = Mode.WHITE;
-// 			this.element('#modeWhite').setState({ state: 'ON' });
-// 		}
-
-// 		const multiplier = level.value / 100; // Brightness Slider Multiplier
-// 		const max = this.kelvinMax - this.kelvinMin;
-// 		const relativeVal = level.kelvin - this.kelvinMin;
-// 		const wMultiplier = Math.round(relativeVal / max * 100) / 100;
-// 		const wVal = Math.round(255 * wMultiplier);
-// 		const wwVal = 255 - wVal < 0 ? 0 : 255 - wVal;
-// 		const w = this.withLeadingZeros((wVal * multiplier).toFixed(0), 3);
-// 		const ww = this.withLeadingZeros((wwVal * multiplier).toFixed(0), 3);
-
-// 		if (this.websocket) {
-// 			this.websocket.send(`whitectrl:w:${w}:ww:${ww}`);
-// 		}
 // 	};
 
 // 	private setupColorPickers = () => {
