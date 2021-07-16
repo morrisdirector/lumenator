@@ -106,11 +106,9 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
     const g = withLeadingZeros(color.g, 3);
     const b = withLeadingZeros(color.b, 3);
 
-    console.log(`rgbctrl:r:${r}:g:${g}:b:${b}`);
-
-    // if (this.websocket) {
-    // 	this.websocket.send(`rgbctrl:r:${r}:g:${g}:b:${b}`);
-    // }
+    if (props.webSocketService) {
+      props.webSocketService.send(`rgbctrl:r:${r}:g:${g}:b:${b}`);
+    }
   };
 
   const sendWhiteLevels = (level: { kelvin: number; value: number }) => {
@@ -123,18 +121,20 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
     const w = withLeadingZeros((wVal * multiplier).toFixed(0), 3);
     const ww = withLeadingZeros((wwVal * multiplier).toFixed(0), 3);
 
-    console.log(`whitectrl:w:${w}:ww:${ww}`);
-
-    // if (this.websocket) {
-    // 	this.websocket.send(`whitectrl:w:${w}:ww:${ww}`);
-    // }
+    if (props.webSocketService) {
+      props.webSocketService.send(`whitectrl:w:${w}:ww:${ww}`);
+    }
   };
 
   const handleControlModeToggle = (modeSwitch: ControlMode): void => {
     if (typeof props.onControlModeToggle === "function") {
       if (props.controlMode !== modeSwitch) {
-        // Toggling on:
         props.onControlModeToggle(modeSwitch);
+        if (props.rgbColor && modeSwitch === ControlMode.RGB) {
+          sendRgbColors(props.rgbColor);
+        }
+      } else {
+        props.onControlModeToggle(ControlMode.STANDBY);
       }
     }
   };

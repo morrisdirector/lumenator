@@ -14,7 +14,7 @@ enum DeviceType
 struct DeviceConfig
 {
   String name = "Lumenator";
-  DeviceType type = 0;
+  DeviceType type = LRGBWW;
 };
 
 struct NetworkConfig

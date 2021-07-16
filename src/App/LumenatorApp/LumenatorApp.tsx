@@ -3,18 +3,20 @@ import {
   AlertWarningType,
 } from "../../lib/components/AlertWarning/IAlertWarningProps";
 import { Component, h } from "preact";
+import { IConfigGPIO, IConfigJson } from "../../lib/interfaces/IConfigJson";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import Chip from "../../lib/components/Chip/Chip";
 import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
-import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import { IOnColorSetData } from "./ManualControl/IManualControlProps";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
 import NetworkSetup from "./NetworkSetup/NetworkSetup";
+import { OnOff } from "../../lib/enums/OnOff";
+import { WebsocketService } from "../../lib/services/websocket-service";
 
 interface ILumenatorAppState {
   controlMode: ControlMode;
@@ -27,6 +29,7 @@ interface ILumenatorAppState {
 }
 class LumenatorApp extends Component<null, ILumenatorAppState> {
   private configService = new ConfigService();
+  private websocketService = new WebsocketService();
 
   constructor() {
     super();
@@ -48,7 +51,28 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
     this.init();
   }
 
+  private isGpioMode = (mode: ControlMode): boolean => {
+    return (
+      mode === ControlMode.GPIO_B ||
+      mode === ControlMode.GPIO_G ||
+      mode === ControlMode.GPIO_R ||
+      mode === ControlMode.GPIO_W ||
+      mode === ControlMode.GPIO_WW
+    );
+  };
+
   private handleControlModeToggle = (newMode: ControlMode): void => {
+    if (this.isGpioMode(this.state.controlMode)) {
+      // Turn off the old GPIO
+      this.websocketService.send(`gpio:${this.state.controlMode}:${OnOff.OFF}`);
+    }
+    if (this.isGpioMode(newMode)) {
+      // Turn on the new GPIO
+      this.websocketService.send(`gpio:${newMode}:${OnOff.ON}`);
+    }
+    if (newMode === ControlMode.STANDBY) {
+      this.websocketService.send(`standby`);
+    }
     this.setState({ controlMode: newMode });
   };
 
@@ -77,25 +101,16 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           <div class="header-container">
             <div class="header-items">
               <h2>Lumenator</h2>
-              {this.state.config && this.state.config.device.name && (
-                <Chip text={this.state.config.device.name}></Chip>
-              )}
+              {this.state.originalConfig &&
+                this.state.originalConfig.device.name && (
+                  <Chip text={this.state.originalConfig.device.name}></Chip>
+                )}
               <div class="version">v1.0</div>
             </div>
           </div>
         </header>
-        <NavMenu activeId={3}>
-          <NavMenuTab id={1} title="Control">
-            <ManualControl
-              controlMode={this.state.controlMode}
-              onControlModeToggle={this.handleControlModeToggle}
-              onColorSet={this.handleColorSet}
-              rgbColor={this.state.rgbColor}
-              whiteColor={this.state.whiteColor}
-              whiteValueColor={this.state.whiteValueColor}
-            ></ManualControl>
-          </NavMenuTab>
-          <NavMenuTab id={2} title="Device">
+        <NavMenu activeId={1}>
+          <NavMenuTab id={1} title="Device">
             <DeviceSetup
               deviceConfig={this.state.config && this.state.config.device}
               gpioConfig={this.state.config && this.state.config.gpio}
@@ -112,7 +127,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               onControlModeToggle={this.handleControlModeToggle}
             ></DeviceSetup>
           </NavMenuTab>
-          <NavMenuTab id={3} title="Network">
+          <NavMenuTab id={2} title="Network">
             <NetworkSetup
               config={this.state.config && this.state.config.network}
               onConfigUpdate={(networkConfig) => {
@@ -125,6 +140,18 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               }}
             ></NetworkSetup>
           </NavMenuTab>
+          <NavMenuTab id={3} title="Control">
+            <ManualControl
+              webSocketService={this.websocketService}
+              controlMode={this.state.controlMode}
+              onControlModeToggle={this.handleControlModeToggle}
+              onColorSet={this.handleColorSet}
+              rgbColor={this.state.rgbColor}
+              whiteColor={this.state.whiteColor}
+              whiteValueColor={this.state.whiteValueColor}
+            ></ManualControl>
+          </NavMenuTab>
+
           {/* <NavMenuTab id={4} title="MQTT"></NavMenuTab> */}
         </NavMenu>
         {this.hasUnsavedChanges() && (

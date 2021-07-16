@@ -15,16 +15,40 @@
 // #include <WiFiUdp.h>
 // #include <Wire.h>
 
-// Compile with serial printouts
-#define DEBUG
-
 bool apMode = false; // True when in "setup" access point mode is on
 IPAddress apIP(192, 168, 4, 1);
 IPAddress apSubnet(255, 255, 255, 0);
 
+// DNS server
+const byte DNS_PORT = 53;
+DNSServer dnsServer;
+
+WiFiClient espClient;
+
+// Enums
+enum controlMode
+{
+  STANDBY,
+  RGB,
+  WHITE,
+  GPIO_R,
+  GPIO_G,
+  GPIO_B,
+  GPIO_W,
+  GPIO_WW,
+};
+
+int ctrlMode;
+
+#include "utils.h"
+
 #include "config.h"
 
+#include "control.h"
+
 #include "webserver.h"
+
+#include "websockets.h"
 
 #include "mqtt.h"
 
@@ -45,11 +69,6 @@ IPAddress apSubnet(255, 255, 255, 0);
 //  TX  1
 //  RX  3
 
-// DNS server
-const byte DNS_PORT = 53;
-DNSServer dnsServer;
-
-WiFiClient espClient;
 // PubSubClient mqttClient(espClient);
 
 /* ------- NETWORK CREDENTIALS ------- */
@@ -59,11 +78,6 @@ WiFiClient espClient;
 /* ----------------------------------- */
 
 // const char CONFIG_FILE[] = "/config.json";
-
-// Enums
-// enum ctrlModeSetting { STANDBY, CTRL_RGB, CTRL_WHITE, CTRL_GPIO };
-
-// int ctrlMode;
 
 // To make Arduino IDE autodetect OTA device
 // WiFiServer TelnetServer(8266);
@@ -94,21 +108,6 @@ void printWiFiStatus()
   Serial.println(WiFi.scanNetworks());
   Serial.println("----------------------------");
 }
-
-// void resetGpios() {
-//   if (deviceConfig.device_type == LRGBWW) {
-//     analogWrite(deviceConfig.gpio_ww, 0);
-//   }
-//   if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW) {
-//     analogWrite(deviceConfig.gpio_w, 0);
-//   }
-//   if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//       deviceConfig.device_type == LRGB) {
-//     analogWrite(deviceConfig.gpio_r, 0);
-//     analogWrite(deviceConfig.gpio_g, 0);
-//     analogWrite(deviceConfig.gpio_b, 0);
-//   }
-// }
 
 // void ctrlCommand(char *command) {
 //   if (ctrlMode != CTRL_GPIO) {
@@ -378,25 +377,29 @@ void startWiFi()
   }
 }
 
-// void setupHardwareConfiguration() {
-//   if (deviceConfig.device_type == LRGBWW) {
-//     pinMode(deviceConfig.gpio_ww, OUTPUT);
-//     analogWrite(deviceConfig.gpio_ww, 0);
-//   }
-//   if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW) {
-//     pinMode(deviceConfig.gpio_w, OUTPUT);
-//     analogWrite(deviceConfig.gpio_w, 0);
-//   }
-//   if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//       deviceConfig.device_type == LRGB) {
-//     pinMode(deviceConfig.gpio_r, OUTPUT);
-//     pinMode(deviceConfig.gpio_g, OUTPUT);
-//     pinMode(deviceConfig.gpio_b, OUTPUT);
-//     analogWrite(deviceConfig.gpio_r, 0);
-//     analogWrite(deviceConfig.gpio_g, 0);
-//     analogWrite(deviceConfig.gpio_b, 0);
-//   }
-// }
+void setupHardwareConfiguration()
+{
+  if (deviceConfig.type == LRGBWW || deviceConfig.type == LWW)
+  {
+    // pinMode(gpioConfig.ww, OUTPUT);
+    // analogWrite(gpioConfig.ww, 0);
+  }
+  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW || deviceConfig.type == LWW || deviceConfig.type == LW)
+  {
+    // pinMode(gpioConfig.w, OUTPUT);
+    // analogWrite(gpioConfig.w, 0);
+  }
+  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
+      deviceConfig.type == LRGB)
+  {
+    pinMode(gpioConfig.r, OUTPUT);
+    // pinMode(gpioConfig.g, OUTPUT);
+    // pinMode(gpioConfig.b, OUTPUT);
+    analogWrite(gpioConfig.r, 0);
+    // analogWrite(gpioConfig.g, 0);
+    // analogWrite(gpioConfig.b, 0);
+  }
+}
 
 // void startOTAServer() {
 //   TelnetServer.begin();
@@ -484,6 +487,8 @@ void setup()
 
   readConfigJson(readEEPROM());
 
+  setupHardwareConfiguration();
+
   if (networkConfig.ssid.length() && networkConfig.pass.length())
   {
     startWiFi();
@@ -500,8 +505,8 @@ void setup()
   server.begin();
 
   // Start WebSocket server and assign callback
-  // webSocket.begin();
-  // webSocket.onEvent(onWebSocketEvent);
+  webSocket.begin();
+  webSocket.onEvent(onWebSocketEvent);
 
   // if (mqttConfig.mqtt_enabled == true) {
   //   setupMqtt();
@@ -525,8 +530,7 @@ void setup()
 
 void loop()
 {
-  // Websockets:
-  // webSocket.loop();
+  webSocket.loop();
   // MQTT:
   // if (mqttConfig.mqtt_enabled == true) {
   //   if (!mqttClient.connected()) {
