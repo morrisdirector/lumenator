@@ -99,23 +99,25 @@ char msg_buf[10];
 // }
 // }
 
-// void whiteCtrlCommand(char *command) {
-//   if (ctrlMode != CTRL_WHITE) {
-//     ctrlMode = CTRL_WHITE;
-//     resetGpios();
-//   }
+void whiteManualCommand(char *command)
+{
+  if (ctrlMode != WHITE)
+  {
+    resetGpios();
+    ctrlMode = WHITE;
+  }
 
-//   String white;
-//   white = command;
-//   String w = white.substring(12, 15);
-//   String ww = white.substring(19, 22);
+  String white;
+  white = command;
+  String w = white.substring(12, 15);
+  String ww = white.substring(19, 22);
 
-//   int wVal = w.toInt();
-//   int wwVal = ww.toInt();
+  int wVal = w.toInt();
+  int wwVal = ww.toInt();
 
-//   analogWrite(deviceConfig.gpio_w, wVal);
-//   analogWrite(deviceConfig.gpio_ww, wwVal);
-// }
+  analogWrite(gpioConfig.w, wVal);
+  analogWrite(gpioConfig.ww, wwVal);
+}
 
 void rgbManualCommand(char *command)
 {
@@ -228,7 +230,7 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     else if (strncmp(text, "whitectrl", 9) == 0)
     {
       // white command:
-      // whiteCtrlCommand(text);
+      whiteManualCommand(text);
     }
     else if (strncmp(text, "standby", 7) == 0)
     {
