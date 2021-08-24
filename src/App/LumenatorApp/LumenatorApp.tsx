@@ -129,12 +129,16 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           </NavMenuTab>
           <NavMenuTab id={2} title="Network">
             <NetworkSetup
-              config={this.state.config && this.state.config.network}
-              onConfigUpdate={(networkConfig) => {
+              configNetwork={this.state.config && this.state.config.network}
+              configAccessPoint={
+                this.state.config && this.state.config.accessPoint
+              }
+              onConfigUpdate={(configs) => {
                 this.setState({
                   config: {
                     ...(this.state.config as IConfigJson),
-                    network: networkConfig,
+                    network: configs.network,
+                    accessPoint: configs.accessPoint,
                   },
                 });
               }}

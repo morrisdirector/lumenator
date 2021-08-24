@@ -1,17 +1,20 @@
 import * as iro from "@jaames/iro";
 
 import { FunctionalComponent, h } from "preact";
+import { useLayoutEffect, useState } from "preact/hooks";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { AlertWarningIcon } from "../../../lib/components/AlertWarning/IAlertWarningProps";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { IManualControlProps } from "./IManualControlProps";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
-import { useLayoutEffect } from "preact/hooks";
 
 const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
   const kelvinMin = 4000;
   const kelvinMax = 9000;
+
+  const [kelvinValue, setKelvinValue] = useState<number | null>(null);
+  const [whiteBrightness, setWhiteBrightness] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     const rgbColorPicker = iro.default.ColorPicker("#rgb-color-picker", {
@@ -62,6 +65,10 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
         },
       ],
     });
+
+    setKelvinValue(whiteColorPicker.color.kelvin);
+    setWhiteBrightness(whiteColorPicker.color.value);
+
     rgbColorPicker.on("color:change", (color) => {
       handleControlModeToggle(ControlMode.RGB);
       sendRgbColors(color.rgb);
@@ -77,6 +84,8 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
         kelvin: color.kelvin,
         value: whiteValuePicker.color.value,
       });
+      setKelvinValue(color.kelvin);
+      setWhiteBrightness(color.value);
     });
     whiteColorPicker.on("input:end", (color) => {
       if (typeof props.onColorSet === "function") {
@@ -89,6 +98,8 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
         kelvin: whiteColorPicker.color.kelvin,
         value: color.value,
       });
+      setKelvinValue(color.kelvin);
+      setWhiteBrightness(color.value);
     });
     whiteValuePicker.on("input:end", (color) => {
       if (typeof props.onColorSet === "function") {
@@ -132,6 +143,16 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
         props.onControlModeToggle(modeSwitch);
         if (props.rgbColor && modeSwitch === ControlMode.RGB) {
           sendRgbColors(props.rgbColor);
+        }
+        if (
+          kelvinValue &&
+          whiteBrightness &&
+          modeSwitch === ControlMode.WHITE
+        ) {
+          sendWhiteLevels({
+            kelvin: kelvinValue,
+            value: whiteBrightness,
+          });
         }
       } else {
         props.onControlModeToggle(ControlMode.STANDBY);

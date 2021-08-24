@@ -18,5 +18,8 @@ export const testData = (): IConfigJson => {
       ssid: "MySSID",
       pass: "password",
     },
+    accessPoint: {
+      pass: "ap_password",
+    },
   };
 };
