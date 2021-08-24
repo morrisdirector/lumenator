@@ -3,13 +3,13 @@ import {
   AlertWarningType,
 } from "../../lib/components/AlertWarning/IAlertWarningProps";
 import { Component, h } from "preact";
-import { IConfigGPIO, IConfigJson } from "../../lib/interfaces/IConfigJson";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import Chip from "../../lib/components/Chip/Chip";
 import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
+import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import { IOnColorSetData } from "./ManualControl/IManualControlProps";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";

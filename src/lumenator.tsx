@@ -1,25 +1,15 @@
 import { h, render } from "preact";
 
 import LumenatorApp from "./App/LumenatorApp/LumenatorApp";
+import LumenatorSetup from "./App/Setup/LumenatorSetup";
 
-// import './components/index';
-
-// import { LumenatorSetup } from './lumenator-setup';
-
-// Development Mode
 const DEVELOPMENT = process.env.NODE_ENV === "development";
-
 const PAGE = document.body.id === "lumenator-setup" ? "setup" : "app";
 
-// const init = () => {
-//   let controller;
-//   if (PAGE === "app") {
-//     controller = LumenatorApp;
-//   } else {
-//     // controller = new LumenatorSetup(DEVELOPMENT);
-//   }
-// Inject our app into the DOM
-render(<LumenatorApp />, document.body);
-// };
-
-// init();
+if (PAGE === "setup") {
+  //@ts-ignore
+  render(<LumenatorSetup />, document.body);
+} else {
+  //@ts-ignore
+  render(<LumenatorApp />, document.body);
+}

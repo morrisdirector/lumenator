@@ -1,21 +1,12 @@
-import * as iro from "@jaames/iro";
-
-import {
-  AlertWarningIcon,
-  AlertWarningType,
-} from "../../../lib/components/AlertWarning/IAlertWarningProps";
 import { Fragment, FunctionalComponent, h } from "preact";
 import {
   IConfigAccessPoint,
   IConfigNetwork,
 } from "../../../lib/interfaces/IConfigJson";
-import { useLayoutEffect, useState } from "preact/hooks";
 
-import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
-import { ControlMode } from "../../../lib/enums/ControlMode";
 import { INetworkSetupProps } from "./INetworkSetupProps";
 import Input from "../../../lib/components/Input/Input";
-import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
+import { useState } from "preact/hooks";
 
 const NetworkSetup: FunctionalComponent<INetworkSetupProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);

@@ -11,6 +11,8 @@ const AlertWarning: FunctionalComponent<IAlertWarningProps> = (props) => {
         <div
           class={`lum-AlertWarning${
             props.icon && props.icon.length ? " icon" : ""
+          }${
+            props.margin && props.margin.length ? ` margin-${props.margin}` : ""
           }`}
         >
           <div id="message" class={props.type ? props.type : "info"}>
