@@ -1,7 +1,12 @@
 @import "../../lib/styles/colors.scss";
 @import "../../lib/styles/sizes.scss";
+@import "../../lib/styles/z-indexes.scss";
 
 header {
+  position: fixed;
+  z-index: $zNav;
+  width: 100%;
+  top: 0;
   background-color: $primary;
   margin: 0;
   .header-container {

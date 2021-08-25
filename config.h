@@ -57,7 +57,8 @@ const int configJsonTotalCapacity =
     JSON_OBJECT_SIZE(10)   // Total sections at parent level plus buffer
     + JSON_OBJECT_SIZE(2)  // Total device props
     + JSON_OBJECT_SIZE(5)  // Total gpio props
-    + JSON_OBJECT_SIZE(2); // Total network props
+    + JSON_OBJECT_SIZE(2)  // Total network props
+    + JSON_OBJECT_SIZE(1); // Total access point props
 
 void deserializeDeviceConfig(const JsonObject &json)
 {
@@ -173,7 +174,7 @@ void deserializeAccessPointConfig(const JsonObject &json)
 {
   if (json.containsKey("accessPoint"))
   {
-    JsonObject accessPointJson = json["network"];
+    JsonObject accessPointJson = json["accessPoint"];
 
     if (accessPointJson.containsKey("pass"))
       accessPointConfig.pass = accessPointJson["pass"].as<String>();

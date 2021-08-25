@@ -1,12 +1,37 @@
-import { Fragment, FunctionalComponent, h } from "preact";
+import { Fragment, FunctionalComponent, createRef, h } from "preact";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 import { INavMenuProps } from "./INavMenuProps";
 import { INavMenuTabProps } from "../NavMenuTab/INavMenuTabProps";
 import preact from "preact";
-import { useState } from "preact/hooks";
 
 const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
+  const pushDownContainer = createRef();
   const [activeTabId, setActiveTabId] = useState(props.activeId || 0);
+  const [pushDownHeight, setPushDownHeight] = useState(0);
+
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (let entry of entries) {
+      if (entry.contentBoxSize) {
+        // Firefox implements `contentBoxSize` as a single content rect, rather than an array
+        const contentBoxSize = Array.isArray(entry.contentBoxSize)
+          ? entry.contentBoxSize[0]
+          : entry.contentBoxSize;
+        if (contentBoxSize.blockSize != pushDownHeight) {
+          setPushDownHeight(contentBoxSize.blockSize);
+        }
+      } else {
+        setPushDownHeight(0);
+      }
+      console.log(pushDownHeight);
+    }
+  });
+
+  useEffect(() => {
+    if (pushDownContainer.current) {
+      resizeObserver.observe(pushDownContainer.current);
+    }
+  }, [pushDownContainer]);
 
   const renderTabs = (): any => {
     if (Array.isArray(props.children)) {
@@ -52,7 +77,23 @@ const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
       <div class="lum-Nav">
         <ul class="lum-NavMenu">{renderTabs()}</ul>
       </div>
-      <main>{renderTabContent()}</main>
+      <div
+        class="lum-Nav-pushDown"
+        style={{ visibility: !pushDownHeight ? "hidden" : "visible" }}
+      >
+        <div class="lum-Nav-pushDown-content" ref={pushDownContainer}>
+          {typeof props.renderMessages === "function" && props.renderMessages()}
+          {typeof props.renderActionSection === "function" &&
+            props.renderActionSection()}
+        </div>
+      </div>
+      <main>
+        <div
+          class="pushDown-spacer"
+          style={{ height: pushDownHeight, marginBottom: "10px" }}
+        ></div>
+        {renderTabContent()}
+      </main>
     </Fragment>
   );
 };

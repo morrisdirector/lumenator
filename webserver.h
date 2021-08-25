@@ -113,6 +113,8 @@ void initRoutes()
               doc["network"]["ssid"] = networkConfig.ssid;
               doc["network"]["pass"] = networkConfig.pass;
 
+              doc["accessPoint"]["pass"] = accessPointConfig.pass;
+
               serializeJson(doc, response);
               request->send(200, "application/json", response);
             });
@@ -144,6 +146,21 @@ void initRoutes()
         {
           dtoBuffer.concat(text[i]);
         }
+      });
+
+  server.on(
+      "/restart", HTTP_POST,
+      [](AsyncWebServerRequest *request)
+      {
+        request->send(200, "application/json", "{\"success\": true}");
+        Serial.print("restarting!!!!");
+        ESP.restart();
+      },
+      NULL,
+      [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+      {
+        Serial.print("restarting!");
+        ESP.reset();
       });
 
   // server.on(

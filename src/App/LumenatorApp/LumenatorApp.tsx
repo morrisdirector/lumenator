@@ -2,7 +2,7 @@ import {
   AlertWarningIcon,
   AlertWarningType,
 } from "../../lib/components/AlertWarning/IAlertWarningProps";
-import { Component, h } from "preact";
+import { Component, Fragment, VNode, h } from "preact";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import Chip from "../../lib/components/Chip/Chip";
@@ -11,16 +11,20 @@ import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
 import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import { IOnColorSetData } from "./ManualControl/IManualControlProps";
+import Loader from "../../lib/components/Loader/Loader";
 import ManualControl from "./ManualControl/ManualControl";
+import { MarginType } from "../../lib/enums/MarginType";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
 import NetworkSetup from "./NetworkSetup/NetworkSetup";
 import { OnOff } from "../../lib/enums/OnOff";
 import { WebsocketService } from "../../lib/services/websocket-service";
+import render from "preact-render-to-string";
 
 interface ILumenatorAppState {
   controlMode: ControlMode;
   loading: boolean;
+  messages: Array<VNode<any>>;
   originalConfig?: IConfigJson;
   config?: IConfigJson;
   rgbColor?: { r: number; g: number; b: number };
@@ -33,17 +37,29 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
 
   constructor() {
     super();
-    this.state = { controlMode: ControlMode.STANDBY, loading: true };
+    this.state = {
+      controlMode: ControlMode.STANDBY,
+      loading: true,
+      messages: [],
+    };
+    this.saveConfiguration = this.saveConfiguration.bind(this);
+    this.renderMessages = this.renderMessages.bind(this);
+    this.renderActionSection = this.renderActionSection.bind(this);
   }
 
   private init = async (): Promise<any> => {
     try {
       const data = await this.configService.loadConfigJson();
       if (data) {
-        this.setState({ originalConfig: { ...data }, config: { ...data } });
+        this.setState({
+          originalConfig: { ...data },
+          config: { ...data },
+          loading: false,
+        });
       }
     } catch (error) {
-      debugger;
+      console.error(error);
+      this.setState({ loading: false });
     }
   };
 
@@ -94,9 +110,69 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
     return original !== current;
   }
 
+  private saveConfiguration(): void {
+    this.setState({ loading: true });
+    if (this.state.config) {
+      this.configService.saveConfigJson(this.state.config).then((result) => {
+        if (result === true) {
+          setTimeout(() => {
+            this.setState({
+              originalConfig: {
+                ...this.state.config,
+              } as IConfigJson,
+              loading: false,
+              messages: [
+                ...this.state.messages,
+                <AlertWarning
+                  text="Configuration saved successfully"
+                  closable={true}
+                ></AlertWarning>,
+              ],
+            });
+          }, 1000);
+        }
+      });
+    }
+  }
+
+  private renderMessages(): h.JSX.Element {
+    return <Fragment>{this.state.messages.map((msg) => msg)}</Fragment>;
+  }
+
+  private renderActionSection(): h.JSX.Element {
+    return this.hasUnsavedChanges() ? (
+      <section class="action-section no-margin">
+        <div>
+          <AlertWarning
+            icon={AlertWarningIcon.ALERT}
+            type={AlertWarningType.BASIC_BORDERLESS}
+            text="Unsaved Changes"
+          />
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              this.setState({
+                config: { ...this.state.originalConfig } as IConfigJson,
+              });
+            }}
+          >
+            Reset
+          </button>
+          <button class="primary" onClick={this.saveConfiguration}>
+            Save Configuration
+          </button>
+        </div>
+      </section>
+    ) : (
+      <Fragment></Fragment>
+    );
+  }
+
   render() {
     return (
       <div id="lumenator-web-app">
+        {this.state.loading && <Loader></Loader>}
         <header>
           <div class="header-container">
             <div class="header-items">
@@ -109,7 +185,11 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
             </div>
           </div>
         </header>
-        <NavMenu activeId={1}>
+        <NavMenu
+          activeId={1}
+          renderMessages={this.renderMessages}
+          renderActionSection={this.renderActionSection}
+        >
           <NavMenuTab id={1} title="Device">
             <DeviceSetup
               deviceConfig={this.state.config && this.state.config.device}
@@ -155,52 +235,8 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               whiteValueColor={this.state.whiteValueColor}
             ></ManualControl>
           </NavMenuTab>
-
-          {/* <NavMenuTab id={4} title="MQTT"></NavMenuTab> */}
         </NavMenu>
-        {this.hasUnsavedChanges() && (
-          <section class="action-section">
-            <div>
-              <AlertWarning
-                icon={AlertWarningIcon.ALERT}
-                type={AlertWarningType.BASIC_BORDERLESS}
-                text="Unsaved Changes"
-              />
-            </div>
-            <div>
-              <button
-                onClick={() => {
-                  this.setState({
-                    config: { ...this.state.originalConfig } as IConfigJson,
-                  });
-                }}
-              >
-                Reset
-              </button>
-              <button
-                class="primary"
-                onClick={() => {
-                  if (this.state.config) {
-                    this.configService
-                      .saveConfigJson(this.state.config)
-                      .then((result) => {
-                        if (result === true) {
-                          debugger;
-                          this.setState({
-                            originalConfig: {
-                              ...this.state.config,
-                            } as IConfigJson,
-                          });
-                        }
-                      });
-                  }
-                }}
-              >
-                Save Configuration
-              </button>
-            </div>
-          </section>
-        )}
+
         {JSON.stringify(this.state.config)}
       </div>
     );

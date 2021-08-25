@@ -4,15 +4,16 @@ import {
   IConfigGPIO,
 } from "../../../lib/interfaces/IConfigJson";
 
-import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { DeviceType } from "../../../lib/enums/DeviceType";
 import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
+import { HardwareService } from "../../../lib/services/hardware-service";
 import { IDeviceSetupProps } from "./IDeviceSetupProps";
 import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
 
 const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
+  const hardwareService = new HardwareService();
   const handleControlModeToggle = (modeSwitch: ControlMode): void => {
     if (typeof props.onControlModeToggle === "function") {
       if (props.controlMode === modeSwitch) {
@@ -31,24 +32,36 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
         <div class="grid-large">
           <div class="form-group no-margin">
             <label for="name">Device Name</label>
-            <Input
-              value={
-                (props.deviceConfig && props.deviceConfig.name) || undefined
-              }
-              onChange={(value) => {
-                if (typeof props.onConfigUpdate === "function") {
-                  props.onConfigUpdate(
-                    {
-                      ...(props.deviceConfig as IConfigDevice),
-                      name: value as string,
-                    },
-                    {
-                      ...(props.gpioConfig as IConfigGPIO),
+            <div class="flex-stretch">
+              <div class="flex-grow">
+                <Input
+                  value={
+                    (props.deviceConfig && props.deviceConfig.name) || undefined
+                  }
+                  onChange={(value) => {
+                    if (typeof props.onConfigUpdate === "function") {
+                      props.onConfigUpdate(
+                        {
+                          ...(props.deviceConfig as IConfigDevice),
+                          name: value as string,
+                        },
+                        {
+                          ...(props.gpioConfig as IConfigGPIO),
+                        }
+                      );
                     }
-                  );
-                }
-              }}
-            />
+                  }}
+                />
+              </div>
+              <button
+                class="ml-small"
+                onClick={() => {
+                  hardwareService.restart();
+                }}
+              >
+                Restart
+              </button>
+            </div>
           </div>
           <div class="form-group no-margin">
             <label for="name">Device Type</label>
@@ -261,6 +274,49 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
             {/* <alert-message id="gpio-test-warning" icon="info"></alert-message> */}
           </div>
         </div>
+      </section>
+      <section>
+        Bacon ipsum dolor amet shoulder strip steak jowl corned beef short ribs
+        venison pastrami meatball ball tip kevin spare ribs short loin
+        drumstick. Beef salami burgdoggen capicola, spare ribs picanha biltong
+        tri-tip pastrami beef ribs shankle pork loin drumstick pork chop. Tongue
+        drumstick shoulder, salami ground round ball tip beef doner shank cupim
+        short ribs. Cow picanha porchetta chuck frankfurter ribeye bresaola
+        shank meatball, brisket fatback pork loin landjaeger. Frankfurter tongue
+        turkey burgdoggen. Cow ham swine shoulder chicken drumstick strip steak.
+        Pork leberkas meatball jowl pancetta chuck pork chop. Chuck short ribs
+        meatloaf, filet mignon picanha spare ribs meatball pig shoulder ball tip
+        pastrami. Beef t-bone chicken andouille, boudin pork meatball porchetta
+        pastrami shank sirloin. Burgdoggen kevin flank, drumstick leberkas
+        meatloaf beef ribs strip steak short loin filet mignon brisket pastrami
+        frankfurter. Hamburger pancetta beef swine beef ribs. Shank corned beef
+        swine turkey. Leberkas capicola salami porchetta, kielbasa turkey
+        shankle. Drumstick shoulder turducken strip steak turkey, kevin filet
+        mignon salami tri-tip buffalo hamburger meatball chislic. Pork chop
+        andouille strip steak boudin cow frankfurter. Biltong rump bacon jerky
+        venison. Pork picanha strip steak tongue turkey, short loin ground round
+        spare ribs pork chop beef ribs buffalo capicola. Flank brisket spare
+        ribs leberkas picanha sirloin bacon short loin turducken rump fatback.
+        Kevin bacon shoulder, ham hock chislic leberkas tongue picanha doner
+        kielbasa sausage andouille salami ham cupim. Beef tenderloin meatball
+        bacon cupim pork drumstick alcatra ham hock pig pork chop. Pork spare
+        ribs boudin shank chuck chislic. Chislic alcatra turkey buffalo, short
+        loin t-bone hamburger venison fatback cupim sirloin biltong shank
+        shankle. Kevin shank short ribs brisket biltong buffalo cupim tongue
+        capicola swine bacon meatball sausage jerky. Strip steak chuck sausage
+        bacon, beef ribs salami ball tip short loin. Short loin fatback kevin
+        meatloaf ground round, hamburger pork belly short ribs pork loin
+        burgdoggen boudin strip steak. Alcatra pork chop frankfurter corned beef
+        venison ham hock. Short loin drumstick filet mignon pork belly beef
+        ribs. Jerky turkey hamburger tenderloin prosciutto fatback, landjaeger
+        tongue rump turducken pork. Ham hock t-bone turkey pork loin burgdoggen
+        buffalo meatball swine spare ribs. Sirloin pastrami landjaeger t-bone
+        sausage, cupim pork ribeye swine. Cupim burgdoggen spare ribs kielbasa
+        pork tenderloin meatball flank, capicola brisket hamburger. Beef buffalo
+        short loin prosciutto ham hamburger chicken t-bone salami doner. Picanha
+        tenderloin jowl doner, burgdoggen corned beef hamburger meatball chislic
+        meatloaf kevin alcatra ribeye capicola. Does your lorem ipsum text long
+        for something a little meatier? Give our generator a try… it’s tasty!
       </section>
     </Fragment>
   );

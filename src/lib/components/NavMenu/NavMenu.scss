@@ -1,6 +1,7 @@
 @import "../../styles/colors.scss";
 @import "../../styles/sizes.scss";
 @import "../../styles/silent-classes.scss";
+@import "../../styles/z-indexes.scss";
 
 %li-tab {
   @extend %noTapHighlight;
@@ -17,6 +18,10 @@
 }
 
 .lum-Nav {
+  position: fixed;
+  z-index: $zNav;
+  top: 57px;
+  width: 100%;
   margin: 0;
   background: $lightDark;
   min-height: $navHeight;
@@ -43,5 +48,23 @@
         color: $highlight;
       }
     }
+  }
+}
+.lum-Nav-pushDown {
+  top: 97px;
+  background: $white;
+  border-bottom: 1px solid #dedede;
+  position: fixed;
+  display: block;
+  z-index: $zNav;
+  overflow: hidden;
+  width: 100%;
+
+  .lum-Nav-pushDown-content {
+    position: relative;
+    max-width: $maxWidth;
+    margin: $marginSmall $margin;
+    left: calc(50% - #{$margin});
+    transform: translateX(-50%);
   }
 }

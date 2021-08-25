@@ -6,6 +6,7 @@ import { Component, h } from "preact";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import { ConfigService } from "../../lib/services/config-service";
+import { HardwareService } from "../../lib/services/hardware-service";
 import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
@@ -17,6 +18,7 @@ interface ILumenatorSetupState {
 }
 
 class LumenatorSetup extends Component<null, ILumenatorSetupState> {
+  private hardwareService = new HardwareService();
   private configService = new ConfigService();
   constructor() {
     super();
@@ -95,12 +97,12 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
                       .saveConfigJson(this.state.config)
                       .then((result) => {
                         if (result === true) {
-                          debugger;
                           this.setState({
                             originalConfig: {
                               ...this.state.config,
                             } as IConfigJson,
                           });
+                          this.hardwareService.restart();
                         }
                       });
                   }

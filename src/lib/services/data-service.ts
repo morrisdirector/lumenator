@@ -18,4 +18,14 @@ export class DataService {
       body: (dto && JSON.stringify(dto)) || "",
     }).then((res) => res.json());
   }
+
+  protected emptyPOST(path: string): Promise<any> {
+    return fetch(path, {
+      method: "post",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "text/plain",
+      },
+    }).then((res) => res.json());
+  }
 }
