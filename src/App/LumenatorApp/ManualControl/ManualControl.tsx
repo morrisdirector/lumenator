@@ -116,7 +116,6 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
     const r = withLeadingZeros(color.r, 3);
     const g = withLeadingZeros(color.g, 3);
     const b = withLeadingZeros(color.b, 3);
-
     if (props.webSocketService) {
       props.webSocketService.send(`rgbctrl:r:${r}:g:${g}:b:${b}`);
     }

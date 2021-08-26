@@ -1,5 +1,6 @@
 export class DataService {
   protected DEVELOPMENT = process.env.NODE_ENV === "development";
+  protected HOST = document.location.host;
   constructor() {}
 
   protected jsonGET(path: string): Promise<any> {

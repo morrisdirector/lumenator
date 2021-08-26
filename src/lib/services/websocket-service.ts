@@ -2,62 +2,93 @@ import { DataService } from "./data-service";
 
 export class WebsocketService extends DataService {
   protected websocket?: WebSocket;
+  protected url: string = "ws://localhost:8080";
   // private pollConnectionInt?: NodeJS.Timeout;
   constructor() {
     super();
     if (!this.DEVELOPMENT) {
-      this.connect();
+      this.url = "ws://" + this.HOST + ":1337";
     }
+    this.connect();
   }
 
-  public connect = (): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      const url = "ws://" + document.location.host + ":1337";
-      console.log("Connecting to websocket...");
-      if (document.location.host.length) {
-        this.websocket = new WebSocket(url);
-        this.websocket.onopen = () => {
-          // clearInterval(connectionInt);
-          console.log("Websocket connection open!");
-          resolve(true);
-        };
-        this.websocket.onclose = () => {
-          console.log("Websocket connection closed!");
-        };
-        this.websocket.onerror = (evt) => {
-          // if (i === 30) {
-          //   clearInterval(connectionInt);
-          console.log("Resolving Error: ", evt);
-          resolve(false);
-          // send error!
-          // this.onWsError(evt);
-          // }
-        };
-        // let i = 0;
-        // const connectionInt = setInterval(() => {
-        //   i++;
+  private newWebSocket = (): WebSocket => {
+    this.websocket = new WebSocket(this.url);
+    return this.websocket;
+  };
 
-        // }, 1000);
-      }
-    });
+  public close = () => {
+    if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
+      this.websocket.close();
+    }
+  };
+
+  public connect = (): WebSocket => {
+    console.log("Attempting connection to WS...");
+    const ws = this.newWebSocket();
+    ws.onopen = () => {
+      console.log("WS connection open");
+    };
+    ws.onclose = () => {
+      console.log("WS connection closed");
+    };
+    ws.onerror = (evt) => {
+      console.log("WS Error: ", evt);
+    };
+    return ws;
   };
 
   public reconnect = (): Promise<boolean> => {
     return new Promise((resolve, reject) => {
-      if (this.websocket) {
-        this.websocket.close();
-        this.connect().then((connected) => resolve(connected));
+      if (!this.websocket) {
+        reject();
+      } else {
+        let ws = this.websocket;
+        let attempts = 1;
+        const reconnectInt = setInterval(() => {
+          switch (ws.readyState) {
+            case WebSocket.CLOSED:
+              console.log("Starting reconnect...");
+              ws = this.connect();
+              break;
+            case WebSocket.CLOSING:
+              console.log("WS closing...");
+              break;
+            case WebSocket.CONNECTING:
+              console.log("WS connecting...");
+              break;
+            case WebSocket.OPEN:
+              clearInterval(reconnectInt);
+              resolve(true);
+              break;
+          }
+          if (attempts >= 30) {
+            clearInterval(reconnectInt);
+          }
+          attempts = attempts + 1;
+        }, 1000);
       }
     });
   };
 
   public send = (msg: string) => {
     if (this.websocket) {
-      if (this.websocket.readyState === WebSocket.CLOSED) {
-        console.log("oops this is closed already");
-        this.connect();
-      } else if (msg) {
-        this.websocket.send(msg);
+      switch (this.websocket.readyState) {
+        case WebSocket.OPEN:
+          if (this.DEVELOPMENT) {
+            this.websocket.send(
+              JSON.stringify({
+                type: "echo",
+                payload: "test",
+              })
+            );
+          } else if (msg) {
+            this.websocket.send(msg);
+          }
+          break;
+        default:
+          this.reconnect();
+          break;
       }
     }
   };

@@ -170,6 +170,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               });
               this.hardwareService.restart();
               setTimeout(() => {
+                this.websocketService.close();
                 this.websocketService.reconnect().then((connected) => {
                   if (connected) {
                     this.setState({
