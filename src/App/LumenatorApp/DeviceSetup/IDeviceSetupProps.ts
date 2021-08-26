@@ -15,4 +15,5 @@ export interface IDeviceSetupProps {
     deviceConfig: IConfigDevice,
     gpioConfig: IConfigGPIO
   ) => void;
+  onRestart?: () => void;
 }

@@ -13,7 +13,6 @@ import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
 
 const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
-  const hardwareService = new HardwareService();
   const handleControlModeToggle = (modeSwitch: ControlMode): void => {
     if (typeof props.onControlModeToggle === "function") {
       if (props.controlMode === modeSwitch) {
@@ -56,7 +55,9 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
               <button
                 class="ml-small"
                 onClick={() => {
-                  hardwareService.restart();
+                  if (typeof props.onRestart === "function") {
+                    props.onRestart();
+                  }
                 }}
               >
                 Restart

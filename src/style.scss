@@ -180,6 +180,8 @@ label {
 .action-section {
   display: flex;
   justify-content: flex-end;
+  padding: 0;
+  max-width: calc(#{$maxWidth} - (#{$margin}));
   button {
     margin: 0 0 0 $marginSmall;
   }

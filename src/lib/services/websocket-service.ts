@@ -1,7 +1,8 @@
 import { DataService } from "./data-service";
 
 export class WebsocketService extends DataService {
-  protected websocket: WebSocket | undefined;
+  protected websocket?: WebSocket;
+  // private pollConnectionInt?: NodeJS.Timeout;
   constructor() {
     super();
     if (!this.DEVELOPMENT) {
@@ -9,33 +10,55 @@ export class WebsocketService extends DataService {
     }
   }
 
-  public connect = () => {
-    const url = "ws://" + document.location.host + ":1337";
-    if (document.location.host.length) {
-      let i = 0;
-      const connectionInt = setInterval(() => {
-        i++;
+  public connect = (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      const url = "ws://" + document.location.host + ":1337";
+      console.log("Connecting to websocket...");
+      if (document.location.host.length) {
         this.websocket = new WebSocket(url);
         this.websocket.onopen = () => {
-          clearInterval(connectionInt);
+          // clearInterval(connectionInt);
+          console.log("Websocket connection open!");
+          resolve(true);
         };
-        // websocket.onopen = function (evt) { onOpen(evt) };
-        // websocket.onclose = function (evt) { onClose(evt) };
-        // websocket.onmessage = function (evt) { onMessage(evt) };
+        this.websocket.onclose = () => {
+          console.log("Websocket connection closed!");
+        };
         this.websocket.onerror = (evt) => {
-          if (i === 5) {
-            clearInterval(connectionInt);
-            // send error!
-            // this.onWsError(evt);
-          }
+          // if (i === 30) {
+          //   clearInterval(connectionInt);
+          console.log("Resolving Error: ", evt);
+          resolve(false);
+          // send error!
+          // this.onWsError(evt);
+          // }
         };
-      }, 1000);
-    }
+        // let i = 0;
+        // const connectionInt = setInterval(() => {
+        //   i++;
+
+        // }, 1000);
+      }
+    });
+  };
+
+  public reconnect = (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (this.websocket) {
+        this.websocket.close();
+        this.connect().then((connected) => resolve(connected));
+      }
+    });
   };
 
   public send = (msg: string) => {
-    if (this.websocket && msg) {
-      this.websocket.send(msg);
+    if (this.websocket) {
+      if (this.websocket.readyState === WebSocket.CLOSED) {
+        console.log("oops this is closed already");
+        this.connect();
+      } else if (msg) {
+        this.websocket.send(msg);
+      }
     }
   };
 }

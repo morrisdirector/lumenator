@@ -1,28 +1,54 @@
+import { AlertWarningType, IAlertWarningProps } from "./IAlertWarningProps";
 import { Fragment, FunctionalComponent, h } from "preact";
+import { useEffect, useState } from "preact/hooks";
 
-import { IAlertWarningProps } from "./IAlertWarningProps";
-import { useState } from "preact/hooks";
-
-const AlertWarning: FunctionalComponent<IAlertWarningProps> = (props) => {
+const AlertWarning: FunctionalComponent<IAlertWarningProps> = ({
+  closable = false,
+  autoClose = false,
+  type = AlertWarningType.INFO,
+  icon,
+  margin,
+  text,
+  autoCloseDuration = 5,
+  ...props
+}) => {
   const [closed, setClosed] = useState(false);
+  const [autoCloseTimer, setAutoCloseTimer] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (autoClose && !autoCloseTimer) {
+      setAutoCloseTimer(
+        setTimeout(() => {
+          setClosed(true);
+        }, autoCloseDuration * 1000)
+      );
+    }
+  }, [autoClose, autoCloseDuration]);
+
   return (
     <Fragment>
       {!closed && (
         <div
-          class={`lum-AlertWarning${
-            props.icon && props.icon.length ? " icon" : ""
-          }${
-            props.margin && props.margin.length ? ` margin-${props.margin}` : ""
-          }`}
+          class={`lum-AlertWarning${icon && icon.length ? " icon" : ""}${
+            margin && margin.length ? ` margin-${margin}` : ""
+          }${autoClose ? ` autoClose` : ""}`}
         >
-          <div id="message" class={props.type ? props.type : "info"}>
-            {props.icon && props.icon.length && (
-              <span class={`icon ${props.icon}`}>
+          <div id="message" class={type}>
+            {autoClose && (
+              <div
+                class="timeout-indicator"
+                style={{ animationDuration: autoCloseDuration + "s" }}
+              ></div>
+            )}
+            {icon && icon.length && (
+              <span class={`icon ${icon}`}>
                 <span></span>
               </span>
             )}
-            <span class="text">{props.text}</span>
-            {props.closable && (
+            <span class="text">{text}</span>
+            {closable && (
               <button
                 class="close"
                 onClick={() => {

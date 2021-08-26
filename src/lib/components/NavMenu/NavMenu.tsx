@@ -1,5 +1,5 @@
 import { Fragment, FunctionalComponent, createRef, h } from "preact";
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 
 import { INavMenuProps } from "./INavMenuProps";
 import { INavMenuTabProps } from "../NavMenuTab/INavMenuTabProps";
@@ -23,7 +23,6 @@ const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
       } else {
         setPushDownHeight(0);
       }
-      console.log(pushDownHeight);
     }
   });
 

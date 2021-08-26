@@ -43,6 +43,17 @@
     color: $text;
     display: flex;
     justify-content: flex-start;
+    overflow: hidden;
+    .timeout-indicator {
+      height: 3px;
+      width: 100%;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      animation-name: indicatorAnimation;
+      animation-duration: 5s;
+      animation-timing-function: linear;
+    }
     span.icon {
       font-size: 14px;
       width: 16px;
@@ -110,6 +121,9 @@
   div.info {
     color: darken($info, 40%);
     background: lighten($info, 10%);
+    .timeout-indicator {
+      background: $info;
+    }
     &,
     button {
       color: darken($info, 40%);
@@ -117,6 +131,9 @@
   }
   div.alert {
     background: lighten($alert, 10%);
+    .timeout-indicator {
+      background: $alert;
+    }
     &,
     button {
       color: darken($alert, 40%);
@@ -124,6 +141,9 @@
   }
   div.danger {
     background: lighten($highlight, 10%);
+    .timeout-indicator {
+      background: darken($highlight, 10%);
+    }
     &,
     button {
       color: darken($highlight, 40%);
@@ -132,6 +152,9 @@
   div.basic {
     font-weight: 600;
     background: lighten($grey, 20%);
+    .timeout-indicator {
+      background: $grey;
+    }
     &,
     button {
       color: darken($grey, 20%);
@@ -144,5 +167,14 @@
     button {
       color: darken($grey, 20%);
     }
+  }
+}
+
+@keyframes indicatorAnimation {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
   }
 }

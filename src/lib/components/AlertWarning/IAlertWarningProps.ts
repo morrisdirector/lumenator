@@ -19,4 +19,6 @@ export interface IAlertWarningProps {
   type?: AlertWarningType;
   closable?: boolean;
   margin?: MarginType;
+  autoClose?: boolean;
+  autoCloseDuration?: number;
 }
