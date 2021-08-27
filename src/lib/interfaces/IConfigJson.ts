@@ -1,5 +1,11 @@
 import { DeviceType } from "../enums/DeviceType";
 
+export interface IConfigIP {
+  a: number;
+  b: number;
+  c: number;
+  d: number;
+}
 export interface IConfigDevice {
   name: string;
   type: DeviceType;
@@ -25,6 +31,10 @@ export interface IConfigMQTT {
 export interface IConfigNetwork {
   ssid: string;
   pass: string;
+  dhcp: boolean;
+  ip: IConfigIP | null;
+  gateway: IConfigIP | null;
+  subnet: IConfigIP | null;
 }
 
 export interface IConfigAccessPoint {

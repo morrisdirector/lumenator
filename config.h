@@ -11,6 +11,30 @@ enum DeviceType
   LW
 };
 
+struct IPv4
+{
+  uint8_t a = 0;
+  uint8_t b = 0;
+  uint8_t c = 0;
+  uint8_t d = 0;
+};
+
+struct IPGateway
+{
+  uint8_t a = 192;
+  uint8_t b = 168;
+  uint8_t c = 1;
+  uint8_t d = 1;
+};
+
+struct IPSubnet
+{
+  uint8_t a = 255;
+  uint8_t b = 255;
+  uint8_t c = 255;
+  uint8_t d = 0;
+};
+
 struct DeviceConfig
 {
   String name = "Lumenator";
@@ -21,6 +45,10 @@ struct NetworkConfig
 {
   String ssid = "SSID";
   String pass = "password";
+  bool dhcp = true;
+  IPv4 ip;
+  IPGateway gateway;
+  IPSubnet subnet;
 };
 
 struct AccessPointConfig
@@ -54,10 +82,10 @@ GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
 const int configJsonTotalCapacity =
-    JSON_OBJECT_SIZE(10)   // Total sections at parent level plus buffer
+    JSON_OBJECT_SIZE(20)   // Total sections at parent level plus buffer
     + JSON_OBJECT_SIZE(2)  // Total device props
     + JSON_OBJECT_SIZE(5)  // Total gpio props
-    + JSON_OBJECT_SIZE(2)  // Total network props
+    + JSON_OBJECT_SIZE(15) // Total network props
     + JSON_OBJECT_SIZE(1); // Total access point props
 
 void deserializeDeviceConfig(const JsonObject &json)
@@ -160,6 +188,60 @@ void deserializeNetworkConfig(const JsonObject &json)
 
     if (networkJson.containsKey("pass"))
       networkConfig.pass = networkJson["pass"].as<String>();
+
+    if (networkJson.containsKey("dhcp"))
+      networkConfig.dhcp = networkJson["dhcp"].as<bool>();
+
+    if (networkJson.containsKey("ip"))
+    {
+      JsonObject ipJson = networkJson["ip"];
+
+      if (ipJson.containsKey("a"))
+        networkConfig.ip.a = ipJson["a"].as<uint8_t>();
+
+      if (ipJson.containsKey("b"))
+        networkConfig.ip.b = ipJson["b"].as<uint8_t>();
+
+      if (ipJson.containsKey("c"))
+        networkConfig.ip.c = ipJson["c"].as<uint8_t>();
+
+      if (ipJson.containsKey("d"))
+        networkConfig.ip.d = ipJson["d"].as<uint8_t>();
+    }
+
+    if (networkJson.containsKey("gateway"))
+    {
+      JsonObject gatewayJson = networkJson["gateway"];
+
+      if (gatewayJson.containsKey("a"))
+        networkConfig.gateway.a = gatewayJson["a"].as<uint8_t>();
+
+      if (gatewayJson.containsKey("b"))
+        networkConfig.gateway.b = gatewayJson["b"].as<uint8_t>();
+
+      if (gatewayJson.containsKey("c"))
+        networkConfig.gateway.c = gatewayJson["c"].as<uint8_t>();
+
+      if (gatewayJson.containsKey("d"))
+        networkConfig.gateway.d = gatewayJson["d"].as<uint8_t>();
+    }
+
+    if (networkJson.containsKey("subnet"))
+    {
+      JsonObject subnetJson = networkJson["subnet"];
+
+      if (subnetJson.containsKey("a"))
+        networkConfig.subnet.a = subnetJson["a"].as<uint8_t>();
+
+      if (subnetJson.containsKey("b"))
+        networkConfig.subnet.b = subnetJson["b"].as<uint8_t>();
+
+      if (subnetJson.containsKey("c"))
+        networkConfig.subnet.c = subnetJson["c"].as<uint8_t>();
+
+      if (subnetJson.containsKey("d"))
+        networkConfig.subnet.d = subnetJson["d"].as<uint8_t>();
+    }
 
     Serial.println("[DS]: * Network settings loaded");
   }

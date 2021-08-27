@@ -349,7 +349,25 @@ void startWiFi()
   Serial.println();
   Serial.println("Connecting to WiFi:");
 
+  if (networkConfig.dhcp == false)
+  {
+    Serial.println("Static IP: ");
+    Serial.print(networkConfig.ip.a);
+    Serial.print(".");
+    Serial.print(networkConfig.ip.b);
+    Serial.print(".");
+    Serial.print(networkConfig.ip.c);
+    Serial.print(".");
+    Serial.println(networkConfig.ip.d);
+
+    IPAddress local_IP(networkConfig.ip.a, networkConfig.ip.b, networkConfig.ip.c, networkConfig.ip.d);
+    IPAddress gateway(192, 168, 1, 1);
+    IPAddress subnet(255, 255, 0, 0);
+    WiFi.config(local_IP, gateway, subnet);
+  }
+
   WiFi.begin(networkConfig.ssid, networkConfig.pass);
+
   int i = 0;
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -435,6 +453,8 @@ void readConfigJson(String configuration)
     DeserializationError error = deserializeJson(json, configuration);
     if (error)
     {
+
+      Serial.print(error.c_str());
 
       Serial.println();
       Serial.println("----- Cannot Parse Configuration -----");

@@ -31,38 +31,24 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
         <div class="grid-large">
           <div class="form-group no-margin">
             <label for="name">Device Name</label>
-            <div class="flex-stretch">
-              <div class="flex-grow">
-                <Input
-                  value={
-                    (props.deviceConfig && props.deviceConfig.name) || undefined
-                  }
-                  onChange={(value) => {
-                    if (typeof props.onConfigUpdate === "function") {
-                      props.onConfigUpdate(
-                        {
-                          ...(props.deviceConfig as IConfigDevice),
-                          name: value as string,
-                        },
-                        {
-                          ...(props.gpioConfig as IConfigGPIO),
-                        }
-                      );
+            <Input
+              value={
+                (props.deviceConfig && props.deviceConfig.name) || undefined
+              }
+              onChange={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate(
+                    {
+                      ...(props.deviceConfig as IConfigDevice),
+                      name: value as string,
+                    },
+                    {
+                      ...(props.gpioConfig as IConfigGPIO),
                     }
-                  }}
-                />
-              </div>
-              <button
-                class="ml-small"
-                onClick={() => {
-                  if (typeof props.onRestart === "function") {
-                    props.onRestart();
-                  }
-                }}
-              >
-                Restart
-              </button>
-            </div>
+                  );
+                }
+              }}
+            />
           </div>
           <div class="form-group no-margin">
             <label for="name">Device Type</label>
@@ -98,9 +84,9 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
         </div>
       </section>
       <section>
-        <label>GPIO Mapping</label>
-        <div class="grid-large mt-small">
+        <div class="grid-large">
           <div>
+            <label class="mb-small">GPIO Mapping</label>
             <table>
               <tr class="header-row">
                 <th>Channel</th>
@@ -273,6 +259,19 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = (props) => {
                 )}
             </table>
             {/* <alert-message id="gpio-test-warning" icon="info"></alert-message> */}
+          </div>
+          <div>
+            <label class="mb-small">System</label>
+            <button
+              class="mb-small width-100"
+              onClick={() => {
+                if (typeof props.onRestart === "function") {
+                  props.onRestart();
+                }
+              }}
+            >
+              Restart
+            </button>
           </div>
         </div>
       </section>

@@ -1,3 +1,5 @@
+import { IConfigIP } from "../interfaces/IConfigJson";
+
 export function strValToNumber(str: string): number | undefined {
   if (str === "0") {
     return 0;
@@ -22,4 +24,33 @@ export function getUniqueId() {
   // Convert it to base 36 (numbers + letters), and grab the first 9 characters
   // after the decimal.
   return "_" + Math.random().toString(36).substr(2, 9);
+}
+
+export function isIPAddress(str: string): boolean {
+  if (!str) {
+    return false;
+  }
+  return str.search(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g) > -1;
+}
+
+export function getIPConfigObject(str: string): IConfigIP | null {
+  if (!str || !isIPAddress(str)) {
+    return null;
+  }
+  const segment = str.split(".");
+  return {
+    a: parseInt(segment[0]),
+    b: parseInt(segment[1]),
+    c: parseInt(segment[2]),
+    d: parseInt(segment[3]),
+  };
+}
+
+export function getIPStringFromConfig(
+  config?: IConfigIP | null
+): string | null {
+  if (config) {
+    return `${config.a}.${config.b}.${config.c}.${config.d}`;
+  }
+  return null;
 }

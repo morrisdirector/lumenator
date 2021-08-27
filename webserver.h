@@ -112,6 +112,19 @@ void initRoutes()
 
               doc["network"]["ssid"] = networkConfig.ssid;
               doc["network"]["pass"] = networkConfig.pass;
+              doc["network"]["dhcp"] = networkConfig.dhcp;
+              doc["network"]["ip"]["a"] = networkConfig.ip.a;
+              doc["network"]["ip"]["b"] = networkConfig.ip.b;
+              doc["network"]["ip"]["c"] = networkConfig.ip.c;
+              doc["network"]["ip"]["d"] = networkConfig.ip.d;
+              doc["network"]["gateway"]["a"] = networkConfig.gateway.a;
+              doc["network"]["gateway"]["b"] = networkConfig.gateway.b;
+              doc["network"]["gateway"]["c"] = networkConfig.gateway.c;
+              doc["network"]["gateway"]["d"] = networkConfig.gateway.d;
+              doc["network"]["subnet"]["a"] = networkConfig.subnet.a;
+              doc["network"]["subnet"]["b"] = networkConfig.subnet.b;
+              doc["network"]["subnet"]["c"] = networkConfig.subnet.c;
+              doc["network"]["subnet"]["d"] = networkConfig.subnet.d;
 
               doc["accessPoint"]["pass"] = accessPointConfig.pass;
 
@@ -148,20 +161,20 @@ void initRoutes()
         }
       });
 
-  server.on(
-      "/restart", HTTP_POST,
-      [](AsyncWebServerRequest *request)
-      {
-        request->send(200, "application/json", "{\"success\": true}");
-        Serial.print("restarting!!!!");
-        ESP.restart();
-      },
-      NULL,
-      [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
-      {
-        Serial.print("restarting!");
-        ESP.reset();
-      });
+  // server.on(
+  //     "/restart", HTTP_POST,
+  //     [](AsyncWebServerRequest *request)
+  //     {
+  //       request->send(200, "application/json", "{\"success\": true}");
+  //       Serial.print("restarting!!!!");
+  //       ESP.restart();
+  //     },
+  //     NULL,
+  //     [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+  //     {
+  //       Serial.print("restarting!");
+  //       ESP.reset();
+  //     });
 
   // server.on(
   //     "/update", HTTP_POST, [](AsyncWebServerRequest *request)

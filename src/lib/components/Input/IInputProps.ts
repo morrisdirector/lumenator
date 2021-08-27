@@ -6,5 +6,7 @@ export interface IInputProps {
    * Tab ID that is active on load
    */
   activeId?: number;
+  disabled?: boolean;
   onChange?: (value: string | number | undefined) => void;
+  onBlur?: (value: string | number | undefined) => void;
 }

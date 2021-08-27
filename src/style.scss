@@ -53,6 +53,10 @@ section {
   }
 }
 
+.width-100 {
+  width: 100% !important;
+}
+
 .no-margin {
   margin: 0 !important;
 }
@@ -67,6 +71,10 @@ section {
 
 .ml-small {
   margin-left: $marginSmall;
+}
+
+.mb-small {
+  margin-bottom: $marginSmall;
 }
 
 .flex-stretch {
@@ -123,6 +131,7 @@ hr {
 }
 
 label {
+  display: block;
   font-size: 14px;
   font-weight: bold;
 }

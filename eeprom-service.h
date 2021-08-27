@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#define EEPROM_SIZE 512
+#define EEPROM_SIZE 1024
 
 String readEEPROM()
 {

@@ -18,6 +18,12 @@
     padding: $padding;
     @extend %white-emboss-box;
   }
+  &.disabled {
+    .lum-Input-input {
+      color: lighten($grey, 20%);
+      cursor: not-allowed;
+    }
+  }
 }
 
 // Remove Number arrows:
