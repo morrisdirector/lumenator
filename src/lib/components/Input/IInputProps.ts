@@ -9,4 +9,5 @@ export interface IInputProps {
   disabled?: boolean;
   onChange?: (value: string | number | undefined) => void;
   onBlur?: (value: string | number | undefined) => void;
+  onEnter?: (value: string | number | undefined) => void;
 }

@@ -15,6 +15,7 @@ import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
 
 const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
+  page = "app",
   configNetwork = {},
   configAccessPoint = {},
   ...props
@@ -95,7 +96,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
               <div class="flex-grow">
                 <Input
                   id="password"
-                  type={!showPassword ? "password" : "string"}
+                  type={!showPassword && page === "app" ? "password" : "string"}
                   value={configNetwork.pass || undefined}
                   onChange={(value) => {
                     if (typeof props.onConfigUpdate === "function") {
@@ -112,15 +113,17 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                   }}
                 />
               </div>
-              <button
-                type="button"
-                class="ml-small"
-                onClick={() => {
-                  setShowPassword(!showPassword);
-                }}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
+              {page === "app" && (
+                <button
+                  type="button"
+                  class="ml-small"
+                  onClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              )}
             </div>
           </div>
           <div class="form-group">
@@ -189,7 +192,9 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
               <div class="flex-grow">
                 <Input
                   id="apPass"
-                  type={!showAPPassword ? "password" : "string"}
+                  type={
+                    !showAPPassword && page === "app" ? "password" : "string"
+                  }
                   value={configAccessPoint.pass || undefined}
                   onChange={(value) => {
                     if (typeof props.onConfigUpdate === "function") {
@@ -206,18 +211,21 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                   }}
                 />
               </div>
-              <button
-                type="button"
-                class="ml-small"
-                onClick={() => {
-                  setShowAPPassword(!showAPPassword);
-                }}
-              >
-                {showAPPassword ? "Hide" : "Show"}
-              </button>
+              {page === "app" && (
+                <button
+                  type="button"
+                  class="ml-small"
+                  onClick={() => {
+                    setShowAPPassword(!showAPPassword);
+                  }}
+                >
+                  {showAPPassword ? "Hide" : "Show"}
+                </button>
+              )}
             </div>
             <div class="helper-text mt-large">
-              Password for the setup access point page when Lumenator cannot
+              Password for the setup access point{" "}
+              {page === "setup" ? "(this page)" : ""} when Lumenator cannot
               connect to the network.
             </div>
           </div>

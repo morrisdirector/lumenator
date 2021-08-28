@@ -16,14 +16,14 @@ export const testData = (): IConfigJson => {
     },
     network: {
       ssid: "MySSID",
-      pass: "password",
+      pass: "",
       dhcp: false,
       ip: { a: 192, b: 168, c: 1, d: 192 },
       gateway: { a: 192, b: 168, c: 1, d: 1 },
       subnet: { a: 255, b: 255, c: 0, d: 0 },
     },
     accessPoint: {
-      pass: "ap_password",
+      pass: "bacon",
     },
   };
 };

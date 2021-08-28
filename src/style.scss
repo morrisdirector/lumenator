@@ -176,6 +176,13 @@ label {
   font-style: italic;
 }
 
+.error-text {
+  display: block;
+  color: darken($alert, 30%);
+  font-size: 14px;
+  margin: 10px 0 0 0;
+}
+
 .page-action-buttons {
   position: relative;
   max-width: $maxWidth;

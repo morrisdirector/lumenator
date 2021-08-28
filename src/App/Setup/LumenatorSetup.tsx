@@ -2,17 +2,23 @@ import {
   AlertWarningIcon,
   AlertWarningType,
 } from "../../lib/components/AlertWarning/IAlertWarningProps";
-import { Component, h } from "preact";
+import { Component, Fragment, h } from "preact";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import { ConfigService } from "../../lib/services/config-service";
 import { HardwareService } from "../../lib/services/hardware-service";
 import { IConfigJson } from "../../lib/interfaces/IConfigJson";
+import Input from "../../lib/components/Input/Input";
+import Loader from "../../lib/components/Loader/Loader";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
-import SetupForm from "./SetupForm/SetupForm";
+import NetworkSetup from "../LumenatorApp/NetworkSetup/NetworkSetup";
 
 interface ILumenatorSetupState {
+  accessGranted: boolean;
+  errorText: string;
+  password?: string;
+  loading?: boolean;
   originalConfig?: IConfigJson;
   config?: IConfigJson;
 }
@@ -22,7 +28,8 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
   private configService = new ConfigService();
   constructor() {
     super();
-    this.state = {};
+    this.state = { accessGranted: false, errorText: "" };
+    this.renderActionSection = this.renderActionSection.bind(this);
   }
 
   private init = async (): Promise<any> => {
@@ -30,6 +37,9 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
       const data = await this.configService.loadConfigJson();
       if (data) {
         this.setState({ originalConfig: { ...data }, config: { ...data } });
+      }
+      if (!data.accessPoint.pass) {
+        this.setState({ accessGranted: true });
       }
     } catch (error) {
       debugger;
@@ -40,15 +50,65 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
     this.init();
   }
 
-  private hasUnsavedChanges(): boolean {
-    const original = JSON.stringify(this.state.originalConfig);
-    const current = JSON.stringify(this.state.config);
-    return original !== current;
+  private renderActionSection(): h.JSX.Element {
+    return this.configService.hasUnsavedChanges(
+      this.state.originalConfig,
+      this.state.config
+    ) ? (
+      <section class="action-section no-margin">
+        <div>
+          <button
+            onClick={() => {
+              this.setState({
+                config: { ...this.state.originalConfig } as IConfigJson,
+              });
+            }}
+          >
+            Start Over
+          </button>
+          <button
+            class="primary"
+            onClick={() => {
+              if (this.state.config) {
+                this.setState({ loading: true });
+                this.configService
+                  .saveConfigJson(this.state.config)
+                  .then((result) => {
+                    if (result === true) {
+                      this.setState({
+                        originalConfig: {
+                          ...this.state.config,
+                        } as IConfigJson,
+                      });
+                      this.hardwareService.restart();
+                    }
+                  });
+              }
+            }}
+          >
+            Save and Restart
+          </button>
+        </div>
+      </section>
+    ) : (
+      <Fragment></Fragment>
+    );
   }
+
+  private login = (): void => {
+    if (this.state.originalConfig) {
+      if (this.state.originalConfig.accessPoint.pass == this.state.password) {
+        this.setState({ accessGranted: true });
+      } else {
+        this.setState({ errorText: "Invalid password" });
+      }
+    }
+  };
 
   render() {
     return (
       <div id="lumenator-web-app">
+        {this.state.loading && <Loader></Loader>}
         <header>
           <div class="header-container">
             <div class="header-items">
@@ -56,9 +116,65 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
             </div>
           </div>
         </header>
-        <NavMenu activeId={1}>
+        <NavMenu
+          minimized={true}
+          activeId={1}
+          renderActionSection={this.renderActionSection}
+        >
           <NavMenuTab id={1} title="Setup">
-            <SetupForm
+            {(!this.state.accessGranted && (
+              <section style={{ maxWidth: "400px" }}>
+                <div class="form-group no-margin">
+                  <label>Setup Password</label>
+                  <div className="flex-stretch">
+                    <div class="flex-grow">
+                      <Input
+                        onEnter={this.login}
+                        onChange={(value) => {
+                          this.setState({ password: value as string });
+                        }}
+                        type="password"
+                      ></Input>
+                    </div>
+                    <button class="primary ml-small" onClick={this.login}>
+                      Go
+                    </button>
+                  </div>
+                </div>
+                <div class="error-text">{this.state.errorText}</div>
+              </section>
+            )) || (
+              <Fragment>
+                <section>
+                  <h4>Welcome!</h4>
+                  <p>
+                    To get started, fill out the network configuration form
+                    below, then click "Save and Restart". Once configured,
+                    Lumenator will try to connect to your wireless network. If
+                    unsuccessful, this access point will become available again
+                    for configuration.
+                  </p>
+                </section>
+                <NetworkSetup
+                  page="setup"
+                  configNetwork={this.state.config && this.state.config.network}
+                  configAccessPoint={
+                    this.state.config && this.state.config.accessPoint
+                  }
+                  onConfigUpdate={(configs) => {
+                    this.setState({
+                      config: {
+                        ...(this.state.config as IConfigJson),
+                        network: configs.network,
+                        accessPoint: configs.accessPoint,
+                      },
+                    });
+                  }}
+                />
+              </Fragment>
+            )}
+
+            {/* <SetupForm
               config={this.state.config}
               onConfigUpdate={(config) => {
                 this.setState({
@@ -67,52 +183,9 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
                   },
                 });
               }}
-            />
+            /> */}
           </NavMenuTab>
         </NavMenu>
-        {this.hasUnsavedChanges() && (
-          <section class="action-section">
-            <div>
-              <AlertWarning
-                icon={AlertWarningIcon.ALERT}
-                type={AlertWarningType.BASIC_BORDERLESS}
-                text="Unsaved Changes"
-              />
-            </div>
-            <div>
-              <button
-                onClick={() => {
-                  this.setState({
-                    config: { ...this.state.originalConfig } as IConfigJson,
-                  });
-                }}
-              >
-                Reset
-              </button>
-              <button
-                class="primary"
-                onClick={() => {
-                  if (this.state.config) {
-                    this.configService
-                      .saveConfigJson(this.state.config)
-                      .then((result) => {
-                        if (result === true) {
-                          this.setState({
-                            originalConfig: {
-                              ...this.state.config,
-                            } as IConfigJson,
-                          });
-                          this.hardwareService.restart();
-                        }
-                      });
-                  }
-                }}
-              >
-                Save and Restart
-              </button>
-            </div>
-          </section>
-        )}
         {JSON.stringify(this.state.config)}
       </div>
     );

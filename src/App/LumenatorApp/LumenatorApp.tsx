@@ -105,12 +105,6 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
     }
   };
 
-  private hasUnsavedChanges(): boolean {
-    const original = JSON.stringify(this.state.originalConfig);
-    const current = JSON.stringify(this.state.config);
-    return original !== current;
-  }
-
   private saveConfiguration(): void {
     this.setState({ loading: true });
     if (this.state.config) {
@@ -227,7 +221,10 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
   private renderActionSection(): h.JSX.Element {
     return this.state.restartRequest ? (
       this.renderRestartDialog()
-    ) : this.hasUnsavedChanges() ? (
+    ) : this.configService.hasUnsavedChanges(
+        this.state.originalConfig,
+        this.state.config
+      ) ? (
       this.renderUnsaved()
     ) : (
       <Fragment></Fragment>

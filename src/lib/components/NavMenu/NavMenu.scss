@@ -26,6 +26,12 @@
   background: $lightDark;
   min-height: $navHeight;
   padding: 0 $paddingLarge;
+  &.minimized {
+    min-height: 10px;
+    .lum-NavMenu {
+      min-height: 10px;
+    }
+  }
   .lum-NavMenu {
     display: flex;
     align-items: center;
@@ -59,6 +65,10 @@
   z-index: $zNav;
   overflow: hidden;
   width: 100%;
+
+  &.minimized {
+    top: 67px;
+  }
 
   .lum-Nav-pushDown-content {
     position: relative;

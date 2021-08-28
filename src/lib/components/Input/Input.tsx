@@ -23,6 +23,12 @@ const Input: FunctionalComponent<IInputProps> = (props) => {
     }
   };
 
+  const handleKeypress = (event: KeyboardEvent): void => {
+    if (event.key === "Enter" && typeof props.onEnter === "function") {
+      props.onEnter(getEventValue(event));
+    }
+  };
+
   return (
     <div class={`lum-Input${props.disabled ? " disabled" : ""}`}>
       <input
@@ -32,6 +38,7 @@ const Input: FunctionalComponent<IInputProps> = (props) => {
         value={props.value}
         onInput={handleChange}
         onBlur={handleBlur}
+        onKeyPress={handleKeypress}
       />
       {props.children}
     </div>

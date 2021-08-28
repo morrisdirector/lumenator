@@ -20,6 +20,11 @@ const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
         if (contentBoxSize.blockSize != pushDownHeight) {
           setPushDownHeight(contentBoxSize.blockSize);
         }
+      } else if (entry.contentRect) {
+        // Safari:
+        if (entry.contentRect.height != pushDownHeight) {
+          setPushDownHeight(entry.contentRect.height);
+        }
       } else {
         setPushDownHeight(0);
       }
@@ -33,7 +38,9 @@ const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
   }, [pushDownContainer]);
 
   const renderTabs = (): any => {
-    if (Array.isArray(props.children)) {
+    if (props.minimized) {
+      return <div></div>;
+    } else if (Array.isArray(props.children)) {
       return props.children.map((child) => {
         const props = (child as preact.VNode<INavMenuTabProps>).props;
         const active =
@@ -73,11 +80,12 @@ const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
 
   return (
     <Fragment>
-      <div class="lum-Nav">
+      <div class={`lum-Nav${props.minimized ? " minimized" : ""}`}>
         <ul class="lum-NavMenu">{renderTabs()}</ul>
       </div>
+      {pushDownHeight}
       <div
-        class="lum-Nav-pushDown"
+        class={`lum-Nav-pushDown${props.minimized ? " minimized" : ""}`}
         style={{ visibility: !pushDownHeight ? "hidden" : "visible" }}
       >
         <div class="lum-Nav-pushDown-content" ref={pushDownContainer}>
@@ -89,7 +97,10 @@ const NavMenu: FunctionalComponent<INavMenuProps> = (props) => {
       <main>
         <div
           class="pushDown-spacer"
-          style={{ height: pushDownHeight, marginBottom: "10px" }}
+          style={{
+            height: pushDownHeight,
+            marginBottom: props.minimized ? "0" : "10px",
+          }}
         ></div>
         {renderTabContent()}
       </main>

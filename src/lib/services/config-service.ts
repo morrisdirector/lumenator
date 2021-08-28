@@ -40,4 +40,13 @@ export class ConfigService extends DataService {
         });
     });
   };
+
+  public hasUnsavedChanges(
+    originalConfig?: IConfigJson,
+    config?: IConfigJson
+  ): boolean {
+    const original = originalConfig ? JSON.stringify(originalConfig) : "";
+    const current = config ? JSON.stringify(config) : "";
+    return original !== current;
+  }
 }
