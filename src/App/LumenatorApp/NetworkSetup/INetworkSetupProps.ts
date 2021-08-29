@@ -1,14 +1,7 @@
-import {
-  IConfigAccessPoint,
-  IConfigNetwork,
-} from "../../../lib/interfaces/IConfigJson";
+import { IConfigJson } from "../../../lib/interfaces/IConfigJson";
 
 export interface INetworkSetupProps {
   page?: "app" | "setup";
-  configNetwork?: IConfigNetwork;
-  configAccessPoint?: IConfigAccessPoint;
-  onConfigUpdate?: (configs: {
-    network: IConfigNetwork;
-    accessPoint: IConfigAccessPoint;
-  }) => void;
+  config?: IConfigJson;
+  onConfigUpdate?: (config: IConfigJson) => void;
 }

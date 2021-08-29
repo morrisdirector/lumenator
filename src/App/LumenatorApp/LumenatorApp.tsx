@@ -3,6 +3,7 @@ import {
   AlertWarningType,
 } from "../../lib/components/AlertWarning/IAlertWarningProps";
 import { Component, Fragment, VNode, h } from "preact";
+import { Conf, IConfigJson } from "../../lib/interfaces/IConfigJson";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import Chip from "../../lib/components/Chip/Chip";
@@ -10,7 +11,6 @@ import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
 import { HardwareService } from "../../lib/services/hardware-service";
-import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import { IOnColorSetData } from "./ManualControl/IManualControlProps";
 import Loader from "../../lib/components/Loader/Loader";
 import ManualControl from "./ManualControl/ManualControl";
@@ -240,8 +240,10 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
             <div class="header-items">
               <h2>Lumenator</h2>
               {this.state.originalConfig &&
-                this.state.originalConfig.device.name && (
-                  <Chip text={this.state.originalConfig.device.name}></Chip>
+                this.state.originalConfig[Conf.DEVICE_NAME] && (
+                  <Chip
+                    text={this.state.originalConfig[Conf.DEVICE_NAME]}
+                  ></Chip>
                 )}
               <div class="version">v1.0</div>
             </div>
@@ -254,14 +256,11 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
         >
           <NavMenuTab id={1} title="Device">
             <DeviceSetup
-              deviceConfig={this.state.config && this.state.config.device}
-              gpioConfig={this.state.config && this.state.config.gpio}
-              onConfigUpdate={(deviceConfig, gpioConfig) => {
+              config={this.state.config}
+              onConfigUpdate={(config) => {
                 this.setState({
                   config: {
-                    ...(this.state.config as IConfigJson),
-                    device: deviceConfig,
-                    gpio: gpioConfig,
+                    ...config,
                   },
                 });
               }}
@@ -274,16 +273,11 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           </NavMenuTab>
           <NavMenuTab id={2} title="Network">
             <NetworkSetup
-              configNetwork={this.state.config && this.state.config.network}
-              configAccessPoint={
-                this.state.config && this.state.config.accessPoint
-              }
-              onConfigUpdate={(configs) => {
+              config={this.state.config}
+              onConfigUpdate={(config) => {
                 this.setState({
                   config: {
-                    ...(this.state.config as IConfigJson),
-                    network: configs.network,
-                    accessPoint: configs.accessPoint,
+                    ...config,
                   },
                 });
               }}
