@@ -1,0 +1,226 @@
+@import "./lib/styles/colors.scss";
+@import "./lib/styles/sizes.scss";
+@import "./lib/styles/silent-classes.scss";
+@import "./lib/styles/buttons.scss";
+
+@import "./lib/components/components.scss";
+
+@import "./App/LumenatorApp/LumenatorApp.scss";
+@import "./App/LumenatorApp/ManualControl/ManualControl.scss";
+@import "./App/LumenatorApp/DeviceSetup/DeviceSetup.scss";
+
+body {
+  margin: 0;
+  background-color: $white;
+  color: $text;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+
+  &.noScroll {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+}
+
+h4 {
+  margin: 0 0 $margin;
+}
+
+p {
+  font-size: $textSizeNormal;
+  color: $lightDark;
+  line-height: $textLineHeightNormal;
+}
+
+main {
+  margin: 120px 20px 20px;
+}
+
+section {
+  display: block;
+  position: relative;
+  max-width: calc(#{$maxWidth} - (#{$margin} * 2));
+  margin: 0 auto $margin;
+  padding: $paddingLarge;
+  border-radius: $borderRadius;
+  background-color: $lightGrey;
+  .action-buttons {
+    margin: $margin 0 0 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: $marginSmall;
+  }
+}
+
+.width-100 {
+  width: 100% !important;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.mt-small {
+  margin-top: $marginSmall;
+}
+
+.mt-large {
+  margin-top: $marginLarge;
+}
+
+.ml-small {
+  margin-left: $marginSmall;
+}
+
+.mb-small {
+  margin-bottom: $marginSmall;
+}
+
+.flex-stretch {
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.flex-grow {
+  flex-grow: 2 !important;
+}
+
+.grid-tiny {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+.grid-small {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.grid-medium {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.grid-large {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.flex-row {
+  display: flex;
+  > * {
+    width: auto !important;
+    &:not(:first-child) {
+      margin-left: $marginSmall !important;
+    }
+  }
+  > .flex-grow-1 {
+    flex-grow: 1;
+  }
+}
+
+hr {
+  margin: calc(#{$margin} * 2) 0 $margin;
+  border: 0;
+  box-shadow: 0px 0.5px 0px 0.5px rgba(255, 255, 255, 0.8),
+    0px -0.5px 0px 0.5px rgba(0, 0, 0, 0.15);
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  margin: $baseSpacer 0 0 0;
+
+  &.inline {
+    margin: 0;
+    flex-direction: row;
+    > :not(label) {
+      margin: 0;
+    }
+  }
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+  }
+  > :not(label) {
+    display: block;
+    margin: $marginSmall 0 0 0;
+  }
+  &.centered {
+    align-items: center;
+  }
+  > .lum-ToggleSwitch {
+    margin-top: 12px;
+  }
+}
+.helper-text {
+  display: block;
+  position: relative;
+  color: $grey;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.error-text {
+  display: block;
+  color: darken($alert, 30%);
+  font-size: 14px;
+  margin: 10px 0 0 0;
+}
+
+.page-action-buttons {
+  position: relative;
+  max-width: $maxWidth;
+  margin: 0 auto $margin;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: $marginSmall;
+}
+
+.action-section {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+  max-width: calc(#{$maxWidth} - (#{$margin}));
+  button {
+    margin: 0 0 0 $marginSmall;
+  }
+}
+
+table {
+  border: 0;
+  border-spacing: 0;
+  width: 100%;
+  margin: 0 0 $margin;
+  tr {
+    &.header-row {
+      background: grey;
+      color: white;
+    }
+    th,
+    td {
+      // border-top: 1px solid grey;
+      padding: 5px;
+      width: 100%;
+    }
+    th {
+      text-align: left;
+    }
+  }
+}

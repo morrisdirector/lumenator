@@ -1,0 +1,80 @@
+@import "../../styles/colors.scss";
+@import "../../styles/sizes.scss";
+@import "../../styles/silent-classes.scss";
+@import "../../styles/z-indexes.scss";
+
+%li-tab {
+  @extend %noTapHighlight;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  color: #ffffff;
+  height: $navHeight;
+  line-height: $navHeight;
+  margin: 0;
+  padding: 0 $padding;
+}
+
+.lum-Nav {
+  position: fixed;
+  z-index: $zNav;
+  top: 57px;
+  width: 100%;
+  margin: 0;
+  background: $lightDark;
+  min-height: $navHeight;
+  padding: 0 $paddingLarge;
+  &.minimized {
+    min-height: 10px;
+    .lum-NavMenu {
+      min-height: 10px;
+    }
+  }
+  .lum-NavMenu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: $padding;
+    flex-wrap: wrap;
+    max-width: $maxWidth;
+    margin: 0 auto;
+    padding: 0;
+    min-height: $navHeight;
+
+    li.tab {
+      @extend %li-tab;
+
+      &:hover {
+        background: lighten($lightDark, 10%);
+      }
+
+      &.active {
+        color: $highlight;
+      }
+    }
+  }
+}
+.lum-Nav-pushDown {
+  top: 97px;
+  background: $lightGrey;
+  border-bottom: 2px solid #dadada;
+  position: fixed;
+  display: block;
+  z-index: $zNav;
+  overflow: hidden;
+  width: 100%;
+
+  &.minimized {
+    top: 67px;
+  }
+
+  .lum-Nav-pushDown-content {
+    position: relative;
+    max-width: $maxWidth;
+    margin: $marginSmall $margin;
+    left: calc(50% - #{$margin});
+    transform: translateX(-50%);
+  }
+}

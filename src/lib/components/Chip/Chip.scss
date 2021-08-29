@@ -1,0 +1,26 @@
+@import "../../styles/colors.scss";
+@import "../../styles/sizes.scss";
+
+.lum-Chip {
+  display: flex;
+  align-items: center;
+  height: $itemHeightSmall;
+  padding: $paddingSmall $padding;
+  margin: 0 0 $marginSmall $margin;
+  background-color: $highlight;
+  border-radius: $borderRadius;
+  font-size: $textSizeNormal;
+  font-weight: bold;
+  cursor: pointer;
+  i {
+    margin: 0 6px 0 0;
+  }
+  &.on {
+    background-color: $highlight;
+  }
+
+  &.off {
+    color: $white;
+    background-color: $grey;
+  }
+}

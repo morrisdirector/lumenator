@@ -1,0 +1,7 @@
+node_modules
+.vscode
+.parcel-cache
+.DS_Store
+dist
+data/config.json
+config.json

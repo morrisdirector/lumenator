@@ -1,0 +1,256 @@
+@import "./styles/colors";
+@import "./styles/sizes";
+@import "./styles/silent-classes";
+@import "./styles/buttons";
+@import "./styles/components";
+
+body {
+  margin: 0;
+  background-color: $white;
+  color: $text;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+
+  &.noScroll {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
+}
+
+h4 {
+  margin: 0 0 $margin;
+}
+
+p {
+  font-size: $textSizeNormal;
+  color: $lightDark;
+  line-height: $textLineHeightNormal;
+}
+
+header {
+  background-color: $primary;
+  margin: 0;
+  .header-container {
+    margin: 0 $margin;
+    .header-items {
+      display: block;
+      max-width: $maxWidth;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      margin: 0 auto;
+      padding: 0;
+      h2 {
+        margin: 0;
+        padding: $paddingLarge 0 $padding 0;
+      }
+      .version {
+        color: blue;
+        font-size: $textSizeNormal;
+        margin: 0 0 calc(#{$paddingLarge} - #{$paddingSmall}) auto;
+      }
+    }
+  }
+}
+
+nav {
+  margin: 0;
+  background: $lightDark;
+  min-height: $navHeight;
+  padding: 0 $paddingLarge;
+}
+
+main {
+  margin: 20px;
+}
+
+.panel {
+  &.hidden {
+    display: none;
+  }
+}
+
+section {
+  display: block;
+  position: relative;
+  max-width: calc(#{$maxWidth} - (#{$margin} * 2));
+  margin: 0 auto $margin;
+  padding: $paddingLarge;
+  border-radius: $borderRadius;
+  background-color: $lightGrey;
+  .action-buttons {
+    margin: $margin 0 0 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: $marginSmall;
+  }
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.grid-tiny {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+.grid-small {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.grid-medium {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.grid-large {
+  display: grid;
+  grid-column-gap: $marginSmall;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.flex-row {
+  display: flex;
+  > * {
+    width: auto !important;
+    &:not(:first-child) {
+      margin-left: $marginSmall !important;
+    }
+  }
+  > .flex-grow-1 {
+    flex-grow: 1;
+  }
+}
+
+.chip {
+  &.hidden {
+    display: none;
+  }
+  display: flex;
+  align-items: center;
+  height: $itemHeightSmall;
+  padding: $paddingSmall $padding;
+  margin: 0 0 $marginSmall $margin;
+  background-color: $highlight;
+  border-radius: $borderRadius;
+  font-size: $textSizeNormal;
+  font-weight: bold;
+  i {
+    margin: 0 6px 0 0;
+  }
+  &.on {
+    background-color: $highlight;
+  }
+
+  &.off {
+    color: $white;
+    background-color: $grey;
+  }
+}
+
+hr {
+  margin: calc(#{$margin} * 2) 0 $margin;
+  border: 0;
+  box-shadow: 0px 0.5px 0px 0.5px rgba(255, 255, 255, 0.8),
+    0px -0.5px 0px 0.5px rgba(0, 0, 0, 0.15);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  margin: $baseSpacer 0 0 0;
+
+  &.inline {
+    margin: 0;
+    flex-direction: row;
+    > :not(label) {
+      margin: 0;
+    }
+  }
+  label {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  > :not(label) {
+    display: block;
+    margin: $marginSmall 0 0 0;
+  }
+  &.centered {
+    align-items: center;
+  }
+  > toggle-switch {
+    margin-top: 12px;
+  }
+  .helper-text {
+    display: block;
+    position: relative;
+    color: $grey;
+    font-size: 12px;
+    font-style: italic;
+  }
+}
+
+.page-action-buttons {
+  position: relative;
+  max-width: $maxWidth;
+  margin: 0 auto $margin;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: $marginSmall;
+}
+
+.toggle {
+  position: relative;
+  float: right;
+}
+
+table {
+  border: 0;
+  border-spacing: 0;
+  width: 100%;
+  margin: 0 0 $margin;
+  tr {
+    &.header-row {
+      background: grey;
+      color: white;
+    }
+    th,
+    td {
+      // border-top: 1px solid grey;
+      padding: 5px;
+      width: 100%;
+    }
+    th {
+      text-align: left;
+    }
+  }
+}
+
+.color-picker {
+  .IroWheel,
+  .IroSlider {
+    margin: 0 auto;
+  }
+  #white-value-picker {
+    .IroSlider {
+      margin: 12px auto 0;
+    }
+  }
+}
+
+#white-warning,
+#rgb-warning {
+  margin: 10px auto 0;
+  max-width: 300px;
+}

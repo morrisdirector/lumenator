@@ -1,0 +1,33 @@
+@import "../../lib/styles/colors.scss";
+@import "../../lib/styles/sizes.scss";
+@import "../../lib/styles/z-indexes.scss";
+
+header {
+  position: fixed;
+  z-index: $zNav;
+  width: 100%;
+  top: 0;
+  background-color: $primary;
+  margin: 0;
+  .header-container {
+    margin: 0 $margin;
+    .header-items {
+      display: block;
+      max-width: $maxWidth;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      margin: 0 auto;
+      padding: 0;
+      h2 {
+        margin: 0;
+        padding: $paddingLarge 0 $padding 0;
+      }
+      .version {
+        color: $grey;
+        font-size: $textSizeSmall;
+        margin: 0 0 calc(#{$paddingLarge} - #{$paddingSmall}) auto;
+      }
+    }
+  }
+}
