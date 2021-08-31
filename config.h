@@ -2,8 +2,52 @@
 
 #include "eeprom-service.h"
 
+enum class Conf
+{
+  // Device
+  DEVICE_NAME = 1,
+  DEVICE_TYPE,
+  // Network
+  NETWORK_IP1,
+  NETWORK_IP2,
+  NETWORK_IP3,
+  NETWORK_IP4,
+  NETWORK_GATEWAY1,
+  NETWORK_GATEWAY2,
+  NETWORK_GATEWAY3,
+  NETWORK_GATEWAY4,
+  NETWORK_SUBNET1,
+  NETWORK_SUBNET2,
+  NETWORK_SUBNET3,
+  NETWORK_SUBNET4,
+  NETWORK_SSID,
+  NETWORK_PASS,
+  NETWORK_DHCP,
+  NETWORK_GATEWAY,
+  NETWORK_SUBNET,
+  // Access Point
+  ACCESS_POINT_PASS,
+  // GPIO
+  GPIO_W,
+  GPIO_WW,
+  GPIO_R,
+  GPIO_G,
+  GPIO_B,
+  // MQTT
+  MQTT_ENABLED,
+  MQTT_CLIENT_NAME,
+  MQTT_USER,
+  MQTT_PASSWORD,
+  MQTT_IP1,
+  MQTT_IP2,
+  MQTT_IP3,
+  MQTT_IP4,
+  MQTT_PORT
+};
+
 enum DeviceType
 {
+  LNONE,
   LRGBWW,
   LRGBW,
   LRGB,
@@ -68,7 +112,7 @@ struct GpioConfig
 struct MqttConfig
 {
   bool enabled;
-  uint8_t ip[4];
+  IPv4 ip;
   uint16_t port;
   String client;
   String user;
@@ -81,206 +125,60 @@ AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
-const int configJsonTotalCapacity =
-    JSON_OBJECT_SIZE(20)   // Total sections at parent level plus buffer
-    + JSON_OBJECT_SIZE(2)  // Total device props
-    + JSON_OBJECT_SIZE(5)  // Total gpio props
-    + JSON_OBJECT_SIZE(15) // Total network props
-    + JSON_OBJECT_SIZE(1); // Total access point props
+const int configJsonTotalCapacity = JSON_OBJECT_SIZE(34);
 
-void deserializeDeviceConfig(const JsonObject &json)
+String id(Conf id)
 {
-  if (json.containsKey("device"))
-  {
-    JsonObject deviceJson = json["device"];
-
-    if (deviceJson.containsKey("name"))
-      deviceConfig.name = deviceJson["name"].as<String>();
-
-    if (deviceJson.containsKey("type"))
-      deviceConfig.type = deviceJson["type"].as<DeviceType>();
-
-    Serial.println("[DS]: * Device settings loaded");
-  }
-  else
-  {
-
-    Serial.println("[DS]:   No device settings found");
-  }
-}
-
-void deserializeGpioConfig(const JsonObject &json)
-{
-  if (json.containsKey("gpio"))
-  {
-    JsonObject gpioJson = json["gpio"];
-
-    if (gpioJson.containsKey("r"))
-      gpioConfig.r = gpioJson["r"].as<uint8_t>();
-
-    if (gpioJson.containsKey("g"))
-      gpioConfig.g = gpioJson["g"].as<uint8_t>();
-
-    if (gpioJson.containsKey("b"))
-      gpioConfig.b = gpioJson["b"].as<uint8_t>();
-
-    if (gpioJson.containsKey("w"))
-      gpioConfig.w = gpioJson["w"].as<uint8_t>();
-
-    if (gpioJson.containsKey("ww"))
-      gpioConfig.ww = gpioJson["ww"].as<uint8_t>();
-
-    Serial.println("[DS]: * GPIO settings loaded");
-  }
-  else
-  {
-
-    Serial.println("[DS]:   No GPIO settings found");
-  }
-}
-
-void deserializeMqttConfig(const JsonObject &json)
-{
-  if (json.containsKey("mqtt"))
-  {
-    JsonObject mqttJson = json["mqtt"];
-
-    if (mqttJson.containsKey("enabled"))
-      mqttConfig.enabled = mqttJson["enabled"].as<bool>();
-
-    if (mqttJson.containsKey("ip"))
-    {
-      for (int i = 0; i < 4; ++i)
-      {
-        mqttConfig.ip[i] = mqttJson["ip"][i];
-      }
-    }
-
-    if (mqttJson.containsKey("port"))
-      mqttConfig.port = mqttJson["port"].as<uint8_t>();
-
-    if (mqttJson.containsKey("client"))
-      mqttConfig.client = mqttJson["client"].as<String>();
-
-    if (mqttJson.containsKey("user"))
-      mqttConfig.user = mqttJson["user"].as<String>();
-
-    if (mqttJson.containsKey("pass"))
-      mqttConfig.pass = mqttJson["pass"].as<String>();
-
-    Serial.println("[DS]: * MQTT settings loaded");
-  }
-  else
-  {
-
-    Serial.println("[DS]:   No MQTT settings found");
-  }
-}
-
-void deserializeNetworkConfig(const JsonObject &json)
-{
-  if (json.containsKey("network"))
-  {
-    JsonObject networkJson = json["network"];
-
-    if (networkJson.containsKey("ssid"))
-      networkConfig.ssid = networkJson["ssid"].as<String>();
-
-    if (networkJson.containsKey("pass"))
-      networkConfig.pass = networkJson["pass"].as<String>();
-
-    if (networkJson.containsKey("dhcp"))
-      networkConfig.dhcp = networkJson["dhcp"].as<bool>();
-
-    if (networkJson.containsKey("ip"))
-    {
-      JsonObject ipJson = networkJson["ip"];
-
-      if (ipJson.containsKey("a"))
-        networkConfig.ip.a = ipJson["a"].as<uint8_t>();
-
-      if (ipJson.containsKey("b"))
-        networkConfig.ip.b = ipJson["b"].as<uint8_t>();
-
-      if (ipJson.containsKey("c"))
-        networkConfig.ip.c = ipJson["c"].as<uint8_t>();
-
-      if (ipJson.containsKey("d"))
-        networkConfig.ip.d = ipJson["d"].as<uint8_t>();
-    }
-
-    if (networkJson.containsKey("gateway"))
-    {
-      JsonObject gatewayJson = networkJson["gateway"];
-
-      if (gatewayJson.containsKey("a"))
-        networkConfig.gateway.a = gatewayJson["a"].as<uint8_t>();
-
-      if (gatewayJson.containsKey("b"))
-        networkConfig.gateway.b = gatewayJson["b"].as<uint8_t>();
-
-      if (gatewayJson.containsKey("c"))
-        networkConfig.gateway.c = gatewayJson["c"].as<uint8_t>();
-
-      if (gatewayJson.containsKey("d"))
-        networkConfig.gateway.d = gatewayJson["d"].as<uint8_t>();
-    }
-
-    if (networkJson.containsKey("subnet"))
-    {
-      JsonObject subnetJson = networkJson["subnet"];
-
-      if (subnetJson.containsKey("a"))
-        networkConfig.subnet.a = subnetJson["a"].as<uint8_t>();
-
-      if (subnetJson.containsKey("b"))
-        networkConfig.subnet.b = subnetJson["b"].as<uint8_t>();
-
-      if (subnetJson.containsKey("c"))
-        networkConfig.subnet.c = subnetJson["c"].as<uint8_t>();
-
-      if (subnetJson.containsKey("d"))
-        networkConfig.subnet.d = subnetJson["d"].as<uint8_t>();
-    }
-
-    Serial.println("[DS]: * Network settings loaded");
-  }
-  else
-  {
-
-    Serial.println("[DS]:   No Network settings found");
-  }
-}
-
-void deserializeAccessPointConfig(const JsonObject &json)
-{
-  if (json.containsKey("accessPoint"))
-  {
-    JsonObject accessPointJson = json["accessPoint"];
-
-    if (accessPointJson.containsKey("pass"))
-      accessPointConfig.pass = accessPointJson["pass"].as<String>();
-
-    Serial.println("[DS]: * Access Point settings loaded");
-  }
-  else
-  {
-
-    Serial.println("[DS]:   No Access Point settings found");
-  }
+  return String(static_cast<int>(id));
 }
 
 void deserializeAll(DynamicJsonDocument json)
 {
-  // Compile with serial printouts
-
   Serial.println();
 
-  deserializeDeviceConfig(json.as<JsonObject>());
-  deserializeNetworkConfig(json.as<JsonObject>());
-  deserializeAccessPointConfig(json.as<JsonObject>());
-  deserializeGpioConfig(json.as<JsonObject>());
-  deserializeMqttConfig(json.as<JsonObject>());
+  deviceConfig.name = json[id(Conf::DEVICE_NAME)].as<String>();
+  deviceConfig.type = json[id(Conf::DEVICE_TYPE)].as<DeviceType>();
+
+  gpioConfig.r = json[id(Conf::GPIO_R)].as<uint8_t>();
+  gpioConfig.g = json[id(Conf::GPIO_G)].as<uint8_t>();
+  gpioConfig.b = json[id(Conf::GPIO_B)].as<uint8_t>();
+  gpioConfig.w = json[id(Conf::GPIO_W)].as<uint8_t>();
+  gpioConfig.ww = json[id(Conf::GPIO_WW)].as<uint8_t>();
+
+  networkConfig.ssid = json[id(Conf::NETWORK_SSID)].as<String>();
+  networkConfig.pass = json[id(Conf::NETWORK_PASS)].as<String>();
+  networkConfig.dhcp = json[id(Conf::NETWORK_DHCP)].as<bool>();
+
+  networkConfig.ip.a = json[id(Conf::NETWORK_IP1)].as<uint8_t>();
+  networkConfig.ip.b = json[id(Conf::NETWORK_IP2)].as<uint8_t>();
+  networkConfig.ip.c = json[id(Conf::NETWORK_IP3)].as<uint8_t>();
+  networkConfig.ip.d = json[id(Conf::NETWORK_IP4)].as<uint8_t>();
+
+  networkConfig.gateway.a = json[id(Conf::NETWORK_GATEWAY1)].as<uint8_t>();
+  networkConfig.gateway.b = json[id(Conf::NETWORK_GATEWAY2)].as<uint8_t>();
+  networkConfig.gateway.c = json[id(Conf::NETWORK_GATEWAY3)].as<uint8_t>();
+  networkConfig.gateway.d = json[id(Conf::NETWORK_GATEWAY4)].as<uint8_t>();
+
+  networkConfig.subnet.a = json[id(Conf::NETWORK_SUBNET1)].as<uint8_t>();
+  networkConfig.subnet.b = json[id(Conf::NETWORK_SUBNET2)].as<uint8_t>();
+  networkConfig.subnet.c = json[id(Conf::NETWORK_SUBNET3)].as<uint8_t>();
+  networkConfig.subnet.d = json[id(Conf::NETWORK_SUBNET4)].as<uint8_t>();
+
+  accessPointConfig.pass = json[id(Conf::ACCESS_POINT_PASS)].as<String>();
+
+  mqttConfig.enabled = json[id(Conf::MQTT_ENABLED)].as<bool>();
+  mqttConfig.client = json[id(Conf::MQTT_CLIENT_NAME)].as<String>();
+  mqttConfig.user = json[id(Conf::MQTT_USER)].as<String>();
+  mqttConfig.pass = json[id(Conf::MQTT_PASSWORD)].as<String>();
+
+  mqttConfig.ip.a = json[id(Conf::MQTT_IP1)].as<uint8_t>();
+  mqttConfig.ip.b = json[id(Conf::MQTT_IP2)].as<uint8_t>();
+  mqttConfig.ip.c = json[id(Conf::MQTT_IP3)].as<uint8_t>();
+  mqttConfig.ip.d = json[id(Conf::MQTT_IP4)].as<uint8_t>();
+
+  mqttConfig.port = json[id(Conf::MQTT_PORT)].as<uint16_t>();
+
+  Serial.println("[DS]: * Loaded device configuration");
 }
 
 bool saveConfiguration(String dto)

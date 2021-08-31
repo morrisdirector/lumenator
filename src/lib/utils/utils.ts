@@ -52,7 +52,12 @@ export function getIPStringFromValues(
   ip3?: number,
   ip4?: number
 ): string | null {
-  if (ip1 && ip2 && ip3 && ip4) {
+  if (
+    ip1 !== undefined &&
+    ip2 !== undefined &&
+    ip3 !== undefined &&
+    ip4 !== undefined
+  ) {
     return `${ip1}.${ip2}.${ip3}.${ip4}`;
   }
   return null;

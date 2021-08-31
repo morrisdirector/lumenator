@@ -122,7 +122,7 @@
     color: darken($info, 40%);
     background: lighten($info, 10%);
     .timeout-indicator {
-      background: $info;
+      background: lighten($info, 5%);
     }
     &,
     button {
@@ -132,7 +132,7 @@
   div.alert {
     background: lighten($alert, 10%);
     .timeout-indicator {
-      background: $alert;
+      background: lighten($alert, 5%);
     }
     &,
     button {
@@ -142,7 +142,7 @@
   div.danger {
     background: lighten($highlight, 10%);
     .timeout-indicator {
-      background: darken($highlight, 10%);
+      background: $highlight;
     }
     &,
     button {

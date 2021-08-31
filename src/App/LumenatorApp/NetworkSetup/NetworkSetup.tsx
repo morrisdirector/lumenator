@@ -52,7 +52,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
     if (typeof props.onConfigUpdate === "function") {
       props.onConfigUpdate({
         ...(config as IConfigJson),
-        [Conf.NETWORK_DHCP]: ![Conf.NETWORK_DHCP],
+        [Conf.NETWORK_DHCP]: !config[Conf.NETWORK_DHCP],
       });
     }
   };
@@ -163,9 +163,9 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
               value={
                 getIPStringFromValues(
                   config[Conf.NETWORK_SUBNET1],
-                  config[Conf.NETWORK_SUBNET1],
-                  config[Conf.NETWORK_SUBNET1],
-                  config[Conf.NETWORK_SUBNET1]
+                  config[Conf.NETWORK_SUBNET2],
+                  config[Conf.NETWORK_SUBNET3],
+                  config[Conf.NETWORK_SUBNET4]
                 ) || ""
               }
               onChange={(value) => {

@@ -238,6 +238,13 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
       resetGpios();
       ctrlMode = STANDBY;
     }
+    else if (strncmp(text, "erase", 5) == 0)
+    {
+      // Standby Mode
+      resetGpios();
+      ctrlMode = STANDBY;
+      clearEEPROM();
+    }
 
     break;
 

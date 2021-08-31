@@ -3,11 +3,11 @@ import {
   AlertWarningType,
 } from "../../lib/components/AlertWarning/IAlertWarningProps";
 import { Component, Fragment, h } from "preact";
+import { Conf, IConfigJson } from "../../lib/interfaces/IConfigJson";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
 import { ConfigService } from "../../lib/services/config-service";
 import { HardwareService } from "../../lib/services/hardware-service";
-import { IConfigJson } from "../../lib/interfaces/IConfigJson";
 import Input from "../../lib/components/Input/Input";
 import Loader from "../../lib/components/Loader/Loader";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
@@ -38,7 +38,7 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
       if (data) {
         this.setState({ originalConfig: { ...data }, config: { ...data } });
       }
-      if (!data.accessPoint.pass) {
+      if (!data[Conf.ACCESS_POINT_PASS]) {
         this.setState({ accessGranted: true });
       }
     } catch (error) {
@@ -97,7 +97,9 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
 
   private login = (): void => {
     if (this.state.originalConfig) {
-      if (this.state.originalConfig.accessPoint.pass == this.state.password) {
+      if (
+        this.state.originalConfig[Conf.ACCESS_POINT_PASS] == this.state.password
+      ) {
         this.setState({ accessGranted: true });
       } else {
         this.setState({ errorText: "Invalid password" });
@@ -157,18 +159,9 @@ class LumenatorSetup extends Component<null, ILumenatorSetupState> {
                 </section>
                 <NetworkSetup
                   page="setup"
-                  configNetwork={this.state.config && this.state.config.network}
-                  configAccessPoint={
-                    this.state.config && this.state.config.accessPoint
-                  }
-                  onConfigUpdate={(configs) => {
-                    this.setState({
-                      config: {
-                        ...(this.state.config as IConfigJson),
-                        network: configs.network,
-                        accessPoint: configs.accessPoint,
-                      },
-                    });
+                  config={this.state.config}
+                  onConfigUpdate={(config) => {
+                    this.setState({ config: { ...config } });
                   }}
                 />
               </Fragment>

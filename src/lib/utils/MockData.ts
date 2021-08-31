@@ -11,8 +11,7 @@ export const testData = (): IConfigJson => {
     [Conf.GPIO_B]: 16,
     [Conf.GPIO_W]: 15,
     [Conf.GPIO_WW]: 13,
-    [Conf.NETWORK_SSID]: "My SSID",
-    [Conf.NETWORK_PASS]: "",
+    [Conf.NETWORK_SSID]: "My_SSID",
     [Conf.NETWORK_DHCP]: false,
     [Conf.NETWORK_IP1]: 192,
     [Conf.NETWORK_IP2]: 168,
@@ -26,6 +25,5 @@ export const testData = (): IConfigJson => {
     [Conf.NETWORK_SUBNET2]: 255,
     [Conf.NETWORK_SUBNET3]: 0,
     [Conf.NETWORK_SUBNET4]: 0,
-    [Conf.ACCESS_POINT_PASS]: "",
   };
 };

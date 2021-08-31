@@ -488,8 +488,7 @@ void setup()
   // clearEEPROM();
   // delay(1000);
   // String myTest =
-  //     "{\"device\":{\"name\":\"My "
-  //     "Device\",\"type\":2},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"xxxxx\"}}";
+  //     "{\"1\":\"My Device\",\"2\":2}";
 
   // Serial.println("Configuration Data: ");
   // Serial.println(myTest);

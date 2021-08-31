@@ -101,32 +101,61 @@ void initRoutes()
             {
               String response;
               StaticJsonDocument<configJsonTotalCapacity> doc;
-              doc["device"]["name"] = deviceConfig.name;
-              doc["device"]["type"] = deviceConfig.type;
 
-              doc["gpio"]["r"] = gpioConfig.r;
-              doc["gpio"]["g"] = gpioConfig.g;
-              doc["gpio"]["b"] = gpioConfig.b;
-              doc["gpio"]["w"] = gpioConfig.w;
-              doc["gpio"]["ww"] = gpioConfig.ww;
+              if (deviceConfig.name != "null")
+                doc[id(Conf::DEVICE_NAME)] = deviceConfig.name;
 
-              doc["network"]["ssid"] = networkConfig.ssid;
-              doc["network"]["pass"] = networkConfig.pass;
-              doc["network"]["dhcp"] = networkConfig.dhcp;
-              doc["network"]["ip"]["a"] = networkConfig.ip.a;
-              doc["network"]["ip"]["b"] = networkConfig.ip.b;
-              doc["network"]["ip"]["c"] = networkConfig.ip.c;
-              doc["network"]["ip"]["d"] = networkConfig.ip.d;
-              doc["network"]["gateway"]["a"] = networkConfig.gateway.a;
-              doc["network"]["gateway"]["b"] = networkConfig.gateway.b;
-              doc["network"]["gateway"]["c"] = networkConfig.gateway.c;
-              doc["network"]["gateway"]["d"] = networkConfig.gateway.d;
-              doc["network"]["subnet"]["a"] = networkConfig.subnet.a;
-              doc["network"]["subnet"]["b"] = networkConfig.subnet.b;
-              doc["network"]["subnet"]["c"] = networkConfig.subnet.c;
-              doc["network"]["subnet"]["d"] = networkConfig.subnet.d;
+              doc[id(Conf::DEVICE_TYPE)] = deviceConfig.type;
 
-              doc["accessPoint"]["pass"] = accessPointConfig.pass;
+              if (networkConfig.ssid != "null")
+                doc[id(Conf::NETWORK_SSID)] = networkConfig.ssid;
+
+              if (networkConfig.pass != "null")
+                doc[id(Conf::NETWORK_PASS)] = networkConfig.pass;
+
+              doc[id(Conf::NETWORK_DHCP)] = networkConfig.dhcp;
+
+              doc[id(Conf::NETWORK_IP1)] = networkConfig.ip.a;
+              doc[id(Conf::NETWORK_IP2)] = networkConfig.ip.b;
+              doc[id(Conf::NETWORK_IP3)] = networkConfig.ip.c;
+              doc[id(Conf::NETWORK_IP4)] = networkConfig.ip.d;
+
+              doc[id(Conf::NETWORK_GATEWAY1)] = networkConfig.gateway.a;
+              doc[id(Conf::NETWORK_GATEWAY2)] = networkConfig.gateway.b;
+              doc[id(Conf::NETWORK_GATEWAY3)] = networkConfig.gateway.c;
+              doc[id(Conf::NETWORK_GATEWAY4)] = networkConfig.gateway.d;
+
+              doc[id(Conf::NETWORK_SUBNET1)] = networkConfig.subnet.a;
+              doc[id(Conf::NETWORK_SUBNET2)] = networkConfig.subnet.b;
+              doc[id(Conf::NETWORK_SUBNET3)] = networkConfig.subnet.c;
+              doc[id(Conf::NETWORK_SUBNET4)] = networkConfig.subnet.d;
+
+              if (accessPointConfig.pass != "null")
+                doc[id(Conf::ACCESS_POINT_PASS)] = accessPointConfig.pass;
+
+              doc[id(Conf::GPIO_R)] = gpioConfig.r;
+              doc[id(Conf::GPIO_G)] = gpioConfig.g;
+              doc[id(Conf::GPIO_B)] = gpioConfig.b;
+              doc[id(Conf::GPIO_W)] = gpioConfig.w;
+              doc[id(Conf::GPIO_WW)] = gpioConfig.ww;
+
+              // doc["network"]["ssid"] = networkConfig.ssid;
+              // doc["network"]["pass"] = networkConfig.pass;
+              // doc["network"]["dhcp"] = networkConfig.dhcp;
+              // doc["network"]["ip"]["a"] = networkConfig.ip.a;
+              // doc["network"]["ip"]["b"] = networkConfig.ip.b;
+              // doc["network"]["ip"]["c"] = networkConfig.ip.c;
+              // doc["network"]["ip"]["d"] = networkConfig.ip.d;
+              // doc["network"]["gateway"]["a"] = networkConfig.gateway.a;
+              // doc["network"]["gateway"]["b"] = networkConfig.gateway.b;
+              // doc["network"]["gateway"]["c"] = networkConfig.gateway.c;
+              // doc["network"]["gateway"]["d"] = networkConfig.gateway.d;
+              // doc["network"]["subnet"]["a"] = networkConfig.subnet.a;
+              // doc["network"]["subnet"]["b"] = networkConfig.subnet.b;
+              // doc["network"]["subnet"]["c"] = networkConfig.subnet.c;
+              // doc["network"]["subnet"]["d"] = networkConfig.subnet.d;
+
+              // doc["accessPoint"]["pass"] = accessPointConfig.pass;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);

@@ -1,11 +1,12 @@
 import {
-  AlertWarningIcon,
-  AlertWarningType,
-} from "../../lib/components/AlertWarning/IAlertWarningProps";
-import { Component, Fragment, VNode, h } from "preact";
+  BannerService,
+  IDialogConfig,
+} from "../../lib/services/banner-service";
+import { Component, h } from "preact";
 import { Conf, IConfigJson } from "../../lib/interfaces/IConfigJson";
 
 import AlertWarning from "../../lib/components/AlertWarning/AlertWarning";
+import { AlertWarningIcon } from "../../lib/components/AlertWarning/IAlertWarningProps";
 import Chip from "../../lib/components/Chip/Chip";
 import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
@@ -20,11 +21,9 @@ import NetworkSetup from "./NetworkSetup/NetworkSetup";
 import { OnOff } from "../../lib/enums/OnOff";
 import { WebsocketService } from "../../lib/services/websocket-service";
 
-interface ILumenatorAppState {
-  controlMode: ControlMode;
-  loading: boolean;
-  messages: Array<VNode<any>>;
-  restartRequest?: boolean;
+export interface ILumenatorAppState {
+  controlMode?: ControlMode;
+  loading?: boolean;
   originalConfig?: IConfigJson;
   config?: IConfigJson;
   rgbColor?: { r: number; g: number; b: number };
@@ -35,17 +34,37 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
   private configService = new ConfigService();
   private websocketService = new WebsocketService();
   private hardwareService = new HardwareService();
+  public bannerService = new BannerService((newState?: ILumenatorAppState) => {
+    this.forceUpdate();
+    if (newState) {
+      this.setState(newState);
+    }
+  });
+  public saveChangesDialog: IDialogConfig;
 
   constructor() {
     super();
     this.state = {
       controlMode: ControlMode.STANDBY,
       loading: true,
-      messages: [],
+    };
+
+    this.saveChangesDialog = {
+      id: "saveChanges",
+      warningText: "Unsaved Changes",
+      warningIcon: AlertWarningIcon.ALERT,
+      okText: "Save Configuration",
+      onOk: () => {
+        this.saveConfiguration();
+      },
+      onCancel: () => {
+        this.setState({
+          config: { ...this.state.originalConfig } as IConfigJson,
+        });
+        this.bannerService.clear();
+      },
     };
     this.saveConfiguration = this.saveConfiguration.bind(this);
-    this.renderMessages = this.renderMessages.bind(this);
-    this.renderActionSection = this.renderActionSection.bind(this);
   }
 
   private init = async (): Promise<any> => {
@@ -68,7 +87,20 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
     this.init();
   }
 
-  private isGpioMode = (mode: ControlMode): boolean => {
+  componentDidUpdate(): void {
+    if (
+      (!this.bannerService.dialogConfig ||
+        this.bannerService.dialogConfig.id !== this.saveChangesDialog.id) &&
+      this.configService.hasUnsavedChanges(
+        this.state.originalConfig,
+        this.state.config
+      )
+    ) {
+      this.bannerService.newDialog(this.saveChangesDialog);
+    }
+  }
+
+  private isGpioMode = (mode?: ControlMode): boolean => {
     return (
       mode === ControlMode.GPIO_B ||
       mode === ControlMode.GPIO_G ||
@@ -116,119 +148,19 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
                 ...this.state.config,
               } as IConfigJson,
               loading: false,
-              messages: [
-                ...this.state.messages,
-                <AlertWarning
-                  text="Configuration saved successfully"
-                  closable={true}
-                  autoClose={true}
-                ></AlertWarning>,
-              ],
             });
+            this.bannerService.clear();
+            this.bannerService.addMessage(
+              <AlertWarning
+                text="Configuration saved successfully"
+                closable={true}
+                autoClose={true}
+              ></AlertWarning>
+            );
           }, 1000);
         }
       });
     }
-  }
-
-  private renderMessages(): h.JSX.Element {
-    return <Fragment>{this.state.messages.map((msg) => msg)}</Fragment>;
-  }
-
-  private renderRestartDialog(): h.JSX.Element {
-    return (
-      <section class="action-section no-margin">
-        <div>
-          <AlertWarning
-            type={AlertWarningType.BASIC_BORDERLESS}
-            text="Are you sure?"
-          />
-        </div>
-        <div>
-          <button
-            onClick={() => {
-              this.setState({
-                restartRequest: false,
-              });
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            class="alert"
-            onClick={() => {
-              this.setState({
-                loading: true,
-                restartRequest: false,
-                messages: [],
-              });
-              this.hardwareService.restart();
-              setTimeout(() => {
-                this.websocketService.close();
-                this.websocketService.reconnect().then((connected) => {
-                  if (connected) {
-                    this.setState({
-                      loading: false,
-                      controlMode: ControlMode.STANDBY,
-                      messages: [
-                        <AlertWarning
-                          text="Restarted successfully"
-                          autoClose={true}
-                          closable={true}
-                        />,
-                      ],
-                    });
-                  }
-                });
-              }, 1000);
-            }}
-          >
-            Restart
-          </button>
-        </div>
-      </section>
-    );
-  }
-
-  private renderUnsaved(): h.JSX.Element {
-    return (
-      <section class="action-section no-margin">
-        <div>
-          <AlertWarning
-            icon={AlertWarningIcon.ALERT}
-            type={AlertWarningType.BASIC_BORDERLESS}
-            text="Unsaved Changes"
-          />
-        </div>
-        <div>
-          <button
-            onClick={() => {
-              this.setState({
-                config: { ...this.state.originalConfig } as IConfigJson,
-              });
-            }}
-          >
-            Reset
-          </button>
-          <button class="primary" onClick={this.saveConfiguration}>
-            Save Configuration
-          </button>
-        </div>
-      </section>
-    );
-  }
-
-  private renderActionSection(): h.JSX.Element {
-    return this.state.restartRequest ? (
-      this.renderRestartDialog()
-    ) : this.configService.hasUnsavedChanges(
-        this.state.originalConfig,
-        this.state.config
-      ) ? (
-      this.renderUnsaved()
-    ) : (
-      <Fragment></Fragment>
-    );
   }
 
   render() {
@@ -242,7 +174,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               {this.state.originalConfig &&
                 this.state.originalConfig[Conf.DEVICE_NAME] && (
                   <Chip
-                    text={this.state.originalConfig[Conf.DEVICE_NAME]}
+                    text={this.state.originalConfig[Conf.DEVICE_NAME] as string}
                   ></Chip>
                 )}
               <div class="version">v1.0</div>
@@ -251,12 +183,17 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
         </header>
         <NavMenu
           activeId={1}
-          renderMessages={this.renderMessages}
-          renderActionSection={this.renderActionSection}
+          renderActionSection={() => {
+            return this.bannerService.renderActionSection();
+          }}
         >
           <NavMenuTab id={1} title="Device">
             <DeviceSetup
               config={this.state.config}
+              bannerService={this.bannerService}
+              hardwareService={this.hardwareService}
+              websocketService={this.websocketService}
+              configService={this.configService}
               onConfigUpdate={(config) => {
                 this.setState({
                   config: {
@@ -264,11 +201,11 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
                   },
                 });
               }}
+              onLoading={(loading) => {
+                this.setState({ loading });
+              }}
               controlMode={this.state.controlMode}
               onControlModeToggle={this.handleControlModeToggle}
-              onRestart={() => {
-                this.setState({ restartRequest: true });
-              }}
             ></DeviceSetup>
           </NavMenuTab>
           <NavMenuTab id={2} title="Network">

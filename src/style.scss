@@ -203,6 +203,12 @@ label {
   }
 }
 
+.lum-messages {
+  > :not(:last-child) {
+    margin: 0 0 $marginSmall 0;
+  }
+}
+
 table {
   border: 0;
   border-spacing: 0;
