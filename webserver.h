@@ -157,6 +157,8 @@ void initRoutes()
 
               doc[id(Conf::MQTT_PORT)] = mqttConfig.port;
 
+              doc[id(Conf::MQTT_DEVICE_TOPIC)] = mqttConfig.topic;
+
               serializeJson(doc, response);
               request->send(200, "application/json", response);
             });

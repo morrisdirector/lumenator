@@ -8,9 +8,9 @@
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
 // #include <ESP8266mDNS.h>
-
+#include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 // #include <FS.h>
-// #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
+
 // #include <WebSocketsServer.h>
 // #include <WiFiUdp.h>
 // #include <Wire.h>
@@ -527,9 +527,10 @@ void setup()
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
 
-  // if (mqttConfig.mqtt_enabled == true) {
-  //   setupMqtt();
-  // }
+  if (mqttConfig.enabled == true)
+  {
+    setupMqtt();
+  }
 
   // startOTAServer();
 
@@ -551,12 +552,14 @@ void loop()
 {
   webSocket.loop();
   // MQTT:
-  // if (mqttConfig.mqtt_enabled == true) {
-  //   if (!mqttClient.connected()) {
-  //     reconnectMqtt();
-  //   }
-  //   mqttClient.loop();
-  // }
+  if (mqttConfig.enabled == true)
+  {
+    if (!mqttClient.connected())
+    {
+      reconnectMqtt();
+    }
+    mqttClient.loop();
+  }
 
   // ArduinoOTA.handle();
 

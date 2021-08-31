@@ -42,7 +42,8 @@ enum class Conf
   MQTT_IP2,
   MQTT_IP3,
   MQTT_IP4,
-  MQTT_PORT
+  MQTT_PORT,
+  MQTT_DEVICE_TOPIC
 };
 
 enum DeviceType
@@ -117,6 +118,7 @@ struct MqttConfig
   String client;
   String user;
   String pass;
+  String topic = "lumenator";
 };
 
 DeviceConfig deviceConfig;
@@ -177,6 +179,8 @@ void deserializeAll(DynamicJsonDocument json)
   mqttConfig.ip.d = json[id(Conf::MQTT_IP4)].as<uint8_t>();
 
   mqttConfig.port = json[id(Conf::MQTT_PORT)].as<uint16_t>();
+
+  mqttConfig.topic = json[id(Conf::MQTT_DEVICE_TOPIC)].as<String>();
 
   Serial.println("[DS]: * Loaded device configuration");
 }

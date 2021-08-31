@@ -151,6 +151,29 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
           </div>
         </div>
       </section>
+      <section>
+        <div class="grid-large">
+          <div class="form-group no-margin">
+            <label for="topic">Device Topic</label>
+            <Input
+              id="topic"
+              value={config[Conf.MQTT_DEVICE_TOPIC] || undefined}
+              onChange={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate({
+                    ...(config as IConfigJson),
+                    [Conf.MQTT_DEVICE_TOPIC]: value as string,
+                  });
+                }
+              }}
+            />
+            <div class="helper-text mt-large">
+              The topic that all messages will be sent and received on for this
+              device. Example: lumenator/kitchen.
+            </div>
+          </div>
+        </div>
+      </section>
     </Fragment>
   );
 };

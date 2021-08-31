@@ -40,6 +40,7 @@ export enum Conf {
   MQTT_IP3,
   MQTT_IP4,
   MQTT_PORT,
+  MQTT_DEVICE_TOPIC,
 }
 export interface IConfigMQTT {
   mqtt_enabled: true;
@@ -87,4 +88,5 @@ export interface IConfigJson {
   [Conf.MQTT_IP3]?: number;
   [Conf.MQTT_IP4]?: number;
   [Conf.MQTT_PORT]?: number;
+  [Conf.MQTT_DEVICE_TOPIC]?: string;
 }
