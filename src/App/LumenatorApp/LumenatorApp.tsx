@@ -14,6 +14,7 @@ import DeviceSetup from "./DeviceSetup/DeviceSetup";
 import { HardwareService } from "../../lib/services/hardware-service";
 import { IOnColorSetData } from "./ManualControl/IManualControlProps";
 import Loader from "../../lib/components/Loader/Loader";
+import MQTTSetup from "./MQTTSetup/MQTTSetup";
 import ManualControl from "./ManualControl/ManualControl";
 import NavMenu from "../../lib/components/NavMenu/NavMenu";
 import NavMenuTab from "../../lib/components/NavMenuTab/NavMenuTab";
@@ -230,6 +231,18 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               whiteColor={this.state.whiteColor}
               whiteValueColor={this.state.whiteValueColor}
             ></ManualControl>
+          </NavMenuTab>
+          <NavMenuTab id={4} title="MQTT">
+            <MQTTSetup
+              config={this.state.config}
+              onConfigUpdate={(config) => {
+                this.setState({
+                  config: {
+                    ...config,
+                  },
+                });
+              }}
+            ></MQTTSetup>
           </NavMenuTab>
         </NavMenu>
 

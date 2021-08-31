@@ -139,23 +139,23 @@ void initRoutes()
               doc[id(Conf::GPIO_W)] = gpioConfig.w;
               doc[id(Conf::GPIO_WW)] = gpioConfig.ww;
 
-              // doc["network"]["ssid"] = networkConfig.ssid;
-              // doc["network"]["pass"] = networkConfig.pass;
-              // doc["network"]["dhcp"] = networkConfig.dhcp;
-              // doc["network"]["ip"]["a"] = networkConfig.ip.a;
-              // doc["network"]["ip"]["b"] = networkConfig.ip.b;
-              // doc["network"]["ip"]["c"] = networkConfig.ip.c;
-              // doc["network"]["ip"]["d"] = networkConfig.ip.d;
-              // doc["network"]["gateway"]["a"] = networkConfig.gateway.a;
-              // doc["network"]["gateway"]["b"] = networkConfig.gateway.b;
-              // doc["network"]["gateway"]["c"] = networkConfig.gateway.c;
-              // doc["network"]["gateway"]["d"] = networkConfig.gateway.d;
-              // doc["network"]["subnet"]["a"] = networkConfig.subnet.a;
-              // doc["network"]["subnet"]["b"] = networkConfig.subnet.b;
-              // doc["network"]["subnet"]["c"] = networkConfig.subnet.c;
-              // doc["network"]["subnet"]["d"] = networkConfig.subnet.d;
+              doc[id(Conf::MQTT_ENABLED)] = mqttConfig.enabled;
 
-              // doc["accessPoint"]["pass"] = accessPointConfig.pass;
+              if (mqttConfig.client != "null")
+                doc[id(Conf::MQTT_CLIENT_NAME)] = mqttConfig.client;
+
+              if (mqttConfig.user != "null")
+                doc[id(Conf::MQTT_USER)] = mqttConfig.user;
+
+              if (mqttConfig.pass != "null")
+                doc[id(Conf::MQTT_PASSWORD)] = mqttConfig.pass;
+
+              doc[id(Conf::MQTT_IP1)] = mqttConfig.ip.a;
+              doc[id(Conf::MQTT_IP2)] = mqttConfig.ip.b;
+              doc[id(Conf::MQTT_IP3)] = mqttConfig.ip.c;
+              doc[id(Conf::MQTT_IP4)] = mqttConfig.ip.d;
+
+              doc[id(Conf::MQTT_PORT)] = mqttConfig.port;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);

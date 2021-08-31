@@ -111,7 +111,7 @@ struct GpioConfig
 
 struct MqttConfig
 {
-  bool enabled;
+  bool enabled = false;
   IPv4 ip;
   uint16_t port;
   String client;
@@ -125,7 +125,7 @@ AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
-const int configJsonTotalCapacity = JSON_OBJECT_SIZE(34);
+const int configJsonTotalCapacity = JSON_OBJECT_SIZE(100);
 
 String id(Conf id)
 {
