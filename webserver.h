@@ -119,27 +119,27 @@ void initRoutes()
               if (networkConfig.pass != "null")
                 doc[id(Conf::NETWORK_PASS)] = networkConfig.pass;
 
+              doc[id(Conf::NETWORK_DHCP)] = (bool)networkConfig.dhcp;
+
+              doc[id(Conf::NETWORK_IP1)] = (uint8_t)networkConfig.ip.a;
+              doc[id(Conf::NETWORK_IP2)] = (uint8_t)networkConfig.ip.b;
+              doc[id(Conf::NETWORK_IP3)] = (uint8_t)networkConfig.ip.c;
+              doc[id(Conf::NETWORK_IP4)] = (uint8_t)networkConfig.ip.d;
+
+              doc[id(Conf::NETWORK_GATEWAY1)] = (uint8_t)networkConfig.gateway.a;
+              doc[id(Conf::NETWORK_GATEWAY2)] = (uint8_t)networkConfig.gateway.b;
+              doc[id(Conf::NETWORK_GATEWAY3)] = (uint8_t)networkConfig.gateway.c;
+              doc[id(Conf::NETWORK_GATEWAY4)] = (uint8_t)networkConfig.gateway.d;
+
+              doc[id(Conf::NETWORK_SUBNET1)] = (uint8_t)networkConfig.subnet.a;
+              doc[id(Conf::NETWORK_SUBNET2)] = (uint8_t)networkConfig.subnet.b;
+              doc[id(Conf::NETWORK_SUBNET3)] = (uint8_t)networkConfig.subnet.c;
+              doc[id(Conf::NETWORK_SUBNET4)] = (uint8_t)networkConfig.subnet.d;
+
+              if (accessPointConfig.pass != "null")
+                doc[id(Conf::ACCESS_POINT_PASS)] = accessPointConfig.pass;
+
               ////////// OLD
-
-              // doc[id(Conf::NETWORK_DHCP)] = (bool)networkConfig.dhcp;
-
-              // doc[id(Conf::NETWORK_IP1)] = (uint8_t)networkConfig.ip.a;
-              // doc[id(Conf::NETWORK_IP2)] = (uint8_t)networkConfig.ip.b;
-              // doc[id(Conf::NETWORK_IP3)] = (uint8_t)networkConfig.ip.c;
-              // doc[id(Conf::NETWORK_IP4)] = (uint8_t)networkConfig.ip.d;
-
-              // doc[id(Conf::NETWORK_GATEWAY1)] = (uint8_t)networkConfig.gateway.a;
-              // doc[id(Conf::NETWORK_GATEWAY2)] = (uint8_t)networkConfig.gateway.b;
-              // doc[id(Conf::NETWORK_GATEWAY3)] = (uint8_t)networkConfig.gateway.c;
-              // doc[id(Conf::NETWORK_GATEWAY4)] = (uint8_t)networkConfig.gateway.d;
-
-              // doc[id(Conf::NETWORK_SUBNET1)] = (uint8_t)networkConfig.subnet.a;
-              // doc[id(Conf::NETWORK_SUBNET2)] = (uint8_t)networkConfig.subnet.b;
-              // doc[id(Conf::NETWORK_SUBNET3)] = (uint8_t)networkConfig.subnet.c;
-              // doc[id(Conf::NETWORK_SUBNET4)] = (uint8_t)networkConfig.subnet.d;
-
-              // if (accessPointConfig.pass != "null")
-              //   doc[id(Conf::ACCESS_POINT_PASS)] = accessPointConfig.pass;
 
               // doc[id(Conf::MQTT_ENABLED)] = mqttConfig.enabled;
 
@@ -188,12 +188,21 @@ void initRoutes()
 
         if (index == 0)
         {
+          for (int i = 0; i <= CONFIG_DTO_SIZE; ++i)
+          {
+            dtoBuffer[i] = NULL;
+          }
+          dtoBuffer[0] = '\0';
           strncpy(dtoBuffer, packetText, len);
         }
         else
         {
           strncat(dtoBuffer, packetText, len);
         }
+        // Serial.println("----------------------");
+        // Serial.println("Current Buffer: ");
+        // Serial.println(dtoBuffer);
+        // Serial.println("----------------------");
       });
 
   server.on(

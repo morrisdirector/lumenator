@@ -158,24 +158,24 @@ void deserializeAll(DynamicJsonDocument json)
 
   strcpy(networkConfig.ssid, json[id(Conf::NETWORK_SSID)]);
   strcpy(networkConfig.pass, json[id(Conf::NETWORK_PASS)]);
-  // networkConfig.dhcp = (bool)json[id(Conf::NETWORK_DHCP)];
+  networkConfig.dhcp = (bool)json[id(Conf::NETWORK_DHCP)];
 
-  // networkConfig.ip.a = (uint8_t)json[id(Conf::NETWORK_IP1)];
-  // networkConfig.ip.b = (uint8_t)json[id(Conf::NETWORK_IP2)];
-  // networkConfig.ip.c = (uint8_t)json[id(Conf::NETWORK_IP3)];
-  // networkConfig.ip.d = (uint8_t)json[id(Conf::NETWORK_IP4)];
+  networkConfig.ip.a = (uint8_t)json[id(Conf::NETWORK_IP1)];
+  networkConfig.ip.b = (uint8_t)json[id(Conf::NETWORK_IP2)];
+  networkConfig.ip.c = (uint8_t)json[id(Conf::NETWORK_IP3)];
+  networkConfig.ip.d = (uint8_t)json[id(Conf::NETWORK_IP4)];
 
-  // networkConfig.gateway.a = (uint8_t)json[id(Conf::NETWORK_GATEWAY1)];
-  // networkConfig.gateway.b = (uint8_t)json[id(Conf::NETWORK_GATEWAY2)];
-  // networkConfig.gateway.c = (uint8_t)json[id(Conf::NETWORK_GATEWAY3)];
-  // networkConfig.gateway.d = (uint8_t)json[id(Conf::NETWORK_GATEWAY4)];
+  networkConfig.gateway.a = (uint8_t)json[id(Conf::NETWORK_GATEWAY1)];
+  networkConfig.gateway.b = (uint8_t)json[id(Conf::NETWORK_GATEWAY2)];
+  networkConfig.gateway.c = (uint8_t)json[id(Conf::NETWORK_GATEWAY3)];
+  networkConfig.gateway.d = (uint8_t)json[id(Conf::NETWORK_GATEWAY4)];
 
-  // networkConfig.subnet.a = (uint8_t)json[id(Conf::NETWORK_SUBNET1)];
-  // networkConfig.subnet.b = (uint8_t)json[id(Conf::NETWORK_SUBNET2)];
-  // networkConfig.subnet.c = (uint8_t)json[id(Conf::NETWORK_SUBNET3)];
-  // networkConfig.subnet.d = (uint8_t)json[id(Conf::NETWORK_SUBNET4)];
+  networkConfig.subnet.a = (uint8_t)json[id(Conf::NETWORK_SUBNET1)];
+  networkConfig.subnet.b = (uint8_t)json[id(Conf::NETWORK_SUBNET2)];
+  networkConfig.subnet.c = (uint8_t)json[id(Conf::NETWORK_SUBNET3)];
+  networkConfig.subnet.d = (uint8_t)json[id(Conf::NETWORK_SUBNET4)];
 
-  // strcpy(accessPointConfig.pass, json[id(Conf::ACCESS_POINT_PASS)]);
+  strcpy(accessPointConfig.pass, json[id(Conf::ACCESS_POINT_PASS)]);
 
   ///////////// OLD
 

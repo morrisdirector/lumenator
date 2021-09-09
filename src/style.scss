@@ -218,6 +218,9 @@ label {
   > .lum-ToggleSwitch {
     margin-top: 12px;
   }
+  button {
+    max-height: 36px;
+  }
 }
 .helper-text {
   display: block;
@@ -225,6 +228,7 @@ label {
   color: $grey;
   font-size: 12px;
   font-style: italic;
+  margin-top: $marginSmall;
 }
 
 .error-text {
