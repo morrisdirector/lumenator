@@ -269,19 +269,28 @@ table {
   border-spacing: 0;
   width: 100%;
   margin: 0 0 $margin;
-  tr {
+  > tr {
     &.header-row {
       background: grey;
       color: white;
     }
-    th,
-    td {
-      // border-top: 1px solid grey;
-      padding: 5px;
-      // width: 100%;
+    &.new-group {
+      td {
+        padding-top: $margin;
+        border-top: 1px solid lighten(grey, 30%);
+      }
+    }
+    &.first-row {
+      td {
+        padding: 20px 5px;
+      }
     }
     th {
       text-align: left;
+      padding: 5px;
+    }
+    td {
+      padding: 0 5px 20px;
     }
   }
 }

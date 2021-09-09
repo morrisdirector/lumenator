@@ -139,28 +139,27 @@ void initRoutes()
               if (accessPointConfig.pass != "null")
                 doc[id(Conf::ACCESS_POINT_PASS)] = accessPointConfig.pass;
 
-              ////////// OLD
+              doc[id(Conf::MQTT_ENABLED)] = mqttConfig.enabled;
 
-              // doc[id(Conf::MQTT_ENABLED)] = mqttConfig.enabled;
+              if (mqttConfig.clientId != "null")
+                doc[id(Conf::MQTT_CLIENT_ID)] = mqttConfig.clientId;
 
-              // if (mqttConfig.clientId != "null")
-              //   doc[id(Conf::MQTT_CLIENT_ID)] = mqttConfig.clientId;
+              doc[id(Conf::MQTT_AUTO_DISCOVERY)] = mqttConfig.autoDiscovery;
 
-              // if (mqttConfig.user != "null")
-              //   doc[id(Conf::MQTT_USER)] = mqttConfig.user;
+              if (mqttConfig.user != "null")
+                doc[id(Conf::MQTT_USER)] = mqttConfig.user;
 
-              // if (mqttConfig.pass != "null")
-              //   doc[id(Conf::MQTT_PASSWORD)] = mqttConfig.pass;
+              if (mqttConfig.pass != "null")
+                doc[id(Conf::MQTT_PASSWORD)] = mqttConfig.pass;
 
-              // doc[id(Conf::MQTT_IP1)] = mqttConfig.ip.a;
-              // doc[id(Conf::MQTT_IP2)] = mqttConfig.ip.b;
-              // doc[id(Conf::MQTT_IP3)] = mqttConfig.ip.c;
-              // doc[id(Conf::MQTT_IP4)] = mqttConfig.ip.d;
+              doc[id(Conf::MQTT_IP1)] = mqttConfig.ip.a;
+              doc[id(Conf::MQTT_IP2)] = mqttConfig.ip.b;
+              doc[id(Conf::MQTT_IP3)] = mqttConfig.ip.c;
+              doc[id(Conf::MQTT_IP4)] = mqttConfig.ip.d;
 
-              // doc[id(Conf::MQTT_PORT)] = mqttConfig.port;
+              doc[id(Conf::MQTT_PORT)] = mqttConfig.port;
 
-              // doc[id(Conf::MQTT_DEVICE_TOPIC)] = mqttConfig.topic;
-              // doc[id(Conf::MQTT_AUTO_DISCOVERY)] = mqttConfig.autoDiscovery;
+              doc[id(Conf::MQTT_DEVICE_TOPIC)] = mqttConfig.topic;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);

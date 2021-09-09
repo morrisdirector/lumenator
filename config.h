@@ -106,11 +106,11 @@ struct AccessPointConfig
 
 struct GpioConfig
 {
-  uint8_t r = 0;
-  uint8_t g = 0;
-  uint8_t b = 0;
-  uint8_t w = 0;
-  uint8_t ww = 0;
+  uint8_t r = 12;
+  uint8_t g = 14;
+  uint8_t b = 16;
+  uint8_t w = 15;
+  uint8_t ww = 13;
 };
 
 struct MqttConfig
@@ -118,10 +118,10 @@ struct MqttConfig
   bool enabled = false;
   IPv4 ip;
   uint16_t port;
-  String clientId;
-  String user;
-  String pass;
-  String topic = "lumenator";
+  char clientId[STRING_SIZE_SMALL];
+  char user[STRING_SIZE];
+  char pass[STRING_SIZE_SMALL];
+  char topic[STRING_SIZE] = "lumenator";
   bool autoDiscovery = false;
 };
 
@@ -131,7 +131,6 @@ AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
-// const int configJsonTotalCapacity = JSON_OBJECT_SIZE(20);
 const int configJsonTotalCapacity = EEPROM_SIZE;
 
 #define MAX_DIGITS 3
@@ -177,22 +176,22 @@ void deserializeAll(DynamicJsonDocument json)
 
   strcpy(accessPointConfig.pass, json[id(Conf::ACCESS_POINT_PASS)]);
 
-  ///////////// OLD
+  mqttConfig.enabled = (bool)json[id(Conf::MQTT_ENABLED)];
+  strcpy(mqttConfig.clientId, json[id(Conf::MQTT_CLIENT_ID)]);
 
-  // mqttConfig.enabled = json[id(Conf::MQTT_ENABLED)].as<bool>();
-  // mqttConfig.clientId = json[id(Conf::MQTT_CLIENT_ID)].as<String>();
-  // mqttConfig.user = json[id(Conf::MQTT_USER)].as<String>();
-  // mqttConfig.pass = json[id(Conf::MQTT_PASSWORD)].as<String>();
+  mqttConfig.autoDiscovery = (bool)json[id(Conf::MQTT_AUTO_DISCOVERY)];
 
-  // mqttConfig.ip.a = json[id(Conf::MQTT_IP1)].as<uint8_t>();
-  // mqttConfig.ip.b = json[id(Conf::MQTT_IP2)].as<uint8_t>();
-  // mqttConfig.ip.c = json[id(Conf::MQTT_IP3)].as<uint8_t>();
-  // mqttConfig.ip.d = json[id(Conf::MQTT_IP4)].as<uint8_t>();
+  strcpy(mqttConfig.user, json[id(Conf::MQTT_USER)]);
+  strcpy(mqttConfig.pass, json[id(Conf::MQTT_PASSWORD)]);
 
-  // mqttConfig.port = json[id(Conf::MQTT_PORT)].as<uint16_t>();
+  mqttConfig.ip.a = (uint8_t)json[id(Conf::MQTT_IP1)];
+  mqttConfig.ip.b = (uint8_t)json[id(Conf::MQTT_IP2)];
+  mqttConfig.ip.c = (uint8_t)json[id(Conf::MQTT_IP3)];
+  mqttConfig.ip.d = (uint8_t)json[id(Conf::MQTT_IP4)];
 
-  // mqttConfig.topic = json[id(Conf::MQTT_DEVICE_TOPIC)].as<String>();
-  // mqttConfig.autoDiscovery = json[id(Conf::MQTT_AUTO_DISCOVERY)].as<bool>();
+  mqttConfig.port = (uint16_t)json[id(Conf::MQTT_PORT)];
+
+  strcpy(mqttConfig.topic, json[id(Conf::MQTT_DEVICE_TOPIC)]);
 
   Serial.println("[DS]: * Loaded device configuration");
 }

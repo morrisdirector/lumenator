@@ -119,15 +119,16 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
               id="clientId"
               disabled={!config[Conf.MQTT_ENABLED]}
               value={config[Conf.MQTT_CLIENT_ID] || undefined}
+              maxLength={20}
               onChange={handleClientIdChange}
               onBlur={(value) => {
                 handleClientIdChange(value, true);
               }}
             />
             <div class="helper-text mt-large">
-              A unique ID for MQTT broker to identify the device. Alphanumeric
-              characters, underscores, and dashes only. Example:{" "}
-              <strong>bedroom_lamp1</strong>
+              Max 20 characters. A unique ID for MQTT broker to identify the
+              device. Alphanumeric characters, underscores, and dashes only.
+              Example: <strong>bedroom_lamp1</strong>
             </div>
           </div>
           <div class="form-group no-margin">
@@ -153,6 +154,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
             <Input
               id="user"
               disabled={!config[Conf.MQTT_ENABLED]}
+              maxLength={40}
               value={config[Conf.MQTT_USER] || undefined}
               onChange={(value) => {
                 if (typeof props.onConfigUpdate === "function") {
@@ -163,6 +165,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
                 }
               }}
             />
+            <div class="helper-text">Max 40 characters</div>
           </div>
           <div class="form-group">
             <label for="password">Password</label>
@@ -170,6 +173,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
               <div class="flex-grow">
                 <Input
                   id="password"
+                  maxLength={20}
                   disabled={!config[Conf.MQTT_ENABLED]}
                   type={!showPassword ? "password" : "string"}
                   value={config[Conf.MQTT_PASSWORD] || undefined}
@@ -182,6 +186,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
                     }
                   }}
                 />
+                <div class="helper-text">Max 20 characters</div>
               </div>
               <button
                 type="button"
@@ -236,6 +241,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
             <label for="topic">Device Base Topic</label>
             <Input
               id="topic"
+              maxLength={40}
               disabled={!config[Conf.MQTT_ENABLED]}
               value={config[Conf.MQTT_DEVICE_TOPIC] || undefined}
               onChange={handleTopicChange}
@@ -247,109 +253,89 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
           <div class="form-group">
             <label for="topic"></label>
             <div class="helper-text mt-large">
-              The topic that all incoming and outgoing sub topics will be based
-              on for this device. Example:{" "}
+              Max 40 characters. The topic that all incoming and outgoing sub
+              topics will be based on for this device. Example:{" "}
               <strong>upstairs/bedroom/lamp1</strong>
             </div>
           </div>
         </div>
       </section>
-      <section>
-        <div class="form-group no-margin">
-          <label>
-            Availability Topic
-            {config[Conf.MQTT_DEVICE_TOPIC] && (
-              <div class="mb-small margin-top">
-                <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/availability`} />
-              </div>
-            )}
-          </label>
-          <table>
-            <tr class="header-row">
-              <th>Message</th>
-              <th width="100%">Description</th>
-            </tr>
-            <tr>
-              <td>
-                <Chip variant="basic" text="online"></Chip>
-              </td>
-              <td>
-                The birth message sent to the broker when Lumenator comes
-                online.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <Chip variant="basic" text="offline"></Chip>
-              </td>
-              <td>The message sent as the last will and testament.</td>
-            </tr>
-          </table>
-        </div>
-      </section>
-      <section>
-        <div class="form-group no-margin">
-          <label>
-            State Topic
-            {config[Conf.MQTT_DEVICE_TOPIC] && (
-              <div class="mb-small margin-top">
-                <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/state`} />
-              </div>
-            )}
-          </label>
-          <table>
-            <tr class="header-row">
-              <th>Message</th>
-              <th width="100%">Description</th>
-            </tr>
-            <tr>
-              <td>
-                <Chip variant="basic" text="offline"></Chip>
-              </td>
-              <td>
-                The birth message sent to the broker when Lumenator comes
-                online.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <Chip variant="basic" text="offline"></Chip>
-              </td>
-              <td>The message sent as the last will and testament.</td>
-            </tr>
-          </table>
-        </div>
-      </section>
-      <section>
-        <div class="form-group no-margin">
-          <label>
-            Command Topic
-            {config[Conf.MQTT_DEVICE_TOPIC] && (
-              <div class="mb-small margin-top">
-                <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/set`} />
-              </div>
-            )}
-          </label>
-          <table>
-            <tr class="header-row">
-              <th>Message</th>
-              <th width="100%">Description</th>
-            </tr>
-            <tr>
-              <td>
-                <Chip variant="basic" text="on"></Chip>
-              </td>
-              <td>Turn on the device.</td>
-            </tr>
-            <tr>
-              <td>
-                <Chip variant="basic" text="off"></Chip>
-              </td>
-              <td>Turn off the device.</td>
-            </tr>
-          </table>
-        </div>
-      </section>
+      {config[Conf.MQTT_DEVICE_TOPIC] && (
+        <section>
+          <div class="form-group no-margin">
+            <label>MQTT Topics</label>
+            <table>
+              <tr class="header-row">
+                <th>Topic</th>
+                <th>Message</th>
+                <th width="100%">Description</th>
+              </tr>
+              {/* AVAILABILITY */}
+              <tr class="first-row">
+                <td>
+                  <Chip
+                    text={`${config[Conf.MQTT_DEVICE_TOPIC]}/availability`}
+                  />
+                </td>
+                <td>
+                  <Chip variant="basic" text="online"></Chip>
+                </td>
+                <td>
+                  The birth message sent to the broker when Lumenator comes
+                  online.
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <Chip variant="basic" text="offline"></Chip>
+                </td>
+                <td>The message sent as the last will and testament.</td>
+              </tr>
+              {/* STATE */}
+              <tr class="new-group">
+                <td>
+                  <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/state`} />
+                </td>
+                <td>
+                  <Chip variant="basic" text="online"></Chip>
+                </td>
+                <td>
+                  The birth message sent to the broker when Lumenator comes
+                  online.
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <Chip variant="basic" text="offline"></Chip>
+                </td>
+                <td>The message sent as the last will and testament.</td>
+              </tr>
+              {/* COMMAND */}
+              <tr class="new-group">
+                <td>
+                  <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/set`} />
+                </td>
+                <td>
+                  <Chip variant="basic" text="online"></Chip>
+                </td>
+                <td>
+                  The birth message sent to the broker when Lumenator comes
+                  online.
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <Chip variant="basic" text="offline"></Chip>
+                </td>
+                <td>The message sent as the last will and testament.</td>
+              </tr>
+            </table>
+          </div>
+        </section>
+      )}
     </Fragment>
   );
 };
