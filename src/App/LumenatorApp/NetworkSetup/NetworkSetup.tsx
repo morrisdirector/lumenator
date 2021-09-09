@@ -66,6 +66,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
             <Input
               id="ssid"
               value={config[Conf.NETWORK_SSID] || undefined}
+              maxLength={40}
               onChange={(value) => {
                 if (typeof props.onConfigUpdate === "function") {
                   props.onConfigUpdate({
@@ -75,6 +76,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                 }
               }}
             />
+            <div class="helper-text">Max 40 characters</div>
           </div>
           <div class="form-group no-margin">
             <label for="password">Network Password</label>
@@ -84,6 +86,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                   id="password"
                   type={!showPassword && page === "app" ? "password" : "string"}
                   value={config[Conf.NETWORK_PASS] || undefined}
+                  maxLength={20}
                   onChange={(value) => {
                     if (typeof props.onConfigUpdate === "function") {
                       props.onConfigUpdate({
@@ -93,6 +96,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                     }
                   }}
                 />
+                <div class="helper-text">Max 20 characters</div>
               </div>
               {page === "app" && (
                 <button
@@ -186,6 +190,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
               <div class="flex-grow">
                 <Input
                   id="apPass"
+                  maxLength={20}
                   type={
                     !showAPPassword && page === "app" ? "password" : "string"
                   }
@@ -199,6 +204,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                     }
                   }}
                 />
+                <div class="helper-text">Max 20 characters</div>
               </div>
               {page === "app" && (
                 <button

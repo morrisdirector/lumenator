@@ -15,6 +15,11 @@
 // #include <WiFiUdp.h>
 // #include <Wire.h>
 
+#define EEPROM_SIZE 1000
+#define CONFIG_DTO_SIZE 1000
+
+const char printLine[] = "----------------------------";
+
 bool apMode = false; // True when in "setup" access point mode is on
 IPAddress apIP(192, 168, 4, 1);
 IPAddress apSubnet(255, 255, 255, 0);
@@ -90,7 +95,7 @@ void printWiFiStatus()
 {
 
   Serial.println(" ");
-  Serial.println("----------------------------");
+  Serial.println(printLine);
   Serial.println("Connected to wifi");
   Serial.print("Status: ");
   Serial.println(WiFi.status());
@@ -106,7 +111,7 @@ void printWiFiStatus()
   Serial.println(WiFi.RSSI());
   Serial.print("Networks: ");
   Serial.println(WiFi.scanNetworks());
-  Serial.println("----------------------------");
+  Serial.println(printLine);
 }
 
 // void ctrlCommand(char *command) {
@@ -116,58 +121,58 @@ void printWiFiStatus()
 //   }
 //   if (strncmp((char *)command, "ctrl-ww:1", 9) == 0) {
 //     // Warm White On
-//     if (deviceConfig.device_type == LRGBWW) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW) {
 //       analogWrite(deviceConfig.gpio_ww, 255);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-ww:0", 9) == 0) {
 //     // Warm White Off
-//     if (deviceConfig.device_type == LRGBWW) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW) {
 //       analogWrite(deviceConfig.gpio_ww, 0);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-w:1", 8) == 0) {
 //     // Cool White On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW) {
 //       analogWrite(deviceConfig.gpio_w, 255);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-w:0", 8) == 0) {
 //     // Cool White Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW) {
 //       analogWrite(deviceConfig.gpio_w, 0);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-r:1", 8) == 0) {
 //     // Red On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
+//         deviceConfig.device_type == DeviceType::RGB) {
 //       analogWrite(deviceConfig.gpio_r, 255);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-r:0", 8) == 0) {
 //     // Red Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
+//         deviceConfig.device_type == DeviceType::RGB) {
 //       analogWrite(deviceConfig.gpio_r, 0);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-g:1", 8) == 0) {
 //     // Green On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
+//         deviceConfig.device_type == DeviceType::RGB) {
 //       analogWrite(deviceConfig.gpio_g, 255);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-g:0", 8) == 0) {
 //     // Green Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
+//         deviceConfig.device_type == DeviceType::RGB) {
 //       analogWrite(deviceConfig.gpio_g, 0);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-b:1", 8) == 0) {
 //     // Blue On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
+//         deviceConfig.device_type == DeviceType::RGB) {
 //       analogWrite(deviceConfig.gpio_b, 255);
 //     }
 //   } else if (strncmp((char *)command, "ctrl-b:0", 8) == 0) {
 //     // Blue Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
+//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
+//         deviceConfig.device_type == DeviceType::RGB) {
 //       analogWrite(deviceConfig.gpio_b, 0);
 //     }
 //   }
@@ -397,18 +402,18 @@ void startWiFi()
 
 void setupHardwareConfiguration()
 {
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LWW)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
   {
     // pinMode(gpioConfig.ww, OUTPUT);
     // analogWrite(gpioConfig.ww, 0);
   }
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW || deviceConfig.type == LWW || deviceConfig.type == LW)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW || deviceConfig.type == DeviceType::WW || deviceConfig.type == DeviceType::WW)
   {
     // pinMode(gpioConfig.w, OUTPUT);
     // analogWrite(gpioConfig.w, 0);
   }
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-      deviceConfig.type == LRGB)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+      deviceConfig.type == DeviceType::RGB)
   {
     pinMode(gpioConfig.r, OUTPUT);
     // pinMode(gpioConfig.g, OUTPUT);
@@ -508,7 +513,7 @@ void setup()
 
   setupHardwareConfiguration();
 
-  if (networkConfig.ssid.length() && networkConfig.pass.length())
+  if (strlen(networkConfig.ssid) && strlen(networkConfig.pass))
   {
     startWiFi();
   }

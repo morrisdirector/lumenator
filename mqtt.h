@@ -14,6 +14,29 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     Serial.println();
 }
 
+void publishAutoDiscoveryConfig()
+{
+    String payload = "{\"~\":\"";
+    payload += mqttConfig.topic;
+    payload += "\",\"name\":\"";
+    payload += deviceConfig.name;
+    payload += "\",\"unique_id\":\"";
+    payload += mqttConfig.clientId;
+    payload += "\",\"bri_cmd_t\":\"~/brightness/set\",\"stat_t\":\"~/state\",\"brightness\":true}";
+
+    String configTopic = "homeassistant/light/";
+    configTopic += mqttConfig.clientId;
+    configTopic += "/config";
+    const int configTopicL = configTopic.length() + 1;
+    char config_topic[configTopicL];
+    configTopic.toCharArray(config_topic, configTopicL);
+
+    mqttClient.beginPublish(config_topic, payload.length(), false);
+    mqttClient.print(payload);
+    mqttClient.endPublish();
+    Serial.println("Auto discovery config sent");
+}
+
 void setupMqtt()
 {
     mqttClient.setClient(espClient);
@@ -29,29 +52,56 @@ void setupMqtt()
     Serial.println(mqttConfig.port);
 }
 
+void subscribeAll()
+{
+    // State Topic
+    String stateTopic = mqttConfig.topic;
+    stateTopic += "/state";
+    const int stateTopicL = stateTopic.length() + 1;
+    char state_topic[stateTopicL];
+    stateTopic.toCharArray(state_topic, stateTopicL);
+    mqttClient.subscribe(state_topic);
+    Serial.println("State topic: ");
+    Serial.println(state_topic);
+
+    // Command Topic
+    String commandTopic = mqttConfig.topic;
+    commandTopic += "/brightness/set";
+    const int commandTopicL = commandTopic.length() + 1;
+    char command_topic[commandTopicL];
+    commandTopic.toCharArray(command_topic, commandTopicL);
+    mqttClient.subscribe(command_topic);
+    Serial.println("Brightness Command topic: ");
+    Serial.println(command_topic);
+}
+
 void reconnectMqtt()
 {
     while (!mqttClient.connected())
     {
         Serial.print("Attempting MQTT connection...");
-        const int client_nameL = mqttConfig.client.length() + 1; // 1 extra char for the null terminator
+        const int client_idL = mqttConfig.clientId.length() + 1; // 1 extra char for the null terminator
         const int userL = mqttConfig.user.length() + 1;
         const int passwordL = mqttConfig.pass.length() + 1;
         const int topicL = mqttConfig.topic.length() + 1;
-        char client_name[client_nameL]; // buffer to copy to
+        char client_id[client_idL]; // buffer to copy to
         char user[userL];
         char password[passwordL];
         char topic[topicL];
-        mqttConfig.client.toCharArray(client_name, client_nameL); // perform the copy to the buffer
+        mqttConfig.clientId.toCharArray(client_id, client_idL); // perform the copy to the buffer
         mqttConfig.user.toCharArray(user, userL);
         mqttConfig.pass.toCharArray(password, passwordL);
         mqttConfig.topic.toCharArray(topic, topicL);
-        if (mqttClient.connect(client_name, user, password))
+        if (mqttClient.connect(client_id, user, password, topic, 1, true, "offline"))
         {
             Serial.println("connected");
             Serial.println("----------------------------");
+            if (mqttConfig.autoDiscovery == true)
+            {
+                publishAutoDiscoveryConfig();
+            }
             mqttClient.publish(topic, "online");
-            mqttClient.subscribe(topic);
+            subscribeAll();
         }
         else
         {

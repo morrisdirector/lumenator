@@ -6,7 +6,6 @@ import { Conf } from "../../../lib/interfaces/IConfigJson";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { DeviceType } from "../../../lib/enums/DeviceType";
 import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
-import { HardwareService } from "../../../lib/services/hardware-service";
 import { IDeviceSetupProps } from "./IDeviceSetupProps";
 import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
@@ -39,6 +38,7 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = ({
             <label for="name">Device Name</label>
             <Input
               value={config[Conf.DEVICE_NAME] || undefined}
+              maxLength={40}
               onChange={(value) => {
                 if (typeof props.onConfigUpdate === "function") {
                   props.onConfigUpdate({
@@ -48,6 +48,7 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = ({
                 }
               }}
             />
+            <div class="helper-text">Max 40 characters</div>
           </div>
           <div class="form-group no-margin">
             <label for="name">Device Type</label>

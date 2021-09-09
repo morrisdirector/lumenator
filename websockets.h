@@ -14,7 +14,7 @@ char msg_buf[10];
 // if (strncmp((char *)command, "ctrl-ww:1", 9) == 0)
 // {
 //   // Warm White On
-//   if (deviceConfig.type == LRGBWW)
+//   if (deviceConfig.type == DeviceType::RGBWW)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_ww, 255)");
 //   }
@@ -22,7 +22,7 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-ww:0", 9) == 0)
 // {
 //   // Warm White Off
-//   if (deviceConfig.type == LRGBWW)
+//   if (deviceConfig.type == DeviceType::RGBWW)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_ww, 0)");
 //   }
@@ -30,7 +30,7 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-w:1", 8) == 0)
 // {
 //   // Cool White On
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_w, 255)");
 //   }
@@ -38,7 +38,7 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-w:0", 8) == 0)
 // {
 //   // Cool White Off
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_w, 0)");
 //   }
@@ -46,8 +46,8 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-r:1", 8) == 0)
 // {
 //   // Red On
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-//       deviceConfig.type == LRGB)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+//       deviceConfig.type == DeviceType::RGB)
 //   {
 //     analogWrite(gpioConfig.r, 255);
 //   }
@@ -55,8 +55,8 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-r:0", 8) == 0)
 // {
 //   // Red Off
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-//       deviceConfig.type == LRGB)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+//       deviceConfig.type == DeviceType::RGB)
 //   {
 //     analogWrite(gpioConfig.r, 0);
 //   }
@@ -64,8 +64,8 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-g:1", 8) == 0)
 // {
 //   // Green On
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-//       deviceConfig.type == LRGB)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+//       deviceConfig.type == DeviceType::RGB)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_g, 255)");
 //   }
@@ -73,8 +73,8 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-g:0", 8) == 0)
 // {
 //   // Green Off
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-//       deviceConfig.type == LRGB)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+//       deviceConfig.type == DeviceType::RGB)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_g, 0)");
 //   }
@@ -82,8 +82,8 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-b:1", 8) == 0)
 // {
 //   // Blue On
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-//       deviceConfig.type == LRGB)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+//       deviceConfig.type == DeviceType::RGB)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_b, 255)");
 //   }
@@ -91,8 +91,8 @@ char msg_buf[10];
 // else if (strncmp((char *)command, "ctrl-b:0", 8) == 0)
 // {
 //   // Blue Off
-//   if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-//       deviceConfig.type == LRGB)
+//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+//       deviceConfig.type == DeviceType::RGB)
 //   {
 //     Serial.println("analogWrite(deviceConfig.gpio_b, 0)");
 //   }
@@ -198,7 +198,8 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
 
   // Client has disconnected
   case WStype_DISCONNECTED:
-    Serial.printf("[%u] Disconnected!\n", client_num);
+    Serial.printf("[%u] Disconnected!", client_num);
+    Serial.println();
     break;
 
   // New client has connected
@@ -217,7 +218,8 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     text = (char *)payload;
 
     // Print out raw message
-    Serial.printf("[%u] Command: %s\n", client_num, text);
+    Serial.printf("[%u] Command: %s", client_num, text);
+    Serial.println();
 
     if (strncmp(text, "gpio", 4) == 0)
     {

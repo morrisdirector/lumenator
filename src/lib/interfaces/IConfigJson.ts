@@ -32,7 +32,7 @@ export enum Conf {
   GPIO_B,
   // MQTT
   MQTT_ENABLED,
-  MQTT_CLIENT_NAME,
+  MQTT_CLIENT_ID,
   MQTT_USER,
   MQTT_PASSWORD,
   MQTT_IP1,
@@ -41,14 +41,7 @@ export enum Conf {
   MQTT_IP4,
   MQTT_PORT,
   MQTT_DEVICE_TOPIC,
-}
-export interface IConfigMQTT {
-  mqtt_enabled: true;
-  mqtt_client_name: string;
-  mqtt_user: string;
-  mqtt_password: string;
-  mqtt_ip: Array<number>;
-  mqtt_port: number;
+  MQTT_AUTO_DISCOVERY,
 }
 export interface IConfigJson {
   // DEVICE:
@@ -80,7 +73,7 @@ export interface IConfigJson {
   [Conf.ACCESS_POINT_PASS]?: string;
   // MQTT:
   [Conf.MQTT_ENABLED]?: boolean;
-  [Conf.MQTT_CLIENT_NAME]?: string;
+  [Conf.MQTT_CLIENT_ID]?: string;
   [Conf.MQTT_USER]?: string;
   [Conf.MQTT_PASSWORD]?: string;
   [Conf.MQTT_IP1]?: number;
@@ -89,4 +82,5 @@ export interface IConfigJson {
   [Conf.MQTT_IP4]?: number;
   [Conf.MQTT_PORT]?: number;
   [Conf.MQTT_DEVICE_TOPIC]?: string;
+  [Conf.MQTT_AUTO_DISCOVERY]?: boolean;
 }

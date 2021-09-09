@@ -6,7 +6,9 @@ import { strValToNumber } from "../../utils/utils";
 const Input: FunctionalComponent<IInputProps> = (props) => {
   const getEventValue = (event: Event): number | string | undefined => {
     const strValue = (event.target as HTMLInputElement).value;
-    return props.type === "number" ? strValToNumber(strValue) : strValue;
+    return props.type === "number"
+      ? strValToNumber(strValue)
+      : (strValue as string).slice(0, props.maxLength || 500);
   };
 
   const handleChange = (event: Event): void => {

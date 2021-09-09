@@ -1,15 +1,15 @@
 void resetGpios()
 {
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LWW)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
   {
     analogWrite(gpioConfig.ww, 0);
   }
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW || deviceConfig.type == LWW || deviceConfig.type == LW)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW || deviceConfig.type == DeviceType::WW || deviceConfig.type == DeviceType::WW)
   {
     analogWrite(gpioConfig.w, 0);
   }
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-      deviceConfig.type == LRGB)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+      deviceConfig.type == DeviceType::RGB)
   {
     analogWrite(gpioConfig.r, 0);
     analogWrite(gpioConfig.g, 0);

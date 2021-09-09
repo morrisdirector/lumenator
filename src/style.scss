@@ -22,6 +22,21 @@ body {
   }
 }
 
+a {
+  &,
+  &:visited,
+  &:active,
+  &:hover,
+  &:focus {
+    color: darken($grey, 40%);
+    font-weight: bold;
+    text-decoration: none;
+    &:hover {
+      color: darken($highlight, 30%);
+    }
+  }
+}
+
 h4 {
   margin: 0 0 $margin;
 }
@@ -30,6 +45,10 @@ p {
   font-size: $textSizeNormal;
   color: $lightDark;
   line-height: $textLineHeightNormal;
+}
+
+.text-medium {
+  font-size: $textSizeMedium !important;
 }
 
 main {
@@ -53,12 +72,40 @@ section {
   }
 }
 
+.section-action {
+  max-width: 800px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: auto;
+  padding: 0 0 10px;
+  > * {
+    margin: 0 10px 0 0;
+  }
+}
+
 .width-100 {
   width: 100% !important;
 }
 
 .no-margin {
   margin: 0 !important;
+}
+
+.margin {
+  margin: $margin !important;
+}
+
+.margin-small {
+  margin: $marginSmall !important;
+}
+
+.margin-top {
+  margin-top: $margin;
+}
+
+.margin-bottom {
+  margin-bottom: $margin;
 }
 
 .mt-small {
@@ -128,6 +175,10 @@ hr {
   border: 0;
   box-shadow: 0px 0.5px 0px 0.5px rgba(255, 255, 255, 0.8),
     0px -0.5px 0px 0.5px rgba(0, 0, 0, 0.15);
+}
+
+.bold {
+  font-weight: bold !important;
 }
 
 label {
@@ -223,7 +274,7 @@ table {
     td {
       // border-top: 1px solid grey;
       padding: 5px;
-      width: 100%;
+      // width: 100%;
     }
     th {
       text-align: left;

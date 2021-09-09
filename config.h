@@ -2,6 +2,9 @@
 
 #include "eeprom-service.h"
 
+#define STRING_SIZE 45
+#define STRING_SIZE_SMALL 25
+
 enum class Conf
 {
   // Device
@@ -35,7 +38,7 @@ enum class Conf
   GPIO_B,
   // MQTT
   MQTT_ENABLED,
-  MQTT_CLIENT_NAME,
+  MQTT_CLIENT_ID,
   MQTT_USER,
   MQTT_PASSWORD,
   MQTT_IP1,
@@ -43,17 +46,17 @@ enum class Conf
   MQTT_IP3,
   MQTT_IP4,
   MQTT_PORT,
-  MQTT_DEVICE_TOPIC
+  MQTT_DEVICE_TOPIC,
+  MQTT_AUTO_DISCOVERY
 };
 
-enum DeviceType
+enum class DeviceType
 {
-  LNONE,
-  LRGBWW,
-  LRGBW,
-  LRGB,
-  LWW,
-  LW
+  RGBWW = 1,
+  RGBW,
+  RGB,
+  WW,
+  W
 };
 
 struct IPv4
@@ -82,14 +85,14 @@ struct IPSubnet
 
 struct DeviceConfig
 {
-  String name = "Lumenator";
-  DeviceType type = LRGBWW;
+  char name[STRING_SIZE] = "Lumenator";
+  DeviceType type = DeviceType::RGBWW;
 };
 
 struct NetworkConfig
 {
-  String ssid = "SSID";
-  String pass = "password";
+  char ssid[STRING_SIZE] = "MorrisWifi20";
+  char pass[STRING_SIZE_SMALL] = "movies956chief9903";
   bool dhcp = true;
   IPv4 ip;
   IPGateway gateway;
@@ -98,7 +101,7 @@ struct NetworkConfig
 
 struct AccessPointConfig
 {
-  String pass;
+  char pass[STRING_SIZE_SMALL];
 };
 
 struct GpioConfig
@@ -115,10 +118,11 @@ struct MqttConfig
   bool enabled = false;
   IPv4 ip;
   uint16_t port;
-  String client;
+  String clientId;
   String user;
   String pass;
   String topic = "lumenator";
+  bool autoDiscovery = false;
 };
 
 DeviceConfig deviceConfig;
@@ -127,72 +131,80 @@ AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 
-const int configJsonTotalCapacity = JSON_OBJECT_SIZE(100);
+// const int configJsonTotalCapacity = JSON_OBJECT_SIZE(20);
+const int configJsonTotalCapacity = EEPROM_SIZE;
 
-String id(Conf id)
+#define MAX_DIGITS 3
+
+char *id(Conf id)
 {
-  return String(static_cast<int>(id));
+  int number = static_cast<int>(id);
+  char num_char[MAX_DIGITS + sizeof(char)];
+
+  std::sprintf(num_char, "%d", number);
+  return num_char;
 }
 
 void deserializeAll(DynamicJsonDocument json)
 {
-  Serial.println();
+  strcpy(deviceConfig.name, json[id(Conf::DEVICE_NAME)]);
+  deviceConfig.type = (DeviceType)(uint8_t)json[id(Conf::DEVICE_TYPE)];
 
-  deviceConfig.name = json[id(Conf::DEVICE_NAME)].as<String>();
-  deviceConfig.type = json[id(Conf::DEVICE_TYPE)].as<DeviceType>();
+  gpioConfig.r = (uint8_t)json[id(Conf::GPIO_R)];
+  gpioConfig.g = (uint8_t)json[id(Conf::GPIO_G)];
+  gpioConfig.b = (uint8_t)json[id(Conf::GPIO_B)];
+  gpioConfig.w = (uint8_t)json[id(Conf::GPIO_W)];
+  gpioConfig.ww = (uint8_t)json[id(Conf::GPIO_WW)];
 
-  gpioConfig.r = json[id(Conf::GPIO_R)].as<uint8_t>();
-  gpioConfig.g = json[id(Conf::GPIO_G)].as<uint8_t>();
-  gpioConfig.b = json[id(Conf::GPIO_B)].as<uint8_t>();
-  gpioConfig.w = json[id(Conf::GPIO_W)].as<uint8_t>();
-  gpioConfig.ww = json[id(Conf::GPIO_WW)].as<uint8_t>();
+  strcpy(networkConfig.ssid, json[id(Conf::NETWORK_SSID)]);
+  strcpy(networkConfig.pass, json[id(Conf::NETWORK_PASS)]);
+  // networkConfig.dhcp = (bool)json[id(Conf::NETWORK_DHCP)];
 
-  networkConfig.ssid = json[id(Conf::NETWORK_SSID)].as<String>();
-  networkConfig.pass = json[id(Conf::NETWORK_PASS)].as<String>();
-  networkConfig.dhcp = json[id(Conf::NETWORK_DHCP)].as<bool>();
+  // networkConfig.ip.a = (uint8_t)json[id(Conf::NETWORK_IP1)];
+  // networkConfig.ip.b = (uint8_t)json[id(Conf::NETWORK_IP2)];
+  // networkConfig.ip.c = (uint8_t)json[id(Conf::NETWORK_IP3)];
+  // networkConfig.ip.d = (uint8_t)json[id(Conf::NETWORK_IP4)];
 
-  networkConfig.ip.a = json[id(Conf::NETWORK_IP1)].as<uint8_t>();
-  networkConfig.ip.b = json[id(Conf::NETWORK_IP2)].as<uint8_t>();
-  networkConfig.ip.c = json[id(Conf::NETWORK_IP3)].as<uint8_t>();
-  networkConfig.ip.d = json[id(Conf::NETWORK_IP4)].as<uint8_t>();
+  // networkConfig.gateway.a = (uint8_t)json[id(Conf::NETWORK_GATEWAY1)];
+  // networkConfig.gateway.b = (uint8_t)json[id(Conf::NETWORK_GATEWAY2)];
+  // networkConfig.gateway.c = (uint8_t)json[id(Conf::NETWORK_GATEWAY3)];
+  // networkConfig.gateway.d = (uint8_t)json[id(Conf::NETWORK_GATEWAY4)];
 
-  networkConfig.gateway.a = json[id(Conf::NETWORK_GATEWAY1)].as<uint8_t>();
-  networkConfig.gateway.b = json[id(Conf::NETWORK_GATEWAY2)].as<uint8_t>();
-  networkConfig.gateway.c = json[id(Conf::NETWORK_GATEWAY3)].as<uint8_t>();
-  networkConfig.gateway.d = json[id(Conf::NETWORK_GATEWAY4)].as<uint8_t>();
+  // networkConfig.subnet.a = (uint8_t)json[id(Conf::NETWORK_SUBNET1)];
+  // networkConfig.subnet.b = (uint8_t)json[id(Conf::NETWORK_SUBNET2)];
+  // networkConfig.subnet.c = (uint8_t)json[id(Conf::NETWORK_SUBNET3)];
+  // networkConfig.subnet.d = (uint8_t)json[id(Conf::NETWORK_SUBNET4)];
 
-  networkConfig.subnet.a = json[id(Conf::NETWORK_SUBNET1)].as<uint8_t>();
-  networkConfig.subnet.b = json[id(Conf::NETWORK_SUBNET2)].as<uint8_t>();
-  networkConfig.subnet.c = json[id(Conf::NETWORK_SUBNET3)].as<uint8_t>();
-  networkConfig.subnet.d = json[id(Conf::NETWORK_SUBNET4)].as<uint8_t>();
+  // strcpy(accessPointConfig.pass, json[id(Conf::ACCESS_POINT_PASS)]);
 
-  accessPointConfig.pass = json[id(Conf::ACCESS_POINT_PASS)].as<String>();
+  ///////////// OLD
 
-  mqttConfig.enabled = json[id(Conf::MQTT_ENABLED)].as<bool>();
-  mqttConfig.client = json[id(Conf::MQTT_CLIENT_NAME)].as<String>();
-  mqttConfig.user = json[id(Conf::MQTT_USER)].as<String>();
-  mqttConfig.pass = json[id(Conf::MQTT_PASSWORD)].as<String>();
+  // mqttConfig.enabled = json[id(Conf::MQTT_ENABLED)].as<bool>();
+  // mqttConfig.clientId = json[id(Conf::MQTT_CLIENT_ID)].as<String>();
+  // mqttConfig.user = json[id(Conf::MQTT_USER)].as<String>();
+  // mqttConfig.pass = json[id(Conf::MQTT_PASSWORD)].as<String>();
 
-  mqttConfig.ip.a = json[id(Conf::MQTT_IP1)].as<uint8_t>();
-  mqttConfig.ip.b = json[id(Conf::MQTT_IP2)].as<uint8_t>();
-  mqttConfig.ip.c = json[id(Conf::MQTT_IP3)].as<uint8_t>();
-  mqttConfig.ip.d = json[id(Conf::MQTT_IP4)].as<uint8_t>();
+  // mqttConfig.ip.a = json[id(Conf::MQTT_IP1)].as<uint8_t>();
+  // mqttConfig.ip.b = json[id(Conf::MQTT_IP2)].as<uint8_t>();
+  // mqttConfig.ip.c = json[id(Conf::MQTT_IP3)].as<uint8_t>();
+  // mqttConfig.ip.d = json[id(Conf::MQTT_IP4)].as<uint8_t>();
 
-  mqttConfig.port = json[id(Conf::MQTT_PORT)].as<uint16_t>();
+  // mqttConfig.port = json[id(Conf::MQTT_PORT)].as<uint16_t>();
 
-  mqttConfig.topic = json[id(Conf::MQTT_DEVICE_TOPIC)].as<String>();
+  // mqttConfig.topic = json[id(Conf::MQTT_DEVICE_TOPIC)].as<String>();
+  // mqttConfig.autoDiscovery = json[id(Conf::MQTT_AUTO_DISCOVERY)].as<bool>();
 
   Serial.println("[DS]: * Loaded device configuration");
 }
 
-bool saveConfiguration(String dto)
+bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
 {
-  Serial.println();
-  Serial.println("Configuration Update DTO: ");
-  Serial.println(dto);
-
-  DynamicJsonDocument json(1024);
-  DeserializationError error = deserializeJson(json, dto);
+  const char *dBuffer = dto; // Needs to hold char[] in a const for deserializJson to work properly
+  Serial.println("Config to save: ");
+  Serial.println(dBuffer);
+  Serial.println(printLine);
+  DynamicJsonDocument json(configJsonTotalCapacity);
+  DeserializationError error = deserializeJson(json, dBuffer);
   if (error)
   {
     Serial.println("");

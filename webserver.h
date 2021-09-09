@@ -11,7 +11,7 @@
 // Web Server port 80
 AsyncWebServer server(80);
 
-String dtoBuffer;
+char dtoBuffer[CONFIG_DTO_SIZE];
 
 void onRequest(AsyncWebServerRequest *request)
 {
@@ -100,12 +100,18 @@ void initRoutes()
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request)
             {
               String response;
-              StaticJsonDocument<configJsonTotalCapacity> doc;
+              DynamicJsonDocument doc(configJsonTotalCapacity);
 
               if (deviceConfig.name != "null")
                 doc[id(Conf::DEVICE_NAME)] = deviceConfig.name;
 
-              doc[id(Conf::DEVICE_TYPE)] = deviceConfig.type;
+              doc[id(Conf::DEVICE_TYPE)] = (uint8_t)deviceConfig.type;
+
+              doc[id(Conf::GPIO_R)] = (uint8_t)gpioConfig.r;
+              doc[id(Conf::GPIO_G)] = (uint8_t)gpioConfig.g;
+              doc[id(Conf::GPIO_B)] = (uint8_t)gpioConfig.b;
+              doc[id(Conf::GPIO_W)] = (uint8_t)gpioConfig.w;
+              doc[id(Conf::GPIO_WW)] = (uint8_t)gpioConfig.ww;
 
               if (networkConfig.ssid != "null")
                 doc[id(Conf::NETWORK_SSID)] = networkConfig.ssid;
@@ -113,51 +119,48 @@ void initRoutes()
               if (networkConfig.pass != "null")
                 doc[id(Conf::NETWORK_PASS)] = networkConfig.pass;
 
-              doc[id(Conf::NETWORK_DHCP)] = networkConfig.dhcp;
+              ////////// OLD
 
-              doc[id(Conf::NETWORK_IP1)] = networkConfig.ip.a;
-              doc[id(Conf::NETWORK_IP2)] = networkConfig.ip.b;
-              doc[id(Conf::NETWORK_IP3)] = networkConfig.ip.c;
-              doc[id(Conf::NETWORK_IP4)] = networkConfig.ip.d;
+              // doc[id(Conf::NETWORK_DHCP)] = (bool)networkConfig.dhcp;
 
-              doc[id(Conf::NETWORK_GATEWAY1)] = networkConfig.gateway.a;
-              doc[id(Conf::NETWORK_GATEWAY2)] = networkConfig.gateway.b;
-              doc[id(Conf::NETWORK_GATEWAY3)] = networkConfig.gateway.c;
-              doc[id(Conf::NETWORK_GATEWAY4)] = networkConfig.gateway.d;
+              // doc[id(Conf::NETWORK_IP1)] = (uint8_t)networkConfig.ip.a;
+              // doc[id(Conf::NETWORK_IP2)] = (uint8_t)networkConfig.ip.b;
+              // doc[id(Conf::NETWORK_IP3)] = (uint8_t)networkConfig.ip.c;
+              // doc[id(Conf::NETWORK_IP4)] = (uint8_t)networkConfig.ip.d;
 
-              doc[id(Conf::NETWORK_SUBNET1)] = networkConfig.subnet.a;
-              doc[id(Conf::NETWORK_SUBNET2)] = networkConfig.subnet.b;
-              doc[id(Conf::NETWORK_SUBNET3)] = networkConfig.subnet.c;
-              doc[id(Conf::NETWORK_SUBNET4)] = networkConfig.subnet.d;
+              // doc[id(Conf::NETWORK_GATEWAY1)] = (uint8_t)networkConfig.gateway.a;
+              // doc[id(Conf::NETWORK_GATEWAY2)] = (uint8_t)networkConfig.gateway.b;
+              // doc[id(Conf::NETWORK_GATEWAY3)] = (uint8_t)networkConfig.gateway.c;
+              // doc[id(Conf::NETWORK_GATEWAY4)] = (uint8_t)networkConfig.gateway.d;
 
-              if (accessPointConfig.pass != "null")
-                doc[id(Conf::ACCESS_POINT_PASS)] = accessPointConfig.pass;
+              // doc[id(Conf::NETWORK_SUBNET1)] = (uint8_t)networkConfig.subnet.a;
+              // doc[id(Conf::NETWORK_SUBNET2)] = (uint8_t)networkConfig.subnet.b;
+              // doc[id(Conf::NETWORK_SUBNET3)] = (uint8_t)networkConfig.subnet.c;
+              // doc[id(Conf::NETWORK_SUBNET4)] = (uint8_t)networkConfig.subnet.d;
 
-              doc[id(Conf::GPIO_R)] = gpioConfig.r;
-              doc[id(Conf::GPIO_G)] = gpioConfig.g;
-              doc[id(Conf::GPIO_B)] = gpioConfig.b;
-              doc[id(Conf::GPIO_W)] = gpioConfig.w;
-              doc[id(Conf::GPIO_WW)] = gpioConfig.ww;
+              // if (accessPointConfig.pass != "null")
+              //   doc[id(Conf::ACCESS_POINT_PASS)] = accessPointConfig.pass;
 
-              doc[id(Conf::MQTT_ENABLED)] = mqttConfig.enabled;
+              // doc[id(Conf::MQTT_ENABLED)] = mqttConfig.enabled;
 
-              if (mqttConfig.client != "null")
-                doc[id(Conf::MQTT_CLIENT_NAME)] = mqttConfig.client;
+              // if (mqttConfig.clientId != "null")
+              //   doc[id(Conf::MQTT_CLIENT_ID)] = mqttConfig.clientId;
 
-              if (mqttConfig.user != "null")
-                doc[id(Conf::MQTT_USER)] = mqttConfig.user;
+              // if (mqttConfig.user != "null")
+              //   doc[id(Conf::MQTT_USER)] = mqttConfig.user;
 
-              if (mqttConfig.pass != "null")
-                doc[id(Conf::MQTT_PASSWORD)] = mqttConfig.pass;
+              // if (mqttConfig.pass != "null")
+              //   doc[id(Conf::MQTT_PASSWORD)] = mqttConfig.pass;
 
-              doc[id(Conf::MQTT_IP1)] = mqttConfig.ip.a;
-              doc[id(Conf::MQTT_IP2)] = mqttConfig.ip.b;
-              doc[id(Conf::MQTT_IP3)] = mqttConfig.ip.c;
-              doc[id(Conf::MQTT_IP4)] = mqttConfig.ip.d;
+              // doc[id(Conf::MQTT_IP1)] = mqttConfig.ip.a;
+              // doc[id(Conf::MQTT_IP2)] = mqttConfig.ip.b;
+              // doc[id(Conf::MQTT_IP3)] = mqttConfig.ip.c;
+              // doc[id(Conf::MQTT_IP4)] = mqttConfig.ip.d;
 
-              doc[id(Conf::MQTT_PORT)] = mqttConfig.port;
+              // doc[id(Conf::MQTT_PORT)] = mqttConfig.port;
 
-              doc[id(Conf::MQTT_DEVICE_TOPIC)] = mqttConfig.topic;
+              // doc[id(Conf::MQTT_DEVICE_TOPIC)] = mqttConfig.topic;
+              // doc[id(Conf::MQTT_AUTO_DISCOVERY)] = mqttConfig.autoDiscovery;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);
@@ -167,7 +170,8 @@ void initRoutes()
       "/config", HTTP_POST,
       [](AsyncWebServerRequest *request)
       {
-        if (dtoBuffer == "" || !saveConfiguration(dtoBuffer))
+        if (
+            dtoBuffer == "" || !saveConfiguration(dtoBuffer))
         {
           request->send(500, "application/json", "{\"success\": false}");
         }
@@ -179,16 +183,16 @@ void initRoutes()
       NULL,
       [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
       {
+        char *packetText;
+        packetText = (char *)data;
+
         if (index == 0)
         {
-          dtoBuffer = "";
+          strncpy(dtoBuffer, packetText, len);
         }
-        char *text;
-        text = (char *)data;
-
-        for (size_t i = 0; i < len; i++)
+        else
         {
-          dtoBuffer.concat(text[i]);
+          strncat(dtoBuffer, packetText, len);
         }
       });
 
