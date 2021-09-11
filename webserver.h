@@ -100,7 +100,7 @@ void initRoutes()
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request)
             {
               String response;
-              DynamicJsonDocument doc(configJsonTotalCapacity);
+              DynamicJsonDocument doc(2048);
 
               if (deviceConfig.name != "null")
                 doc[id(Conf::DEVICE_NAME)] = deviceConfig.name;

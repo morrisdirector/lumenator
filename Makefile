@@ -1,4 +1,5 @@
 BOARD = esp8266:esp8266:d1
+# PORT  = /dev/cu.usbserial-13110
 PORT  = /dev/cu.usbserial-0147DD01
 # PORT  = /dev/cu.wchusbserial145430
 # PORT  = /dev/cu.wchusbserial1440

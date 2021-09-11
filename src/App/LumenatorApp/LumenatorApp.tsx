@@ -183,7 +183,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
           </div>
         </header>
         <NavMenu
-          activeId={4}
+          activeId={1}
           renderActionSection={() => {
             return this.bannerService.renderActionSection();
           }}

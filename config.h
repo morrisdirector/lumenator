@@ -121,8 +121,14 @@ struct MqttConfig
   char clientId[STRING_SIZE_SMALL];
   char user[STRING_SIZE];
   char pass[STRING_SIZE_SMALL];
-  char topic[STRING_SIZE] = "lumenator";
   bool autoDiscovery = false;
+  // Base Topic
+  char topic[STRING_SIZE] = "lumenator";
+  // Generated Topics
+  char configTopic[50];
+  char availTopic[50];
+  char stateTopic[50];
+  char commandTopic[50];
 };
 
 DeviceConfig deviceConfig;
@@ -134,6 +140,15 @@ MqttConfig mqttConfig;
 const int configJsonTotalCapacity = EEPROM_SIZE;
 
 #define MAX_DIGITS 3
+
+int test()
+{
+  int a;
+  int *p;
+  a = 10;
+  p = &a;
+  *p = 12;
+}
 
 char *id(Conf id)
 {
@@ -193,6 +208,7 @@ void deserializeAll(DynamicJsonDocument json)
 
   strcpy(mqttConfig.topic, json[id(Conf::MQTT_DEVICE_TOPIC)]);
 
+  Serial.println();
   Serial.println("[DS]: * Loaded device configuration");
 }
 
@@ -202,7 +218,7 @@ bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
   Serial.println("Config to save: ");
   Serial.println(dBuffer);
   Serial.println(printLine);
-  DynamicJsonDocument json(configJsonTotalCapacity);
+  DynamicJsonDocument json(2048);
   DeserializationError error = deserializeJson(json, dBuffer);
   if (error)
   {

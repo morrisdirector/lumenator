@@ -30,22 +30,9 @@ DNSServer dnsServer;
 
 WiFiClient espClient;
 
-// Enums
-enum controlMode
-{
-  STANDBY,
-  RGB,
-  WHITE,
-  GPIO_R,
-  GPIO_G,
-  GPIO_B,
-  GPIO_W,
-  GPIO_WW,
-};
-
-int ctrlMode;
-
 #include "utils.h"
+
+#include "state.h"
 
 #include "config.h"
 
@@ -74,22 +61,8 @@ int ctrlMode;
 //  TX  1
 //  RX  3
 
-// PubSubClient mqttClient(espClient);
-
-/* ------- NETWORK CREDENTIALS ------- */
-/* Fallback configuration if config.json is empty or fails */
-// const char *fallbackSsid = mySSID;
-// const char *fallbackPassword = myPASSWORD;
-/* ----------------------------------- */
-
-// const char CONFIG_FILE[] = "/config.json";
-
 // To make Arduino IDE autodetect OTA device
 // WiFiServer TelnetServer(8266);
-
-// WebSockets Server port 1337
-// WebSocketsServer webSocket = WebSocketsServer(1337);
-// char msg_buf[10];
 
 void printWiFiStatus()
 {
@@ -113,170 +86,6 @@ void printWiFiStatus()
   Serial.println(WiFi.scanNetworks());
   Serial.println(printLine);
 }
-
-// void ctrlCommand(char *command) {
-//   if (ctrlMode != CTRL_GPIO) {
-//     ctrlMode = CTRL_GPIO;
-//     resetGpios();
-//   }
-//   if (strncmp((char *)command, "ctrl-ww:1", 9) == 0) {
-//     // Warm White On
-//     if (deviceConfig.device_type == DeviceType::RGBWW) {
-//       analogWrite(deviceConfig.gpio_ww, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-ww:0", 9) == 0) {
-//     // Warm White Off
-//     if (deviceConfig.device_type == DeviceType::RGBWW) {
-//       analogWrite(deviceConfig.gpio_ww, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-w:1", 8) == 0) {
-//     // Cool White On
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW) {
-//       analogWrite(deviceConfig.gpio_w, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-w:0", 8) == 0) {
-//     // Cool White Off
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW) {
-//       analogWrite(deviceConfig.gpio_w, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-r:1", 8) == 0) {
-//     // Red On
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
-//         deviceConfig.device_type == DeviceType::RGB) {
-//       analogWrite(deviceConfig.gpio_r, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-r:0", 8) == 0) {
-//     // Red Off
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
-//         deviceConfig.device_type == DeviceType::RGB) {
-//       analogWrite(deviceConfig.gpio_r, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-g:1", 8) == 0) {
-//     // Green On
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
-//         deviceConfig.device_type == DeviceType::RGB) {
-//       analogWrite(deviceConfig.gpio_g, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-g:0", 8) == 0) {
-//     // Green Off
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
-//         deviceConfig.device_type == DeviceType::RGB) {
-//       analogWrite(deviceConfig.gpio_g, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-b:1", 8) == 0) {
-//     // Blue On
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
-//         deviceConfig.device_type == DeviceType::RGB) {
-//       analogWrite(deviceConfig.gpio_b, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-b:0", 8) == 0) {
-//     // Blue Off
-//     if (deviceConfig.device_type == DeviceType::RGBWW || deviceConfig.device_type == DeviceType::RGBW ||
-//         deviceConfig.device_type == DeviceType::RGB) {
-//       analogWrite(deviceConfig.gpio_b, 0);
-//     }
-//   }
-// }
-
-// void rgbCtrlCommand(char *command) {
-//   if (ctrlMode != CTRL_RGB) {
-//     ctrlMode = CTRL_RGB;
-//     resetGpios();
-//   }
-
-//   String rgb;
-//   rgb = command;
-//   String r = rgb.substring(10, 13);
-//   String g = rgb.substring(16, 19);
-//   String b = rgb.substring(22);
-
-//   int rVal = r.toInt();
-//   int gVal = g.toInt();
-//   int bVal = b.toInt();
-
-//   analogWrite(deviceConfig.gpio_r, rVal);
-//   analogWrite(deviceConfig.gpio_g, gVal);
-//   analogWrite(deviceConfig.gpio_b, bVal);
-// }
-
-// void whiteCtrlCommand(char *command) {
-//   if (ctrlMode != CTRL_WHITE) {
-//     ctrlMode = CTRL_WHITE;
-//     resetGpios();
-//   }
-
-//   String white;
-//   white = command;
-//   String w = white.substring(12, 15);
-//   String ww = white.substring(19, 22);
-
-//   int wVal = w.toInt();
-//   int wwVal = ww.toInt();
-
-//   analogWrite(deviceConfig.gpio_w, wVal);
-//   analogWrite(deviceConfig.gpio_ww, wwVal);
-// }
-
-// Callback: receiving any WebSocket message
-// void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_t length) {
-
-//   // Figure out the type of WebSocket event
-//   switch (type) {
-
-//   // Client has disconnected
-//   case WStype_DISCONNECTED:
-//     Serial.printf("[%u] Disconnected!\n", client_num);
-//     break;
-
-//   // New client has connected
-//   case WStype_CONNECTED: {
-//     IPAddress ip = webSocket.remoteIP(client_num);
-//     Serial.printf("[%u] Connection from ", client_num);
-//     Serial.println(ip.toString());
-//   } break;
-
-//   // Handle text messages from client
-//   case WStype_TEXT:
-
-//     char *text;
-//     text = (char *)payload;
-
-//     // Print out raw message
-//     Serial.printf("[%u] Command: %s\n", client_num, text);
-
-//     if (strncmp(text, "config:", 7) == 0) {
-//       // Save Configuration
-//       String dto;
-//       dto = text;
-//       saveConfiguration(dto.substring(7));
-//     } else if (strncmp(text, "ctrl", 4) == 0) {
-//       // ctrl command:
-//       ctrlCommand(text);
-//     } else if (strncmp(text, "rgbctrl", 7) == 0) {
-//       // rgbctrl command:
-//       rgbCtrlCommand(text);
-//     } else if (strncmp(text, "whitectrl", 9) == 0) {
-//       // white command:
-//       whiteCtrlCommand(text);
-//     } else if (strncmp(text, "standby", 7) == 0) {
-//       // Standby Mode
-//       resetGpios();
-//       ctrlMode = STANDBY;
-//     }
-
-//     break;
-
-//   // For everything else: do nothing
-//   case WStype_BIN:
-//   case WStype_ERROR:
-//   case WStype_FRAGMENT_TEXT_START:
-//   case WStype_FRAGMENT_BIN_START:
-//   case WStype_FRAGMENT:
-//   case WStype_FRAGMENT_FIN:
-//   default:
-//     break;
-//   }
-// }
 
 void startAccessPoint()
 {
@@ -404,23 +213,38 @@ void setupHardwareConfiguration()
 {
   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
   {
-    // pinMode(gpioConfig.ww, OUTPUT);
-    // analogWrite(gpioConfig.ww, 0);
+    if (gpioConfig.ww > 0)
+    {
+      pinMode(gpioConfig.ww, OUTPUT);
+      analogWrite(gpioConfig.ww, 0);
+    }
   }
   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW || deviceConfig.type == DeviceType::WW || deviceConfig.type == DeviceType::WW)
   {
-    // pinMode(gpioConfig.w, OUTPUT);
-    // analogWrite(gpioConfig.w, 0);
+    if (gpioConfig.w > 0)
+    {
+      pinMode(gpioConfig.w, OUTPUT);
+      analogWrite(gpioConfig.w, 0);
+    }
   }
   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
       deviceConfig.type == DeviceType::RGB)
   {
-    pinMode(gpioConfig.r, OUTPUT);
-    // pinMode(gpioConfig.g, OUTPUT);
-    // pinMode(gpioConfig.b, OUTPUT);
-    analogWrite(gpioConfig.r, 0);
-    // analogWrite(gpioConfig.g, 0);
-    // analogWrite(gpioConfig.b, 0);
+    if (gpioConfig.r > 0)
+    {
+      pinMode(gpioConfig.r, OUTPUT);
+      analogWrite(gpioConfig.r, 0);
+    }
+    if (gpioConfig.g > 0)
+    {
+      pinMode(gpioConfig.g, OUTPUT);
+      analogWrite(gpioConfig.g, 0);
+    }
+    if (gpioConfig.b > 0)
+    {
+      pinMode(gpioConfig.b, OUTPUT);
+      analogWrite(gpioConfig.b, 0);
+    }
   }
 }
 
@@ -454,7 +278,7 @@ void readConfigJson(String configuration)
 {
   if (configuration.length())
   {
-    DynamicJsonDocument json(EEPROM_SIZE);
+    DynamicJsonDocument json(2048);
     DeserializationError error = deserializeJson(json, configuration);
     if (error)
     {
@@ -479,7 +303,7 @@ void setup()
   analogWriteFreq(880);
 
   // Serial port for debugging purposes
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println();
   Serial.println("Starting Lumenator...");
   Serial.println();

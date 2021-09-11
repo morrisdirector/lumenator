@@ -101,10 +101,10 @@ char msg_buf[10];
 
 void whiteManualCommand(char *command)
 {
-  if (ctrlMode != WHITE)
+  if (lumState.ctrlMode != CtrlMode::WHITE)
   {
     resetGpios();
-    ctrlMode = WHITE;
+    lumState.ctrlMode = CtrlMode::WHITE;
   }
 
   String white;
@@ -121,10 +121,10 @@ void whiteManualCommand(char *command)
 
 void rgbManualCommand(char *command)
 {
-  if (ctrlMode != RGB)
+  if (lumState.ctrlMode != CtrlMode::RGB)
   {
     resetGpios();
-    ctrlMode = RGB;
+    lumState.ctrlMode = CtrlMode::RGB;
   }
 
   String rgb;
@@ -142,25 +142,25 @@ void rgbManualCommand(char *command)
   analogWrite(gpioConfig.b, bVal);
 }
 
-uint8_t getGPIOAddress(int ctrMd)
+uint8_t getGPIOAddress(CtrlMode ctrMd)
 {
-  if (ctrMd == GPIO_R)
+  if (ctrMd == CtrlMode::GPIO_R)
   {
     return gpioConfig.r;
   }
-  else if (ctrMd == GPIO_G)
+  else if (ctrMd == CtrlMode::GPIO_G)
   {
     return gpioConfig.g;
   }
-  else if (ctrMd == GPIO_B)
+  else if (ctrMd == CtrlMode::GPIO_B)
   {
     return gpioConfig.b;
   }
-  else if (ctrMd == GPIO_W)
+  else if (ctrMd == CtrlMode::GPIO_W)
   {
     return gpioConfig.w;
   }
-  else if (ctrMd == GPIO_WW)
+  else if (ctrMd == CtrlMode::GPIO_WW)
   {
     return gpioConfig.ww;
   }
@@ -170,21 +170,21 @@ void GPIOTestCommand(char *text)
 {
   char *gpioModeStr = subString(text, 5, 1);
   char *onOffStr = subString(text, 7, 1);
-  int newCtrlMode = atoi(gpioModeStr); // atoi converts string to number
+  CtrlMode newCtrlMode = (CtrlMode)atoi(gpioModeStr); // atoi converts string to number
 
-  if (newCtrlMode != ctrlMode)
+  if (newCtrlMode != lumState.ctrlMode)
   {
     resetGpios();
-    ctrlMode = newCtrlMode;
+    lumState.ctrlMode = (CtrlMode)newCtrlMode;
   }
 
   if (strncmp(onOffStr, "0", 1) == 0)
   {
-    analogWrite(getGPIOAddress(ctrlMode), 0);
+    analogWrite(getGPIOAddress(lumState.ctrlMode), 0);
   }
   if (strncmp(onOffStr, "1", 1) == 0)
   {
-    analogWrite(getGPIOAddress(ctrlMode), 255);
+    analogWrite(getGPIOAddress(lumState.ctrlMode), 255);
   }
 }
 
@@ -238,13 +238,13 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     {
       // Standby Mode
       resetGpios();
-      ctrlMode = STANDBY;
+      lumState.ctrlMode = CtrlMode::STANDBY;
     }
     else if (strncmp(text, "erase", 5) == 0)
     {
       // Standby Mode
       resetGpios();
-      ctrlMode = STANDBY;
+      lumState.ctrlMode = CtrlMode::STANDBY;
       clearEEPROM();
     }
 
