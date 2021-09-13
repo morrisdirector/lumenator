@@ -132,14 +132,16 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
             </div>
           </div>
           <div class="form-group no-margin">
-            <label for="topic">Auto Discovery</label>
+            <label for="topic">Home Assistant Auto Discovery</label>
             <ToggleSwitch
               disabled={!config[Conf.MQTT_ENABLED]}
               onClick={handleAutoDiscoveryEnable}
               on={config[Conf.MQTT_AUTO_DISCOVERY]}
             />
             <div class="helper-text mt-large">
-              See{" "}
+              Will add this device to your entites in Home Assistant
+              automatically.
+              <br /> See{" "}
               <a
                 href="https://www.home-assistant.io/docs/mqtt/discovery/"
                 target="_blank"
@@ -273,9 +275,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
               {/* AVAILABILITY */}
               <tr class="first-row">
                 <td>
-                  <Chip
-                    text={`${config[Conf.MQTT_DEVICE_TOPIC]}/availability`}
-                  />
+                  <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/avail`} />
                 </td>
                 <td>
                   <Chip variant="basic" text="online"></Chip>
@@ -298,19 +298,22 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
                   <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/state`} />
                 </td>
                 <td>
-                  <Chip variant="basic" text="online"></Chip>
+                  <Chip variant="basic" text="JSON"></Chip>
                 </td>
                 <td>
-                  The birth message sent to the broker when Lumenator comes
-                  online.
+                  This is the topic your broker should subscribe to for state
+                  updates. This follows the Home Assistant JSON schema for
+                  state.
+                  <br />
+                  <br /> See{" "}
+                  <a
+                    href="https://www.home-assistant.io/integrations/light.mqtt/#json-schema"
+                    target="_blank"
+                  >
+                    MQTT Light - JSON Schema
+                  </a>{" "}
+                  for more details.
                 </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <Chip variant="basic" text="offline"></Chip>
-                </td>
-                <td>The message sent as the last will and testament.</td>
               </tr>
               {/* COMMAND */}
               <tr class="new-group">
@@ -318,19 +321,22 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
                   <Chip text={`${config[Conf.MQTT_DEVICE_TOPIC]}/set`} />
                 </td>
                 <td>
-                  <Chip variant="basic" text="online"></Chip>
+                  <Chip variant="basic" text="JSON"></Chip>
                 </td>
                 <td>
-                  The birth message sent to the broker when Lumenator comes
-                  online.
+                  This is the topic Lumenator is subscribed to for commands.
+                  This follows the Home Assistant JSON schema for sending
+                  commands.
+                  <br />
+                  <br /> See{" "}
+                  <a
+                    href="https://www.home-assistant.io/integrations/light.mqtt/#json-schema"
+                    target="_blank"
+                  >
+                    MQTT Light - JSON Schema
+                  </a>{" "}
+                  for more details.
                 </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <Chip variant="basic" text="offline"></Chip>
-                </td>
-                <td>The message sent as the last will and testament.</td>
               </tr>
             </table>
           </div>

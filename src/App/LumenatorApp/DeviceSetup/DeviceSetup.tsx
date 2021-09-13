@@ -1,7 +1,10 @@
+import {
+  AlertWarningIcon,
+  AlertWarningType,
+} from "../../../lib/components/AlertWarning/IAlertWarningProps";
 import { Fragment, FunctionalComponent, h } from "preact";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
-import { AlertWarningType } from "../../../lib/components/AlertWarning/IAlertWarningProps";
 import { Conf } from "../../../lib/interfaces/IConfigJson";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { DeviceType } from "../../../lib/enums/DeviceType";
@@ -221,7 +224,16 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = ({
                 </tr>
               )}
             </table>
-            {/* <alert-message id="gpio-test-warning" icon="info"></alert-message> */}
+            {(props.controlMode === ControlMode.GPIO_WW ||
+              props.controlMode === ControlMode.GPIO_W ||
+              props.controlMode === ControlMode.GPIO_R ||
+              props.controlMode === ControlMode.GPIO_G ||
+              props.controlMode === ControlMode.GPIO_B) && (
+              <AlertWarning
+                icon={AlertWarningIcon.INFO}
+                text="While GPIO testing is enabled, Lumenator will attempt to turn on the GPIO you are testing.  If Lumenator receives commands from other sources such as MQTT, the test will be overidden."
+              />
+            )}
           </div>
           <div>
             <label class="mb-small">System</label>

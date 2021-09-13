@@ -3,109 +3,9 @@
 WebSocketsServer webSocket = WebSocketsServer(1337);
 char msg_buf[10];
 
-// void gpioCommand(char *command)
-// {
-
-// if (ctrlMode != CTRL_GPIO)
-// {
-//   ctrlMode = CTRL_GPIO;
-//   // resetGpios();
-// }
-// if (strncmp((char *)command, "ctrl-ww:1", 9) == 0)
-// {
-//   // Warm White On
-//   if (deviceConfig.type == DeviceType::RGBWW)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_ww, 255)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-ww:0", 9) == 0)
-// {
-//   // Warm White Off
-//   if (deviceConfig.type == DeviceType::RGBWW)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_ww, 0)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-w:1", 8) == 0)
-// {
-//   // Cool White On
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_w, 255)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-w:0", 8) == 0)
-// {
-//   // Cool White Off
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_w, 0)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-r:1", 8) == 0)
-// {
-//   // Red On
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
-//       deviceConfig.type == DeviceType::RGB)
-//   {
-//     analogWrite(gpioConfig.r, 255);
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-r:0", 8) == 0)
-// {
-//   // Red Off
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
-//       deviceConfig.type == DeviceType::RGB)
-//   {
-//     analogWrite(gpioConfig.r, 0);
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-g:1", 8) == 0)
-// {
-//   // Green On
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
-//       deviceConfig.type == DeviceType::RGB)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_g, 255)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-g:0", 8) == 0)
-// {
-//   // Green Off
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
-//       deviceConfig.type == DeviceType::RGB)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_g, 0)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-b:1", 8) == 0)
-// {
-//   // Blue On
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
-//       deviceConfig.type == DeviceType::RGB)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_b, 255)");
-//   }
-// }
-// else if (strncmp((char *)command, "ctrl-b:0", 8) == 0)
-// {
-//   // Blue Off
-//   if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
-//       deviceConfig.type == DeviceType::RGB)
-//   {
-//     Serial.println("analogWrite(deviceConfig.gpio_b, 0)");
-//   }
-// }
-// }
-
 void whiteManualCommand(char *command)
 {
-  if (lumState.ctrlMode != CtrlMode::WHITE)
-  {
-    resetGpios();
-    lumState.ctrlMode = CtrlMode::WHITE;
-  }
+  resetGpios();
 
   String white;
   white = command;
@@ -121,11 +21,7 @@ void whiteManualCommand(char *command)
 
 void rgbManualCommand(char *command)
 {
-  if (lumState.ctrlMode != CtrlMode::RGB)
-  {
-    resetGpios();
-    lumState.ctrlMode = CtrlMode::RGB;
-  }
+  resetGpios();
 
   String rgb;
   rgb = command;
@@ -170,21 +66,17 @@ void GPIOTestCommand(char *text)
 {
   char *gpioModeStr = subString(text, 5, 1);
   char *onOffStr = subString(text, 7, 1);
-  CtrlMode newCtrlMode = (CtrlMode)atoi(gpioModeStr); // atoi converts string to number
+  CtrlMode gpioCtrlMode = (CtrlMode)atoi(gpioModeStr); // atoi converts string to number
 
-  if (newCtrlMode != lumState.ctrlMode)
-  {
-    resetGpios();
-    lumState.ctrlMode = (CtrlMode)newCtrlMode;
-  }
+  resetGpios();
 
   if (strncmp(onOffStr, "0", 1) == 0)
   {
-    analogWrite(getGPIOAddress(lumState.ctrlMode), 0);
+    analogWrite(getGPIOAddress(gpioCtrlMode), 0);
   }
   if (strncmp(onOffStr, "1", 1) == 0)
   {
-    analogWrite(getGPIOAddress(lumState.ctrlMode), 255);
+    analogWrite(getGPIOAddress(gpioCtrlMode), 255);
   }
 }
 
@@ -236,13 +128,10 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     }
     else if (strncmp(text, "standby", 7) == 0)
     {
-      // Standby Mode
-      resetGpios();
-      lumState.ctrlMode = CtrlMode::STANDBY;
+      updateLumenatorLevels(); // Go back to stored state... whatever that was
     }
     else if (strncmp(text, "erase", 5) == 0)
     {
-      // Standby Mode
       resetGpios();
       lumState.ctrlMode = CtrlMode::STANDBY;
       clearEEPROM();

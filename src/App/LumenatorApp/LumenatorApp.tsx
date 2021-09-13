@@ -221,18 +221,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               }}
             ></NetworkSetup>
           </NavMenuTab>
-          <NavMenuTab id={3} title="Control">
-            <ManualControl
-              webSocketService={this.websocketService}
-              controlMode={this.state.controlMode}
-              onControlModeToggle={this.handleControlModeToggle}
-              onColorSet={this.handleColorSet}
-              rgbColor={this.state.rgbColor}
-              whiteColor={this.state.whiteColor}
-              whiteValueColor={this.state.whiteValueColor}
-            ></ManualControl>
-          </NavMenuTab>
-          <NavMenuTab id={4} title="MQTT">
+          <NavMenuTab id={3} title="MQTT">
             <MQTTSetup
               config={this.state.config}
               onConfigUpdate={(config) => {
@@ -243,6 +232,17 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
                 });
               }}
             ></MQTTSetup>
+          </NavMenuTab>
+          <NavMenuTab id={4} title="Test">
+            <ManualControl
+              webSocketService={this.websocketService}
+              controlMode={this.state.controlMode}
+              onControlModeToggle={this.handleControlModeToggle}
+              onColorSet={this.handleColorSet}
+              rgbColor={this.state.rgbColor}
+              whiteColor={this.state.whiteColor}
+              whiteValueColor={this.state.whiteValueColor}
+            ></ManualControl>
           </NavMenuTab>
         </NavMenu>
 
