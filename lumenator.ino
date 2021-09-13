@@ -32,11 +32,11 @@ WiFiClient espClient;
 
 #include "utils.h"
 
-#include "state.h"
-
 #include "config.h"
 
-#include "control.h"
+#include "state.h"
+
+// #include "control.h"
 
 #include "webserver.h"
 
@@ -303,7 +303,7 @@ void setup()
   analogWriteFreq(880);
 
   // Serial port for debugging purposes
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println();
   Serial.println("Starting Lumenator...");
   Serial.println();
@@ -336,6 +336,8 @@ void setup()
   readConfigJson(readEEPROM());
 
   setupHardwareConfiguration();
+
+  updateLumenatorLevels(); // Turn light on immediately on boot up
 
   if (strlen(networkConfig.ssid) && strlen(networkConfig.pass))
   {

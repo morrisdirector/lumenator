@@ -47,6 +47,17 @@ String appendPayloadBool(char *key, bool value = false, bool skipComma = false)
     return str;
 }
 
+String appendPayloadObjectString(char *key, char *value, bool skipComma = false)
+{
+    String str = "";
+    if (strlen(key) && strlen(value))
+    {
+        str += startAppendPayload(key, skipComma);
+        str += value;
+    }
+    return str;
+}
+
 void setTopics()
 {
     // Set Config Topic
@@ -101,10 +112,35 @@ void setTopics()
 
 void sendState()
 {
-    DynamicJsonDocument json(JSON_OBJECT_SIZE(3));
+    DynamicJsonDocument json(512);
     json["state"] = (lumState.on == true ? MQTT_ON : MQTT_OFF);
-    json["brightness"] = lumState.brightness;
-    char msg[50];
+    switch (lumState.ctrlMode)
+    {
+    case CtrlMode::WHITE:
+        json["brightness"] = lumState.brightness;
+        json["color_mode"] = "color_temp";
+        json["color_temp"] = 153;
+        break;
+    case CtrlMode::WARM_WHITE:
+        json["brightness"] = lumState.brightness;
+        json["color_mode"] = "color_temp";
+        json["color_temp"] = 500;
+        break;
+    case CtrlMode::TEMP:
+        json["brightness"] = lumState.brightness;
+        json["color_mode"] = "color_temp";
+        json["color_temp"] = lumState.temp;
+        break;
+    case CtrlMode::RGB:
+        json["brightness"] = lumState.brightness;
+        json["color_mode"] = "rgb";
+        JsonObject color = json.createNestedObject("color");
+        color["r"] = lumState.r;
+        color["g"] = lumState.g;
+        color["b"] = lumState.b;
+        break;
+    }
+    char msg[300];
     serializeJson(json, msg);
     mqttClient.publish(mqttConfig.stateTopic, msg);
 }
@@ -123,7 +159,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     // Received Command
     if (strncmp(topic, mqttConfig.commandTopic, strlen(mqttConfig.commandTopic)) == 0)
     {
-        DynamicJsonDocument msg(JSON_OBJECT_SIZE(4));
+        DynamicJsonDocument msg(JSON_OBJECT_SIZE(10));
         DeserializationError error = deserializeJson(msg, payload);
         if (error)
             Serial.println(MQTT_ERROR);
@@ -134,6 +170,30 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
             {
                 lumState.brightness = (uint16_t)msg["brightness"];
             }
+            if (msg["color"] != nullptr)
+            {
+                lumState.r = (uint16_t)msg["color"]["r"];
+                lumState.g = (uint16_t)msg["color"]["g"];
+                lumState.b = (uint16_t)msg["color"]["b"];
+                lumState.ctrlMode = CtrlMode::RGB;
+            }
+            else if (msg["color_temp"] != nullptr)
+            {
+                if (msg["color_temp"] == 153)
+                {
+                    lumState.ctrlMode = CtrlMode::WHITE;
+                }
+                else if (msg["color_temp"] == 500)
+                {
+                    lumState.ctrlMode = CtrlMode::WARM_WHITE;
+                }
+                else
+                {
+                    lumState.ctrlMode = CtrlMode::TEMP;
+                }
+                lumState.temp = (uint16_t)msg["color_temp"];
+            }
+            updateLumenatorLevels();
             sendState();
         }
     }
@@ -141,6 +201,17 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
 
 void publishAutoDiscoveryConfig()
 {
+    // Example working
+    //  {
+    //   "~": "mytest/kitchen4",
+    //   "name": "Kitchen4",
+    //   "unique_id": "kitchen_light4",
+    //   "cmd_t": "~/set",
+    //   "stat_t": "~/state",
+    //   "schema": "json",
+    //   "color_mode": true,
+    //   "supported_color_modes": ["rgbww"]
+    //  }
     String payload = "{";
     payload += appendPayloadString("~", mqttConfig.topic, true);
     payload += appendPayloadString("name", deviceConfig.name);
@@ -148,11 +219,10 @@ void publishAutoDiscoveryConfig()
     payload += appendPayloadString("cmd_t", "~/set");
     payload += appendPayloadString("stat_t", "~/state");
     payload += appendPayloadString("avty_t", "~/avail");
-    payload += appendPayloadString("pl_on", MQTT_ON);
-    payload += appendPayloadString("pl_off", MQTT_OFF);
-    payload += appendPayloadString("stat_val_tpl", "{{ value_json.state }}");
-    payload += appendPayloadString("schema", "default");
+    payload += appendPayloadString("schema", "json");
     payload += appendPayloadBool("brightness", true);
+    payload += appendPayloadBool("color_mode", true);
+    payload += appendPayloadObjectString("supported_color_modes", "[\"rgb\",\"color_temp\"]");
     payload += "}";
 
     Serial.println();
@@ -216,7 +286,7 @@ void reconnectMqtt()
                 publishAutoDiscoveryConfig();
             }
             Serial.println(printLine);
-            mqttClient.publish(mqttConfig.availTopic, MQTT_ONLINE);
+            mqttClient.publish(mqttConfig.availTopic, (const unsigned char *)MQTT_ONLINE, 6, true);
             subscribeAll();
         }
         else

@@ -42,6 +42,12 @@ export enum Conf {
   MQTT_PORT,
   MQTT_DEVICE_TOPIC,
   MQTT_AUTO_DISCOVERY,
+  // INITIAL STATE
+  INITIAL_W,
+  INITIAL_WW,
+  INITIAL_R,
+  INITIAL_G,
+  INITIAL_B,
 }
 export interface IConfigJson {
   // DEVICE:
@@ -83,4 +89,10 @@ export interface IConfigJson {
   [Conf.MQTT_PORT]?: number;
   [Conf.MQTT_DEVICE_TOPIC]?: string;
   [Conf.MQTT_AUTO_DISCOVERY]?: boolean;
+  // INITIAL STATE
+  [Conf.INITIAL_W]?: number;
+  [Conf.INITIAL_WW]?: number;
+  [Conf.INITIAL_R]?: number;
+  [Conf.INITIAL_G]?: number;
+  [Conf.INITIAL_B]?: number;
 }
