@@ -48,6 +48,10 @@ export enum Conf {
   INITIAL_R,
   INITIAL_G,
   INITIAL_B,
+  // E131
+  E131_ENABLED,
+  E131_UNIVERSE,
+  E131_START_CHAN,
 }
 export interface IConfigJson {
   // DEVICE:
@@ -95,4 +99,8 @@ export interface IConfigJson {
   [Conf.INITIAL_R]?: number;
   [Conf.INITIAL_G]?: number;
   [Conf.INITIAL_B]?: number;
+  // E131:
+  [Conf.E131_ENABLED]?: boolean;
+  [Conf.E131_UNIVERSE]?: number;
+  [Conf.E131_START_CHAN]?: number;
 }

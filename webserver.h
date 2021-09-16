@@ -161,6 +161,10 @@ void initRoutes()
 
               doc[confId[(int)Conf::MQTT_DEVICE_TOPIC]] = mqttConfig.topic;
 
+              doc[confId[(int)Conf::E131_ENABLED]] = e131Config.enabled;
+              doc[confId[(int)Conf::E131_UNIVERSE]] = (uint8_t)e131Config.universe;
+              doc[confId[(int)Conf::E131_START_CHAN]] = (uint8_t)e131Config.channel;
+
               serializeJson(doc, response);
               request->send(200, "application/json", response);
             });
@@ -198,10 +202,6 @@ void initRoutes()
         {
           strncat(dtoBuffer, packetText, len);
         }
-        // Serial.println("----------------------");
-        // Serial.println("Current Buffer: ");
-        // Serial.println(dtoBuffer);
-        // Serial.println("----------------------");
       });
 
   server.on(
@@ -219,46 +219,62 @@ void initRoutes()
         ESP.reset();
       });
 
-  // server.on(
-  //     "/update", HTTP_POST, [](AsyncWebServerRequest *request)
-  //     {
-  //       shouldReboot = !Update.hasError();
-  //       AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot ? "OK" : "FAIL");
-  //       response->addHeader("Connection", "close");
-  //       request->send(response);
-  //     },
-  //     [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final)
-  //     {
-  //       if (!index)
-  //       {
-  //         Serial.printf("Update Start: %s\n", filename.c_str());
-  //         Update.runAsync(true);
-  //         if (!Update.begin((ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000))
-  //         {
-  //           Update.printError(Serial);
-  //         }
-  //       }
-  //       if (!Update.hasError())
-  //       {
-  //         if (Update.write(data, len) != len)
-  //         {
-  //           Update.printError(Serial);
-  //         }
-  //       }
-  //       if (final)
-  //       {
-  //         if (Update.end(true))
-  //         {
-  //           Serial.printf("Update Success: %uB\n", index + len);
-  //         }
-  //         else
-  //         {
-  //           Update.printError(Serial);
-  //         }
-  //       }
-  //     });
+  server.on(
+      "/update", HTTP_POST, [&](AsyncWebServerRequest *request)
+      {
+        // the request handler is triggered after the upload has finished...
+        // create the response, add header, and send response
+        AsyncWebServerResponse *response = request->beginResponse((Update.hasError()) ? 500 : 200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+        response->addHeader("Connection", "close");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        request->send(response);
+        ESP.restart();
+      },
+      [&](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final)
+      {
+        //Upload handler chunks in data
+        if (!index)
+        {
+          if (!request->hasParam("MD5", true))
+          {
+            return request->send(400, "text/plain", "MD5 parameter missing");
+          }
 
-  // server.on("/devicePresets", HTTP_GET, [](AsyncWebServerRequest *request) {
-  //   request->send(SPIFFS, "/device-presets.json", "application/json");
-  // });
+          if (!Update.setMD5(request->getParam("MD5", true)->value().c_str()))
+          {
+            return request->send(400, "text/plain", "MD5 parameter invalid");
+          }
+
+          int cmd = U_FLASH;
+          Update.runAsync(true);
+          uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+          if (!Update.begin(maxSketchSpace, cmd))
+          { // Start with max available size
+            Update.printError(Serial);
+            return request->send(400, "text/plain", "OTA could not begin");
+          }
+        }
+
+        // Write chunked data to the free sketch space
+        if (len)
+        {
+          if (Update.write(data, len) != len)
+          {
+            return request->send(400, "text/plain", "OTA could not begin");
+          }
+        }
+
+        if (final)
+        { // if the final flag is set then this is the last frame of data
+          if (!Update.end(true))
+          { //true to set the size to the current progress
+            Update.printError(Serial);
+            return request->send(400, "text/plain", "Could not end OTA");
+          }
+        }
+        else
+        {
+          return;
+        }
+      });
 }

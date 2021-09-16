@@ -255,14 +255,6 @@ void setupMqtt()
 
 void subscribeAll()
 {
-    // State Topic
-    // if (strlen(mqttConfig.stateTopic))
-    // {
-    //     mqttClient.subscribe(mqttConfig.stateTopic);
-    //     Serial.print("Subscribed to state topic: ");
-    //     Serial.println(mqttConfig.stateTopic);
-    // }
-
     // Command Topic
     if (strlen(mqttConfig.commandTopic))
     {
@@ -288,6 +280,7 @@ void reconnectMqtt()
             Serial.println(printLine);
             mqttClient.publish(mqttConfig.availTopic, (const unsigned char *)MQTT_ONLINE, 6, true);
             subscribeAll();
+            sendState();
         }
         else
         {

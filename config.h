@@ -53,7 +53,11 @@ enum class Conf
   INITIAL_WW,
   INITIAL_R,
   INITIAL_G,
-  INITIAL_B
+  INITIAL_B,
+  // E131
+  E131_ENABLED,
+  E131_UNIVERSE,
+  E131_START_CHAN
 };
 
 #define NUM_CONF_ITEMS 51
@@ -161,8 +165,8 @@ struct DeviceConfig
 
 struct NetworkConfig
 {
-  char ssid[STRING_SIZE] = "MorrisWifi20";
-  char pass[STRING_SIZE_SMALL] = "movies956chief9903";
+  char ssid[STRING_SIZE];
+  char pass[STRING_SIZE_SMALL];
   bool dhcp = true;
   IPv4 ip;
   IPGateway gateway;
@@ -210,12 +214,20 @@ struct MqttConfig
   char commandTopic[50];
 };
 
+struct E131Config
+{
+  bool enabled = false;
+  uint16_t universe = 1;
+  uint16_t channel = 1;
+};
+
 DeviceConfig deviceConfig;
 NetworkConfig networkConfig;
 AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
 InitialState initialState;
+E131Config e131Config;
 
 const int configJsonTotalCapacity = EEPROM_SIZE;
 
@@ -267,6 +279,10 @@ void deserializeAll(DynamicJsonDocument json)
   mqttConfig.port = (uint16_t)json[confId[(int)Conf::MQTT_PORT]];
 
   strcpy(mqttConfig.topic, json[confId[(int)Conf::MQTT_DEVICE_TOPIC]]);
+
+  e131Config.enabled = (bool)json[confId[(int)Conf::E131_ENABLED]];
+  e131Config.universe = (uint8_t)json[confId[(int)Conf::E131_UNIVERSE]];
+  e131Config.channel = (uint8_t)json[confId[(int)Conf::E131_START_CHAN]];
 
   Serial.println();
   Serial.println("[DS]: * Loaded device configuration");

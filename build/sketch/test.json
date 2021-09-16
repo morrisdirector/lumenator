@@ -1,0 +1,22 @@
+#line 1 "/Users/patrickmorris/git/lumenator/test.json"
+{
+  "device": {
+    "name": "My Device",
+    "gpio_w": null,
+    "gpio_r": null,
+    "device_type": null,
+    "gpio_g": null,
+    "gpio_b": null,
+    "gpio_ww": null,
+    "map_preset": null
+  },
+  "mqtt": {
+    "mqtt_port": 1883,
+    "mqtt_ip": [null, null, null, null],
+    "mqtt_client_name": null,
+    "mqtt_user": null,
+    "mqtt_password": null,
+    "mqtt_enabled": false
+  },
+  "network": { "password": null, "ssid": null }
+}

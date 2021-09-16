@@ -101,27 +101,31 @@ section {
 }
 
 .margin-top {
-  margin-top: $margin;
+  margin-top: $margin !important;
 }
 
 .margin-bottom {
-  margin-bottom: $margin;
+  margin-bottom: $margin !important;
 }
 
 .mt-small {
-  margin-top: $marginSmall;
+  margin-top: $marginSmall !important;
 }
 
 .mt-large {
-  margin-top: $marginLarge;
+  margin-top: $marginLarge !important;
 }
 
 .ml-small {
-  margin-left: $marginSmall;
+  margin-left: $marginSmall !important;
 }
 
 .mb-small {
-  margin-bottom: $marginSmall;
+  margin-bottom: $marginSmall !important;
+}
+
+.mb-large {
+  margin-bottom: $marginLarge !important;
 }
 
 .flex-stretch {

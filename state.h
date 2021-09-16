@@ -81,24 +81,32 @@ void updateLumenatorLevels(bool on, int r, int g, int b, int w, int ww, int temp
     switch (lumState.ctrlMode)
     {
     case CtrlMode::RGB:
-      analogWrite(gpioConfig.r, lumState.r * lumState.brightnessMultiplier);
-      analogWrite(gpioConfig.g, lumState.g * lumState.brightnessMultiplier);
-      analogWrite(gpioConfig.b, lumState.b * lumState.brightnessMultiplier);
+      if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+          deviceConfig.type == DeviceType::RGB)
+      {
+        analogWrite(gpioConfig.r, lumState.r * lumState.brightnessMultiplier);
+        analogWrite(gpioConfig.g, lumState.g * lumState.brightnessMultiplier);
+        analogWrite(gpioConfig.b, lumState.b * lumState.brightnessMultiplier);
+      }
       break;
     case CtrlMode::TEMP:
       mapFromColorTemperature();
-      analogWrite(gpioConfig.w, lumState.w * lumState.brightnessMultiplier);
-      analogWrite(gpioConfig.ww, lumState.ww * lumState.brightnessMultiplier);
+      if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW || deviceConfig.type == DeviceType::W || deviceConfig.type == DeviceType::WW)
+        analogWrite(gpioConfig.w, lumState.w * lumState.brightnessMultiplier);
+      if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
+        analogWrite(gpioConfig.ww, lumState.ww * lumState.brightnessMultiplier);
       break;
     case CtrlMode::WHITE:
       lumState.temp = 153;
       mapFromColorTemperature();
-      analogWrite(gpioConfig.w, lumState.w * lumState.brightnessMultiplier);
+      if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW || deviceConfig.type == DeviceType::W || deviceConfig.type == DeviceType::WW)
+        analogWrite(gpioConfig.w, lumState.w * lumState.brightnessMultiplier);
       break;
     case CtrlMode::WARM_WHITE:
       lumState.temp = 500;
       mapFromColorTemperature();
-      analogWrite(gpioConfig.ww, lumState.ww * lumState.brightnessMultiplier);
+      if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
+        analogWrite(gpioConfig.ww, lumState.ww * lumState.brightnessMultiplier);
       break;
     }
   }

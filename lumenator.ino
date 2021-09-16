@@ -3,17 +3,10 @@
   by Patrick Morris
 */
 #include <ArduinoJson.h>
-// #include <ArduinoOTA.h>
 #include <DNSServer.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
-// #include <ESP8266mDNS.h>
 #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
-// #include <FS.h>
-
-// #include <WebSocketsServer.h>
-// #include <WiFiUdp.h>
-// #include <Wire.h>
 
 #define EEPROM_SIZE 1000
 #define CONFIG_DTO_SIZE 1000
@@ -36,17 +29,13 @@ WiFiClient espClient;
 
 #include "state.h"
 
-// #include "control.h"
-
 #include "webserver.h"
 
 #include "mqtt.h"
 
+#include "e131.h"
+
 #include "websockets.h"
-
-// #include "eeprom-service.h"
-
-// bool configured = false;
 
 //  D1 Mini Pin Number Reference:
 //  D0  16
@@ -96,8 +85,11 @@ void startAccessPoint()
   WiFi.disconnect();
   delay(100);
 
+  char nameBuff[50];
+  int randomId = random(1000, 9999);
+  sprintf(nameBuff, "Lumenator Setup - %d", randomId);
   WiFi.softAPConfig(apIP, apIP, apSubnet);
-  WiFi.softAP("Lumenator Setup");
+  WiFi.softAP(nameBuff);
   delay(500); // Without delay I've seen the IP address blank
 
   Serial.print("AP IP address: ");
@@ -106,55 +98,6 @@ void startAccessPoint()
   /* Setup the DNS server redirecting all the domains to the apIP */
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
   dnsServer.start(DNS_PORT, "*", apIP);
-
-  // if (WiFi.softAPConfig(local_IP, gateway, subnet)) {
-  //   Serial.println();
-  //   Serial.println("Starting Access Point...");
-
-  //   WiFi.softAP("lumenator", "getstarted");
-
-  //   Serial.println();
-  //   Serial.print("Soft-AP IP address = ");
-  //   Serial.println(WiFi.softAPIP());
-  // }
-
-  // int n = WiFi.scanNetworks();
-  // Serial.println("scan done");
-  // if (n == 0)
-  //   Serial.println("no networks found");
-  // else {
-  //   Serial.print(n);
-  //   Serial.println(" networks found");
-  //   for (int i = 0; i < n; ++i) {
-  //     // Print SSID and RSSI for each network found
-  //     Serial.print(i + 1);
-  //     Serial.print(": ");
-  //     Serial.print(WiFi.SSID(i));
-  //     Serial.print(" (");
-  //     Serial.print(WiFi.RSSI(i));
-  //     Serial.print(")");
-  //     Serial.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
-  //     delay(10);
-  //   }
-  // }
-  // Serial.println("");
-  // st = "<ol>";
-  // for (int i = 0; i < n; ++i) {
-  //   // Print SSID and RSSI for each network found
-  //   st += "<li>";
-  //   st += WiFi.SSID(i);
-  //   st += " (";
-  //   st += WiFi.RSSI(i);
-
-  //   st += ")";
-  //   st += (WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*";
-  //   st += "</li>";
-  // }
-  // st += "</ol>";
-  // delay(100);
-  // Serial.println("softap");
-  // launchWeb();
-  // Serial.println("over");
 }
 
 void startWiFi()
@@ -314,25 +257,6 @@ void setup()
   EEPROM.begin(EEPROM_SIZE); // Initialasing EEPROM
   delay(10);
 
-  // clearEEPROM();
-  // delay(1000);
-  // String myTest =
-  //     "{\"1\":\"My Device\",\"2\":2}";
-
-  // Serial.println("Configuration Data: ");
-  // Serial.println(myTest);
-
-  // readConfigJson(myTest);
-
-  // // String myTest = "HI there haha";
-  // for (int i = 0; i < myTest.length(); ++i)
-  // {
-  //   EEPROM.write(i, myTest[i]);
-  // }
-  // EEPROM.commit();
-
-  // Serial.println();
-
   readConfigJson(readEEPROM());
 
   setupHardwareConfiguration();
@@ -363,6 +287,11 @@ void setup()
     setupMqtt();
   }
 
+  if (e131.begin(E131_UNICAST)) // Listen via Unicast
+    Serial.println(F("Listening for e131 data..."));
+  else
+    Serial.println(F("*** e131.begin failed ***"));
+
   // startOTAServer();
 
   // char data[4096]; // Max 100 Bytes
@@ -382,6 +311,12 @@ void setup()
 void loop()
 {
   webSocket.loop();
+
+  // E131:
+  if (!e131.isEmpty())
+  {
+    e131Loop();
+  }
   // MQTT:
   if (mqttConfig.enabled == true)
   {
