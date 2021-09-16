@@ -3,17 +3,15 @@
   by Patrick Morris
 */
 #include <ArduinoJson.h>
-// #include <ArduinoOTA.h>
 #include <DNSServer.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
-// #include <ESP8266mDNS.h>
+#include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 
-// #include <FS.h>
-// #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
-// #include <WebSocketsServer.h>
-// #include <WiFiUdp.h>
-// #include <Wire.h>
+#define EEPROM_SIZE 1000
+#define CONFIG_DTO_SIZE 1000
+
+const char printLine[] = "----------------------------";
 
 bool apMode = false; // True when in "setup" access point mode is on
 IPAddress apIP(192, 168, 4, 1);
@@ -25,36 +23,19 @@ DNSServer dnsServer;
 
 WiFiClient espClient;
 
-// Enums
-enum controlMode
-{
-  STANDBY,
-  RGB,
-  WHITE,
-  GPIO_R,
-  GPIO_G,
-  GPIO_B,
-  GPIO_W,
-  GPIO_WW,
-};
-
-int ctrlMode;
-
 #include "utils.h"
 
 #include "config.h"
 
-#include "control.h"
+#include "state.h"
 
 #include "webserver.h"
 
-#include "websockets.h"
-
 #include "mqtt.h"
 
-// #include "eeprom-service.h"
+#include "e131.h"
 
-// bool configured = false;
+#include "websockets.h"
 
 //  D1 Mini Pin Number Reference:
 //  D0  16
@@ -69,28 +50,14 @@ int ctrlMode;
 //  TX  1
 //  RX  3
 
-// PubSubClient mqttClient(espClient);
-
-/* ------- NETWORK CREDENTIALS ------- */
-/* Fallback configuration if config.json is empty or fails */
-// const char *fallbackSsid = mySSID;
-// const char *fallbackPassword = myPASSWORD;
-/* ----------------------------------- */
-
-// const char CONFIG_FILE[] = "/config.json";
-
 // To make Arduino IDE autodetect OTA device
 // WiFiServer TelnetServer(8266);
-
-// WebSockets Server port 1337
-// WebSocketsServer webSocket = WebSocketsServer(1337);
-// char msg_buf[10];
 
 void printWiFiStatus()
 {
 
   Serial.println(" ");
-  Serial.println("----------------------------");
+  Serial.println(printLine);
   Serial.println("Connected to wifi");
   Serial.print("Status: ");
   Serial.println(WiFi.status());
@@ -106,172 +73,8 @@ void printWiFiStatus()
   Serial.println(WiFi.RSSI());
   Serial.print("Networks: ");
   Serial.println(WiFi.scanNetworks());
-  Serial.println("----------------------------");
+  Serial.println(printLine);
 }
-
-// void ctrlCommand(char *command) {
-//   if (ctrlMode != CTRL_GPIO) {
-//     ctrlMode = CTRL_GPIO;
-//     resetGpios();
-//   }
-//   if (strncmp((char *)command, "ctrl-ww:1", 9) == 0) {
-//     // Warm White On
-//     if (deviceConfig.device_type == LRGBWW) {
-//       analogWrite(deviceConfig.gpio_ww, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-ww:0", 9) == 0) {
-//     // Warm White Off
-//     if (deviceConfig.device_type == LRGBWW) {
-//       analogWrite(deviceConfig.gpio_ww, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-w:1", 8) == 0) {
-//     // Cool White On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW) {
-//       analogWrite(deviceConfig.gpio_w, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-w:0", 8) == 0) {
-//     // Cool White Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW) {
-//       analogWrite(deviceConfig.gpio_w, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-r:1", 8) == 0) {
-//     // Red On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
-//       analogWrite(deviceConfig.gpio_r, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-r:0", 8) == 0) {
-//     // Red Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
-//       analogWrite(deviceConfig.gpio_r, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-g:1", 8) == 0) {
-//     // Green On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
-//       analogWrite(deviceConfig.gpio_g, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-g:0", 8) == 0) {
-//     // Green Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
-//       analogWrite(deviceConfig.gpio_g, 0);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-b:1", 8) == 0) {
-//     // Blue On
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
-//       analogWrite(deviceConfig.gpio_b, 255);
-//     }
-//   } else if (strncmp((char *)command, "ctrl-b:0", 8) == 0) {
-//     // Blue Off
-//     if (deviceConfig.device_type == LRGBWW || deviceConfig.device_type == LRGBW ||
-//         deviceConfig.device_type == LRGB) {
-//       analogWrite(deviceConfig.gpio_b, 0);
-//     }
-//   }
-// }
-
-// void rgbCtrlCommand(char *command) {
-//   if (ctrlMode != CTRL_RGB) {
-//     ctrlMode = CTRL_RGB;
-//     resetGpios();
-//   }
-
-//   String rgb;
-//   rgb = command;
-//   String r = rgb.substring(10, 13);
-//   String g = rgb.substring(16, 19);
-//   String b = rgb.substring(22);
-
-//   int rVal = r.toInt();
-//   int gVal = g.toInt();
-//   int bVal = b.toInt();
-
-//   analogWrite(deviceConfig.gpio_r, rVal);
-//   analogWrite(deviceConfig.gpio_g, gVal);
-//   analogWrite(deviceConfig.gpio_b, bVal);
-// }
-
-// void whiteCtrlCommand(char *command) {
-//   if (ctrlMode != CTRL_WHITE) {
-//     ctrlMode = CTRL_WHITE;
-//     resetGpios();
-//   }
-
-//   String white;
-//   white = command;
-//   String w = white.substring(12, 15);
-//   String ww = white.substring(19, 22);
-
-//   int wVal = w.toInt();
-//   int wwVal = ww.toInt();
-
-//   analogWrite(deviceConfig.gpio_w, wVal);
-//   analogWrite(deviceConfig.gpio_ww, wwVal);
-// }
-
-// Callback: receiving any WebSocket message
-// void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_t length) {
-
-//   // Figure out the type of WebSocket event
-//   switch (type) {
-
-//   // Client has disconnected
-//   case WStype_DISCONNECTED:
-//     Serial.printf("[%u] Disconnected!\n", client_num);
-//     break;
-
-//   // New client has connected
-//   case WStype_CONNECTED: {
-//     IPAddress ip = webSocket.remoteIP(client_num);
-//     Serial.printf("[%u] Connection from ", client_num);
-//     Serial.println(ip.toString());
-//   } break;
-
-//   // Handle text messages from client
-//   case WStype_TEXT:
-
-//     char *text;
-//     text = (char *)payload;
-
-//     // Print out raw message
-//     Serial.printf("[%u] Command: %s\n", client_num, text);
-
-//     if (strncmp(text, "config:", 7) == 0) {
-//       // Save Configuration
-//       String dto;
-//       dto = text;
-//       saveConfiguration(dto.substring(7));
-//     } else if (strncmp(text, "ctrl", 4) == 0) {
-//       // ctrl command:
-//       ctrlCommand(text);
-//     } else if (strncmp(text, "rgbctrl", 7) == 0) {
-//       // rgbctrl command:
-//       rgbCtrlCommand(text);
-//     } else if (strncmp(text, "whitectrl", 9) == 0) {
-//       // white command:
-//       whiteCtrlCommand(text);
-//     } else if (strncmp(text, "standby", 7) == 0) {
-//       // Standby Mode
-//       resetGpios();
-//       ctrlMode = STANDBY;
-//     }
-
-//     break;
-
-//   // For everything else: do nothing
-//   case WStype_BIN:
-//   case WStype_ERROR:
-//   case WStype_FRAGMENT_TEXT_START:
-//   case WStype_FRAGMENT_BIN_START:
-//   case WStype_FRAGMENT:
-//   case WStype_FRAGMENT_FIN:
-//   default:
-//     break;
-//   }
-// }
 
 void startAccessPoint()
 {
@@ -282,8 +85,11 @@ void startAccessPoint()
   WiFi.disconnect();
   delay(100);
 
+  char nameBuff[50];
+  int randomId = random(1000, 9999);
+  sprintf(nameBuff, "Lumenator Setup - %d", randomId);
   WiFi.softAPConfig(apIP, apIP, apSubnet);
-  WiFi.softAP("Lumenator Setup");
+  WiFi.softAP(nameBuff);
   delay(500); // Without delay I've seen the IP address blank
 
   Serial.print("AP IP address: ");
@@ -292,55 +98,6 @@ void startAccessPoint()
   /* Setup the DNS server redirecting all the domains to the apIP */
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
   dnsServer.start(DNS_PORT, "*", apIP);
-
-  // if (WiFi.softAPConfig(local_IP, gateway, subnet)) {
-  //   Serial.println();
-  //   Serial.println("Starting Access Point...");
-
-  //   WiFi.softAP("lumenator", "getstarted");
-
-  //   Serial.println();
-  //   Serial.print("Soft-AP IP address = ");
-  //   Serial.println(WiFi.softAPIP());
-  // }
-
-  // int n = WiFi.scanNetworks();
-  // Serial.println("scan done");
-  // if (n == 0)
-  //   Serial.println("no networks found");
-  // else {
-  //   Serial.print(n);
-  //   Serial.println(" networks found");
-  //   for (int i = 0; i < n; ++i) {
-  //     // Print SSID and RSSI for each network found
-  //     Serial.print(i + 1);
-  //     Serial.print(": ");
-  //     Serial.print(WiFi.SSID(i));
-  //     Serial.print(" (");
-  //     Serial.print(WiFi.RSSI(i));
-  //     Serial.print(")");
-  //     Serial.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
-  //     delay(10);
-  //   }
-  // }
-  // Serial.println("");
-  // st = "<ol>";
-  // for (int i = 0; i < n; ++i) {
-  //   // Print SSID and RSSI for each network found
-  //   st += "<li>";
-  //   st += WiFi.SSID(i);
-  //   st += " (";
-  //   st += WiFi.RSSI(i);
-
-  //   st += ")";
-  //   st += (WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*";
-  //   st += "</li>";
-  // }
-  // st += "</ol>";
-  // delay(100);
-  // Serial.println("softap");
-  // launchWeb();
-  // Serial.println("over");
 }
 
 void startWiFi()
@@ -397,25 +154,40 @@ void startWiFi()
 
 void setupHardwareConfiguration()
 {
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LWW)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
   {
-    // pinMode(gpioConfig.ww, OUTPUT);
-    // analogWrite(gpioConfig.ww, 0);
+    if (gpioConfig.ww > 0)
+    {
+      pinMode(gpioConfig.ww, OUTPUT);
+      analogWrite(gpioConfig.ww, 0);
+    }
   }
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW || deviceConfig.type == LWW || deviceConfig.type == LW)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW || deviceConfig.type == DeviceType::WW || deviceConfig.type == DeviceType::WW)
   {
-    // pinMode(gpioConfig.w, OUTPUT);
-    // analogWrite(gpioConfig.w, 0);
+    if (gpioConfig.w > 0)
+    {
+      pinMode(gpioConfig.w, OUTPUT);
+      analogWrite(gpioConfig.w, 0);
+    }
   }
-  if (deviceConfig.type == LRGBWW || deviceConfig.type == LRGBW ||
-      deviceConfig.type == LRGB)
+  if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
+      deviceConfig.type == DeviceType::RGB)
   {
-    pinMode(gpioConfig.r, OUTPUT);
-    // pinMode(gpioConfig.g, OUTPUT);
-    // pinMode(gpioConfig.b, OUTPUT);
-    analogWrite(gpioConfig.r, 0);
-    // analogWrite(gpioConfig.g, 0);
-    // analogWrite(gpioConfig.b, 0);
+    if (gpioConfig.r > 0)
+    {
+      pinMode(gpioConfig.r, OUTPUT);
+      analogWrite(gpioConfig.r, 0);
+    }
+    if (gpioConfig.g > 0)
+    {
+      pinMode(gpioConfig.g, OUTPUT);
+      analogWrite(gpioConfig.g, 0);
+    }
+    if (gpioConfig.b > 0)
+    {
+      pinMode(gpioConfig.b, OUTPUT);
+      analogWrite(gpioConfig.b, 0);
+    }
   }
 }
 
@@ -449,7 +221,7 @@ void readConfigJson(String configuration)
 {
   if (configuration.length())
   {
-    DynamicJsonDocument json(EEPROM_SIZE);
+    DynamicJsonDocument json(2048);
     DeserializationError error = deserializeJson(json, configuration);
     if (error)
     {
@@ -485,31 +257,13 @@ void setup()
   EEPROM.begin(EEPROM_SIZE); // Initialasing EEPROM
   delay(10);
 
-  // clearEEPROM();
-  // delay(1000);
-  // String myTest =
-  //     "{\"device\":{\"name\":\"My "
-  //     "Device\",\"type\":2},\"network\":{\"ssid\":\"MorrisWifi20\",\"pass\":\"xxxxx\"}}";
-
-  // Serial.println("Configuration Data: ");
-  // Serial.println(myTest);
-
-  // readConfigJson(myTest);
-
-  // // String myTest = "HI there haha";
-  // for (int i = 0; i < myTest.length(); ++i)
-  // {
-  //   EEPROM.write(i, myTest[i]);
-  // }
-  // EEPROM.commit();
-
-  // Serial.println();
-
   readConfigJson(readEEPROM());
 
   setupHardwareConfiguration();
 
-  if (networkConfig.ssid.length() && networkConfig.pass.length())
+  updateLumenatorLevels(); // Turn light on immediately on boot up
+
+  if (strlen(networkConfig.ssid) && strlen(networkConfig.pass))
   {
     startWiFi();
   }
@@ -528,9 +282,15 @@ void setup()
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
 
-  // if (mqttConfig.mqtt_enabled == true) {
-  //   setupMqtt();
-  // }
+  if (mqttConfig.enabled == true)
+  {
+    setupMqtt();
+  }
+
+  if (e131.begin(E131_UNICAST)) // Listen via Unicast
+    Serial.println(F("Listening for e131 data..."));
+  else
+    Serial.println(F("*** e131.begin failed ***"));
 
   // startOTAServer();
 
@@ -551,13 +311,21 @@ void setup()
 void loop()
 {
   webSocket.loop();
+
+  // E131:
+  if (!e131.isEmpty())
+  {
+    e131Loop();
+  }
   // MQTT:
-  // if (mqttConfig.mqtt_enabled == true) {
-  //   if (!mqttClient.connected()) {
-  //     reconnectMqtt();
-  //   }
-  //   mqttClient.loop();
-  // }
+  if (mqttConfig.enabled == true)
+  {
+    if (!mqttClient.connected())
+    {
+      reconnectMqtt();
+    }
+    mqttClient.loop();
+  }
 
   // ArduinoOTA.handle();
 

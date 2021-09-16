@@ -15,6 +15,9 @@ $switchSpeed: 200ms;
   padding: 0 4px;
   // @extend %emboss;
   cursor: pointer;
+  &.disabled {
+    opacity: 0.4;
+  }
   .circle {
     position: absolute;
     top: calc((#{$itemHeight} - #{$circleSize}) / 2);

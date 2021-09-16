@@ -23,6 +23,11 @@ header {
         margin: 0;
         padding: $paddingLarge 0 $padding 0;
       }
+      .lum-Chip {
+        position: relative;
+        left: 12px;
+        bottom: 13px;
+      }
       .version {
         color: $grey;
         font-size: $textSizeSmall;

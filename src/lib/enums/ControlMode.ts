@@ -1,7 +1,9 @@
 export enum ControlMode {
-  STANDBY,
+  STANDBY, // OFF
   RGB,
-  WHITE,
+  WHITE, // SINGLE COLD WHITE
+  WARM_WHITE, // SINGLE WARM WHITE
+  TEMP, // WARM/COLD WHITE
   GPIO_R,
   GPIO_G,
   GPIO_B,

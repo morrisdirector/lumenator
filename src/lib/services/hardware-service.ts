@@ -1,6 +1,7 @@
 import { DataService } from "./data-service";
+import { WebsocketService } from "./websocket-service";
 
-export class HardwareService extends DataService {
+export class HardwareService extends WebsocketService {
   constructor() {
     super();
   }
@@ -19,5 +20,9 @@ export class HardwareService extends DataService {
           reject(e);
         });
     });
+  };
+
+  public eraseAll = (): void => {
+    this.send("erase");
   };
 }

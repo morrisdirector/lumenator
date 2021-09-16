@@ -11,7 +11,7 @@
 // Web Server port 80
 AsyncWebServer server(80);
 
-String dtoBuffer;
+char dtoBuffer[CONFIG_DTO_SIZE];
 
 void onRequest(AsyncWebServerRequest *request)
 {
@@ -100,33 +100,70 @@ void initRoutes()
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request)
             {
               String response;
-              StaticJsonDocument<configJsonTotalCapacity> doc;
-              doc["device"]["name"] = deviceConfig.name;
-              doc["device"]["type"] = deviceConfig.type;
+              DynamicJsonDocument doc(2048);
 
-              doc["gpio"]["r"] = gpioConfig.r;
-              doc["gpio"]["g"] = gpioConfig.g;
-              doc["gpio"]["b"] = gpioConfig.b;
-              doc["gpio"]["w"] = gpioConfig.w;
-              doc["gpio"]["ww"] = gpioConfig.ww;
+              if (deviceConfig.name != "null")
+                doc[confId[(int)Conf::DEVICE_NAME]] = deviceConfig.name;
 
-              doc["network"]["ssid"] = networkConfig.ssid;
-              doc["network"]["pass"] = networkConfig.pass;
-              doc["network"]["dhcp"] = networkConfig.dhcp;
-              doc["network"]["ip"]["a"] = networkConfig.ip.a;
-              doc["network"]["ip"]["b"] = networkConfig.ip.b;
-              doc["network"]["ip"]["c"] = networkConfig.ip.c;
-              doc["network"]["ip"]["d"] = networkConfig.ip.d;
-              doc["network"]["gateway"]["a"] = networkConfig.gateway.a;
-              doc["network"]["gateway"]["b"] = networkConfig.gateway.b;
-              doc["network"]["gateway"]["c"] = networkConfig.gateway.c;
-              doc["network"]["gateway"]["d"] = networkConfig.gateway.d;
-              doc["network"]["subnet"]["a"] = networkConfig.subnet.a;
-              doc["network"]["subnet"]["b"] = networkConfig.subnet.b;
-              doc["network"]["subnet"]["c"] = networkConfig.subnet.c;
-              doc["network"]["subnet"]["d"] = networkConfig.subnet.d;
+              doc[confId[(int)Conf::DEVICE_TYPE]] = (uint8_t)deviceConfig.type;
 
-              doc["accessPoint"]["pass"] = accessPointConfig.pass;
+              doc[confId[(int)Conf::GPIO_R]] = (uint8_t)gpioConfig.r;
+              doc[confId[(int)Conf::GPIO_G]] = (uint8_t)gpioConfig.g;
+              doc[confId[(int)Conf::GPIO_B]] = (uint8_t)gpioConfig.b;
+              doc[confId[(int)Conf::GPIO_W]] = (uint8_t)gpioConfig.w;
+              doc[confId[(int)Conf::GPIO_WW]] = (uint8_t)gpioConfig.ww;
+
+              if (networkConfig.ssid != "null")
+                doc[confId[(int)Conf::NETWORK_SSID]] = networkConfig.ssid;
+
+              if (networkConfig.pass != "null")
+                doc[confId[(int)Conf::NETWORK_PASS]] = networkConfig.pass;
+
+              doc[confId[(int)Conf::NETWORK_DHCP]] = (bool)networkConfig.dhcp;
+
+              doc[confId[(int)Conf::NETWORK_IP1]] = (uint8_t)networkConfig.ip.a;
+              doc[confId[(int)Conf::NETWORK_IP2]] = (uint8_t)networkConfig.ip.b;
+              doc[confId[(int)Conf::NETWORK_IP3]] = (uint8_t)networkConfig.ip.c;
+              doc[confId[(int)Conf::NETWORK_IP4]] = (uint8_t)networkConfig.ip.d;
+
+              doc[confId[(int)Conf::NETWORK_GATEWAY1]] = (uint8_t)networkConfig.gateway.a;
+              doc[confId[(int)Conf::NETWORK_GATEWAY2]] = (uint8_t)networkConfig.gateway.b;
+              doc[confId[(int)Conf::NETWORK_GATEWAY3]] = (uint8_t)networkConfig.gateway.c;
+              doc[confId[(int)Conf::NETWORK_GATEWAY4]] = (uint8_t)networkConfig.gateway.d;
+
+              doc[confId[(int)Conf::NETWORK_SUBNET1]] = (uint8_t)networkConfig.subnet.a;
+              doc[confId[(int)Conf::NETWORK_SUBNET2]] = (uint8_t)networkConfig.subnet.b;
+              doc[confId[(int)Conf::NETWORK_SUBNET3]] = (uint8_t)networkConfig.subnet.c;
+              doc[confId[(int)Conf::NETWORK_SUBNET4]] = (uint8_t)networkConfig.subnet.d;
+
+              if (accessPointConfig.pass != "null")
+                doc[confId[(int)Conf::ACCESS_POINT_PASS]] = accessPointConfig.pass;
+
+              doc[confId[(int)Conf::MQTT_ENABLED]] = mqttConfig.enabled;
+
+              if (mqttConfig.clientId != "null")
+                doc[confId[(int)Conf::MQTT_CLIENT_ID]] = mqttConfig.clientId;
+
+              doc[confId[(int)Conf::MQTT_AUTO_DISCOVERY]] = mqttConfig.autoDiscovery;
+
+              if (mqttConfig.user != "null")
+                doc[confId[(int)Conf::MQTT_USER]] = mqttConfig.user;
+
+              if (mqttConfig.pass != "null")
+                doc[confId[(int)Conf::MQTT_PASSWORD]] = mqttConfig.pass;
+
+              doc[confId[(int)Conf::MQTT_IP1]] = mqttConfig.ip.a;
+              doc[confId[(int)Conf::MQTT_IP2]] = mqttConfig.ip.b;
+              doc[confId[(int)Conf::MQTT_IP3]] = mqttConfig.ip.c;
+              doc[confId[(int)Conf::MQTT_IP4]] = mqttConfig.ip.d;
+
+              doc[confId[(int)Conf::MQTT_PORT]] = mqttConfig.port;
+
+              doc[confId[(int)Conf::MQTT_DEVICE_TOPIC]] = mqttConfig.topic;
+
+              doc[confId[(int)Conf::E131_ENABLED]] = e131Config.enabled;
+              doc[confId[(int)Conf::E131_UNIVERSE]] = (uint8_t)e131Config.universe;
+              doc[confId[(int)Conf::E131_START_CHAN]] = (uint8_t)e131Config.channel;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);
@@ -136,7 +173,8 @@ void initRoutes()
       "/config", HTTP_POST,
       [](AsyncWebServerRequest *request)
       {
-        if (dtoBuffer == "" || !saveConfiguration(dtoBuffer))
+        if (
+            dtoBuffer == "" || !saveConfiguration(dtoBuffer))
         {
           request->send(500, "application/json", "{\"success\": false}");
         }
@@ -148,16 +186,21 @@ void initRoutes()
       NULL,
       [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
       {
+        char *packetText;
+        packetText = (char *)data;
+
         if (index == 0)
         {
-          dtoBuffer = "";
+          for (int i = 0; i <= CONFIG_DTO_SIZE; ++i)
+          {
+            dtoBuffer[i] = NULL;
+          }
+          dtoBuffer[0] = '\0';
+          strncpy(dtoBuffer, packetText, len);
         }
-        char *text;
-        text = (char *)data;
-
-        for (size_t i = 0; i < len; i++)
+        else
         {
-          dtoBuffer.concat(text[i]);
+          strncat(dtoBuffer, packetText, len);
         }
       });
 
@@ -176,46 +219,62 @@ void initRoutes()
         ESP.reset();
       });
 
-  // server.on(
-  //     "/update", HTTP_POST, [](AsyncWebServerRequest *request)
-  //     {
-  //       shouldReboot = !Update.hasError();
-  //       AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot ? "OK" : "FAIL");
-  //       response->addHeader("Connection", "close");
-  //       request->send(response);
-  //     },
-  //     [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final)
-  //     {
-  //       if (!index)
-  //       {
-  //         Serial.printf("Update Start: %s\n", filename.c_str());
-  //         Update.runAsync(true);
-  //         if (!Update.begin((ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000))
-  //         {
-  //           Update.printError(Serial);
-  //         }
-  //       }
-  //       if (!Update.hasError())
-  //       {
-  //         if (Update.write(data, len) != len)
-  //         {
-  //           Update.printError(Serial);
-  //         }
-  //       }
-  //       if (final)
-  //       {
-  //         if (Update.end(true))
-  //         {
-  //           Serial.printf("Update Success: %uB\n", index + len);
-  //         }
-  //         else
-  //         {
-  //           Update.printError(Serial);
-  //         }
-  //       }
-  //     });
+  server.on(
+      "/update", HTTP_POST, [&](AsyncWebServerRequest *request)
+      {
+        // the request handler is triggered after the upload has finished...
+        // create the response, add header, and send response
+        AsyncWebServerResponse *response = request->beginResponse((Update.hasError()) ? 500 : 200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+        response->addHeader("Connection", "close");
+        response->addHeader("Access-Control-Allow-Origin", "*");
+        request->send(response);
+        ESP.restart();
+      },
+      [&](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final)
+      {
+        //Upload handler chunks in data
+        if (!index)
+        {
+          if (!request->hasParam("MD5", true))
+          {
+            return request->send(400, "text/plain", "MD5 parameter missing");
+          }
 
-  // server.on("/devicePresets", HTTP_GET, [](AsyncWebServerRequest *request) {
-  //   request->send(SPIFFS, "/device-presets.json", "application/json");
-  // });
+          if (!Update.setMD5(request->getParam("MD5", true)->value().c_str()))
+          {
+            return request->send(400, "text/plain", "MD5 parameter invalid");
+          }
+
+          int cmd = U_FLASH;
+          Update.runAsync(true);
+          uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+          if (!Update.begin(maxSketchSpace, cmd))
+          { // Start with max available size
+            Update.printError(Serial);
+            return request->send(400, "text/plain", "OTA could not begin");
+          }
+        }
+
+        // Write chunked data to the free sketch space
+        if (len)
+        {
+          if (Update.write(data, len) != len)
+          {
+            return request->send(400, "text/plain", "OTA could not begin");
+          }
+        }
+
+        if (final)
+        { // if the final flag is set then this is the last frame of data
+          if (!Update.end(true))
+          { //true to set the size to the current progress
+            Update.printError(Serial);
+            return request->send(400, "text/plain", "Could not end OTA");
+          }
+        }
+        else
+        {
+          return;
+        }
+      });
 }

@@ -22,6 +22,21 @@ body {
   }
 }
 
+a {
+  &,
+  &:visited,
+  &:active,
+  &:hover,
+  &:focus {
+    color: darken($grey, 40%);
+    font-weight: bold;
+    text-decoration: none;
+    &:hover {
+      color: darken($highlight, 30%);
+    }
+  }
+}
+
 h4 {
   margin: 0 0 $margin;
 }
@@ -30,6 +45,10 @@ p {
   font-size: $textSizeNormal;
   color: $lightDark;
   line-height: $textLineHeightNormal;
+}
+
+.text-medium {
+  font-size: $textSizeMedium !important;
 }
 
 main {
@@ -53,6 +72,18 @@ section {
   }
 }
 
+.section-action {
+  max-width: 800px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: auto;
+  padding: 0 0 10px;
+  > * {
+    margin: 0 10px 0 0;
+  }
+}
+
 .width-100 {
   width: 100% !important;
 }
@@ -61,20 +92,40 @@ section {
   margin: 0 !important;
 }
 
+.margin {
+  margin: $margin !important;
+}
+
+.margin-small {
+  margin: $marginSmall !important;
+}
+
+.margin-top {
+  margin-top: $margin !important;
+}
+
+.margin-bottom {
+  margin-bottom: $margin !important;
+}
+
 .mt-small {
-  margin-top: $marginSmall;
+  margin-top: $marginSmall !important;
 }
 
 .mt-large {
-  margin-top: $marginLarge;
+  margin-top: $marginLarge !important;
 }
 
 .ml-small {
-  margin-left: $marginSmall;
+  margin-left: $marginSmall !important;
 }
 
 .mb-small {
-  margin-bottom: $marginSmall;
+  margin-bottom: $marginSmall !important;
+}
+
+.mb-large {
+  margin-bottom: $marginLarge !important;
 }
 
 .flex-stretch {
@@ -130,6 +181,10 @@ hr {
     0px -0.5px 0px 0.5px rgba(0, 0, 0, 0.15);
 }
 
+.bold {
+  font-weight: bold !important;
+}
+
 label {
   display: block;
   font-size: 14px;
@@ -167,6 +222,9 @@ label {
   > .lum-ToggleSwitch {
     margin-top: 12px;
   }
+  button {
+    max-height: 36px;
+  }
 }
 .helper-text {
   display: block;
@@ -174,6 +232,7 @@ label {
   color: $grey;
   font-size: 12px;
   font-style: italic;
+  margin-top: $marginSmall;
 }
 
 .error-text {
@@ -203,24 +262,39 @@ label {
   }
 }
 
+.lum-messages {
+  > :not(:last-child) {
+    margin: 0 0 $marginSmall 0;
+  }
+}
+
 table {
   border: 0;
   border-spacing: 0;
   width: 100%;
   margin: 0 0 $margin;
-  tr {
+  > tr {
     &.header-row {
       background: grey;
       color: white;
     }
-    th,
-    td {
-      // border-top: 1px solid grey;
-      padding: 5px;
-      width: 100%;
+    &.new-group {
+      td {
+        padding-top: $margin;
+        border-top: 1px solid lighten(grey, 30%);
+      }
+    }
+    &.first-row {
+      td {
+        padding: 20px 5px;
+      }
     }
     th {
       text-align: left;
+      padding: 5px;
+    }
+    td {
+      padding: 0 5px 20px;
     }
   }
 }

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#define EEPROM_SIZE 1024
+#define EEPROM_SIZE 1000
 
 String readEEPROM()
 {
@@ -38,12 +38,12 @@ void clearEEPROM()
   Serial.println("Done");
 }
 
-void writeEEPROM(String data)
+void writeEEPROM(char data[CONFIG_DTO_SIZE])
 {
 
   Serial.print("Writing to EEPROM...");
 
-  for (int i = 0; i < data.length(); ++i)
+  for (int i = 0; i < strlen(data); ++i)
   {
     EEPROM.write(i, data[i]);
   }

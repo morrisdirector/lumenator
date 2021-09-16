@@ -1,23 +1,19 @@
+import { Conf, IConfigJson } from "../../../lib/interfaces/IConfigJson";
 import { Fragment, FunctionalComponent, h } from "preact";
 import {
-  IConfigAccessPoint,
-  IConfigNetwork,
-} from "../../../lib/interfaces/IConfigJson";
-import {
   getIPConfigObject,
-  getIPStringFromConfig,
+  getIPStringFromValues,
   isIPAddress,
 } from "../../../lib/utils/utils";
-import { useEffect, useState } from "preact/hooks";
 
 import { INetworkSetupProps } from "./INetworkSetupProps";
 import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
+import { useState } from "preact/hooks";
 
 const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
   page = "app",
-  configNetwork = {},
-  configAccessPoint = {},
+  config = {},
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,27 +22,27 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
   const handleIpChange = (
     value?: string | number,
     blur = false,
-    key: string = "ip"
+    key: "IP" | "GATEWAY" | "SUBNET" = "IP"
   ) => {
     if (typeof props.onConfigUpdate === "function") {
       if (isIPAddress(value as string)) {
-        props.onConfigUpdate({
-          accessPoint: {
-            ...(configAccessPoint as IConfigAccessPoint),
-          },
-          network: {
-            ...(configNetwork as IConfigNetwork),
-            [key]: getIPConfigObject(value as string),
-          },
-        });
+        const ipObj = getIPConfigObject(value as string);
+        if (ipObj) {
+          props.onConfigUpdate({
+            ...(config as IConfigJson),
+            //@ts-ignore
+            [Conf[`NETWORK_${key}1`]]: ipObj.a,
+            //@ts-ignore
+            [Conf[`NETWORK_${key}2`]]: ipObj.b,
+            //@ts-ignore
+            [Conf[`NETWORK_${key}3`]]: ipObj.c,
+            //@ts-ignore
+            [Conf[`NETWORK_${key}4`]]: ipObj.d,
+          });
+        }
       } else if (blur) {
         props.onConfigUpdate({
-          accessPoint: {
-            ...(configAccessPoint as IConfigAccessPoint),
-          },
-          network: {
-            ...(configNetwork as IConfigNetwork),
-          },
+          ...(config as IConfigJson),
         });
       }
     }
@@ -55,13 +51,8 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
   const handleDhcpToggle = (): void => {
     if (typeof props.onConfigUpdate === "function") {
       props.onConfigUpdate({
-        accessPoint: {
-          ...(configAccessPoint as IConfigAccessPoint),
-        },
-        network: {
-          ...(configNetwork as IConfigNetwork),
-          dhcp: !configNetwork.dhcp,
-        },
+        ...(config as IConfigJson),
+        [Conf.NETWORK_DHCP]: !config[Conf.NETWORK_DHCP],
       });
     }
   };
@@ -74,21 +65,18 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
             <label for="ssid">Network SSID</label>
             <Input
               id="ssid"
-              value={configNetwork.ssid || undefined}
+              value={config[Conf.NETWORK_SSID] || undefined}
+              maxLength={40}
               onChange={(value) => {
                 if (typeof props.onConfigUpdate === "function") {
                   props.onConfigUpdate({
-                    accessPoint: {
-                      ...(configAccessPoint as IConfigAccessPoint),
-                    },
-                    network: {
-                      ...(configNetwork as IConfigNetwork),
-                      ssid: value as string,
-                    },
+                    ...(config as IConfigJson),
+                    [Conf.NETWORK_SSID]: value as string,
                   });
                 }
               }}
             />
+            <div class="helper-text">Max 40 characters</div>
           </div>
           <div class="form-group no-margin">
             <label for="password">Network Password</label>
@@ -97,21 +85,18 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                 <Input
                   id="password"
                   type={!showPassword && page === "app" ? "password" : "string"}
-                  value={configNetwork.pass || undefined}
+                  value={config[Conf.NETWORK_PASS] || undefined}
+                  maxLength={20}
                   onChange={(value) => {
                     if (typeof props.onConfigUpdate === "function") {
                       props.onConfigUpdate({
-                        accessPoint: {
-                          ...(configAccessPoint as IConfigAccessPoint),
-                        },
-                        network: {
-                          ...(configNetwork as IConfigNetwork),
-                          pass: value as string,
-                        },
+                        ...(config as IConfigJson),
+                        [Conf.NETWORK_PASS]: value as string,
                       });
                     }
                   }}
                 />
+                <div class="helper-text">Max 20 characters</div>
               </div>
               {page === "app" && (
                 <button
@@ -129,10 +114,14 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
           <div class="form-group">
             <label for="ip">Static IP</label>
             <Input
-              disabled={configNetwork.dhcp}
+              disabled={config[Conf.NETWORK_DHCP]}
               value={
-                (configNetwork.ip && getIPStringFromConfig(configNetwork.ip)) ||
-                ""
+                getIPStringFromValues(
+                  config[Conf.NETWORK_IP1],
+                  config[Conf.NETWORK_IP2],
+                  config[Conf.NETWORK_IP3],
+                  config[Conf.NETWORK_IP4]
+                ) || ""
               }
               onChange={handleIpChange}
               onBlur={(value) => {
@@ -145,22 +134,28 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
           </div>
           <div class="form-group">
             <label for="ip">Use DHCP</label>
-            <ToggleSwitch onClick={handleDhcpToggle} on={configNetwork.dhcp} />
+            <ToggleSwitch
+              onClick={handleDhcpToggle}
+              on={config[Conf.NETWORK_DHCP]}
+            />
           </div>
           <div class="form-group">
             <label for="ip">Gateway</label>
             <Input
-              disabled={configNetwork.dhcp}
+              disabled={config[Conf.NETWORK_DHCP]}
               value={
-                (configNetwork.gateway &&
-                  getIPStringFromConfig(configNetwork.gateway)) ||
-                ""
+                getIPStringFromValues(
+                  config[Conf.NETWORK_GATEWAY1],
+                  config[Conf.NETWORK_GATEWAY2],
+                  config[Conf.NETWORK_GATEWAY3],
+                  config[Conf.NETWORK_GATEWAY4]
+                ) || ""
               }
               onChange={(value) => {
-                handleIpChange(value, false, "gateway");
+                handleIpChange(value, false, "GATEWAY");
               }}
               onBlur={(value) => {
-                handleIpChange(value, true, "gateway");
+                handleIpChange(value, true, "GATEWAY");
               }}
             />
           </div>
@@ -168,17 +163,20 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
           <div class="form-group">
             <label for="ip">Subnet</label>
             <Input
-              disabled={configNetwork.dhcp}
+              disabled={config[Conf.NETWORK_DHCP]}
               value={
-                (configNetwork.subnet &&
-                  getIPStringFromConfig(configNetwork.subnet)) ||
-                ""
+                getIPStringFromValues(
+                  config[Conf.NETWORK_SUBNET1],
+                  config[Conf.NETWORK_SUBNET2],
+                  config[Conf.NETWORK_SUBNET3],
+                  config[Conf.NETWORK_SUBNET4]
+                ) || ""
               }
               onChange={(value) => {
-                handleIpChange(value, false, "subnet");
+                handleIpChange(value, false, "SUBNET");
               }}
               onBlur={(value) => {
-                handleIpChange(value, true, "subnet");
+                handleIpChange(value, true, "SUBNET");
               }}
             />
           </div>
@@ -192,24 +190,21 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
               <div class="flex-grow">
                 <Input
                   id="apPass"
+                  maxLength={20}
                   type={
                     !showAPPassword && page === "app" ? "password" : "string"
                   }
-                  value={configAccessPoint.pass || undefined}
+                  value={config[Conf.ACCESS_POINT_PASS] || undefined}
                   onChange={(value) => {
                     if (typeof props.onConfigUpdate === "function") {
                       props.onConfigUpdate({
-                        network: {
-                          ...(configNetwork as IConfigNetwork),
-                        },
-                        accessPoint: {
-                          ...(configAccessPoint as IConfigAccessPoint),
-                          pass: value as string,
-                        },
+                        ...(config as IConfigJson),
+                        [Conf.ACCESS_POINT_PASS]: value as string,
                       });
                     }
                   }}
                 />
+                <div class="helper-text">Max 20 characters</div>
               </div>
               {page === "app" && (
                 <button

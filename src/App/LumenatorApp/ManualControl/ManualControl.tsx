@@ -163,7 +163,7 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
     <section>
       <div class="grid-large">
         <div class="form-group no-margin">
-          <label for="modeRgb">RGB Mode</label>
+          <label for="modeRgb">RGB Test Mode</label>
           <ToggleSwitch
             on={props.controlMode === ControlMode.RGB}
             onClick={() => {
@@ -176,12 +176,12 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
           {props.controlMode === ControlMode.RGB && (
             <AlertWarning
               icon={AlertWarningIcon.INFO}
-              text="While manual RGB mode is enabled, Lumenator will not respond to external control commands."
+              text="While RGB test mode is enabled, Lumenator will test your selection. If Lumenator receives commands from other sources such as MQTT, the test will be overidden."
             />
           )}
         </div>
         <div class="form-group no-margin">
-          <label for="modeWhite">White Mode</label>
+          <label for="modeWhite">White Test Mode</label>
           <ToggleSwitch
             on={props.controlMode === ControlMode.WHITE}
             onClick={() => {
@@ -195,7 +195,7 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
           {props.controlMode === ControlMode.WHITE && (
             <AlertWarning
               icon={AlertWarningIcon.INFO}
-              text="While manual white mode is enabled, Lumenator will not respond to external control commands."
+              text="While white test mode is enabled, Lumenator will test your selection.  If Lumenator receives commands from other sources such as MQTT, the test will be overidden."
             />
           )}
         </div>

@@ -1,5 +1,3 @@
-import { IConfigIP } from "../interfaces/IConfigJson";
-
 export function strValToNumber(str: string): number | undefined {
   if (str === "0") {
     return 0;
@@ -33,7 +31,9 @@ export function isIPAddress(str: string): boolean {
   return str.search(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g) > -1;
 }
 
-export function getIPConfigObject(str: string): IConfigIP | null {
+export function getIPConfigObject(
+  str: string
+): { a: number; b: number; c: number; d: number } | null {
   if (!str || !isIPAddress(str)) {
     return null;
   }
@@ -46,11 +46,19 @@ export function getIPConfigObject(str: string): IConfigIP | null {
   };
 }
 
-export function getIPStringFromConfig(
-  config?: IConfigIP | null
+export function getIPStringFromValues(
+  ip1?: number,
+  ip2?: number,
+  ip3?: number,
+  ip4?: number
 ): string | null {
-  if (config) {
-    return `${config.a}.${config.b}.${config.c}.${config.d}`;
+  if (
+    ip1 !== undefined &&
+    ip2 !== undefined &&
+    ip3 !== undefined &&
+    ip4 !== undefined
+  ) {
+    return `${ip1}.${ip2}.${ip3}.${ip4}`;
   }
   return null;
 }
