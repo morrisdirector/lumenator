@@ -52,6 +52,11 @@ export enum Conf {
   E131_ENABLED,
   E131_UNIVERSE,
   E131_START_CHAN,
+  E131_MANUAL,
+  E131_G_CHAN,
+  E131_B_CHAN,
+  E131_W_CHAN,
+  E131_WW_CHAN,
 }
 export interface IConfigJson {
   // DEVICE:
@@ -103,4 +108,9 @@ export interface IConfigJson {
   [Conf.E131_ENABLED]?: boolean;
   [Conf.E131_UNIVERSE]?: number;
   [Conf.E131_START_CHAN]?: number;
+  [Conf.E131_MANUAL]?: boolean;
+  [Conf.E131_G_CHAN]?: number;
+  [Conf.E131_B_CHAN]?: number;
+  [Conf.E131_W_CHAN]?: number;
+  [Conf.E131_WW_CHAN]?: number;
 }

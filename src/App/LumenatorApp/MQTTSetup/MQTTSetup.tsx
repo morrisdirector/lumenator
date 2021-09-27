@@ -6,7 +6,6 @@ import {
   isIPAddress,
 } from "../../../lib/utils/utils";
 
-import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import Chip from "../../../lib/components/Chip/Chip";
 import { IMQTTSetupProps } from "./IMQTTSetupProps";
 import Input from "../../../lib/components/Input/Input";

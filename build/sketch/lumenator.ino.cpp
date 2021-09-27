@@ -39,37 +39,24 @@ WiFiClient espClient;
 
 #include "websockets.h"
 
-//  D1 Mini Pin Number Reference:
-//  D0  16
-//  D1  5
-//  D2  4
-//  D3  0
-//  D4  2  (also this is the built in LED)
-//  D5  14
-//  D6  12
-//  D7  13
-//  D8  15
-//  TX  1
-//  RX  3
-
 // To make Arduino IDE autodetect OTA device
 // WiFiServer TelnetServer(8266);
 
-#line 56 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 43 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void printWiFiStatus();
-#line 79 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 66 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void startAccessPoint();
-#line 103 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 90 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void startWiFi();
-#line 155 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 142 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void setupHardwareConfiguration();
-#line 220 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 207 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void readConfigJson(String configuration);
-#line 243 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 230 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void setup();
-#line 311 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 298 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void loop();
-#line 56 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 43 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void printWiFiStatus()
 {
 

@@ -1,13 +1,15 @@
-import * as iro from "@jaames/iro";
-
 import { FunctionalComponent, h } from "preact";
-import { useLayoutEffect, useState } from "preact/hooks";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
 import { AlertWarningIcon } from "../../../lib/components/AlertWarning/IAlertWarningProps";
 import { ControlMode } from "../../../lib/enums/ControlMode";
+import { HexColorPicker } from "react-colorful";
 import { IManualControlProps } from "./IManualControlProps";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
+// import * as iro from "@jaames/iro";
+import { useState } from "preact/hooks";
+
+//
 
 const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
   const kelvinMin = 4000;
@@ -16,97 +18,99 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
   const [kelvinValue, setKelvinValue] = useState<number | null>(null);
   const [whiteBrightness, setWhiteBrightness] = useState<number | null>(null);
 
-  useLayoutEffect(() => {
-    const rgbColorPicker = iro.default.ColorPicker("#rgb-color-picker", {
-      borderWidth: 2,
-      color: props.rgbColor || "#FFFFFF",
-      layout: [
-        {
-          component: iro.default.ui.Wheel,
-          options: {
-            borderColor: "#d1d1d1",
-          },
-        },
-        {
-          component: iro.default.ui.Slider,
-          options: {
-            borderColor: "#d1d1d1",
-            sliderType: "value",
-          },
-        },
-      ],
-    });
-    const whiteColorPicker = iro.default.ColorPicker("#white-color-picker", {
-      borderWidth: 2,
-      color: props.whiteColor || "#FFFFFF",
-      layout: [
-        {
-          component: iro.default.ui.Slider,
-          options: {
-            borderColor: "#d1d1d1",
-            minTemperature: kelvinMin,
-            maxTemperature: kelvinMax,
-            sliderType: "kelvin",
-            sliderShape: "circle",
-          },
-        },
-      ],
-    });
-    const whiteValuePicker = iro.default.ColorPicker("#white-value-picker", {
-      borderWidth: 2,
-      color: props.whiteValueColor || "#FFFFFF",
-      layout: [
-        {
-          component: iro.default.ui.Slider,
-          options: {
-            borderColor: "#d1d1d1",
-            sliderType: "value",
-          },
-        },
-      ],
-    });
+  const [color, setColor] = useState("#aabbcc");
 
-    setKelvinValue(whiteColorPicker.color.kelvin);
-    setWhiteBrightness(whiteColorPicker.color.value);
+  // useLayoutEffect(() => {
+  //   const rgbColorPicker = iro.default.ColorPicker("#rgb-color-picker", {
+  //     borderWidth: 2,
+  //     color: props.rgbColor || "#FFFFFF",
+  //     layout: [
+  //       {
+  //         component: iro.default.ui.Wheel,
+  //         options: {
+  //           borderColor: "#d1d1d1",
+  //         },
+  //       },
+  //       {
+  //         component: iro.default.ui.Slider,
+  //         options: {
+  //           borderColor: "#d1d1d1",
+  //           sliderType: "value",
+  //         },
+  //       },
+  //     ],
+  //   });
+  //   const whiteColorPicker = iro.default.ColorPicker("#white-color-picker", {
+  //     borderWidth: 2,
+  //     color: props.whiteColor || "#FFFFFF",
+  //     layout: [
+  //       {
+  //         component: iro.default.ui.Slider,
+  //         options: {
+  //           borderColor: "#d1d1d1",
+  //           minTemperature: kelvinMin,
+  //           maxTemperature: kelvinMax,
+  //           sliderType: "kelvin",
+  //           sliderShape: "circle",
+  //         },
+  //       },
+  //     ],
+  //   });
+  //   const whiteValuePicker = iro.default.ColorPicker("#white-value-picker", {
+  //     borderWidth: 2,
+  //     color: props.whiteValueColor || "#FFFFFF",
+  //     layout: [
+  //       {
+  //         component: iro.default.ui.Slider,
+  //         options: {
+  //           borderColor: "#d1d1d1",
+  //           sliderType: "value",
+  //         },
+  //       },
+  //     ],
+  //   });
 
-    rgbColorPicker.on("color:change", (color) => {
-      handleControlModeToggle(ControlMode.RGB);
-      sendRgbColors(color.rgb);
-    });
-    rgbColorPicker.on("input:end", (color) => {
-      if (typeof props.onColorSet === "function") {
-        props.onColorSet({ type: "rgb", color: color.rgb });
-      }
-    });
-    whiteColorPicker.on("color:change", (color) => {
-      handleControlModeToggle(ControlMode.WHITE);
-      sendWhiteLevels({
-        kelvin: color.kelvin,
-        value: whiteValuePicker.color.value,
-      });
-      setKelvinValue(color.kelvin);
-      setWhiteBrightness(color.value);
-    });
-    whiteColorPicker.on("input:end", (color) => {
-      if (typeof props.onColorSet === "function") {
-        props.onColorSet({ type: "white", color: color.rgb });
-      }
-    });
-    whiteValuePicker.on("color:change", (color) => {
-      handleControlModeToggle(ControlMode.WHITE);
-      sendWhiteLevels({
-        kelvin: whiteColorPicker.color.kelvin,
-        value: color.value,
-      });
-      setKelvinValue(color.kelvin);
-      setWhiteBrightness(color.value);
-    });
-    whiteValuePicker.on("input:end", (color) => {
-      if (typeof props.onColorSet === "function") {
-        props.onColorSet({ type: "whiteValue", color: color.rgb });
-      }
-    });
-  }, []);
+  //   setKelvinValue(whiteColorPicker.color.kelvin);
+  //   setWhiteBrightness(whiteColorPicker.color.value);
+
+  //   rgbColorPicker.on("color:change", (color) => {
+  //     handleControlModeToggle(ControlMode.RGB);
+  //     sendRgbColors(color.rgb);
+  //   });
+  //   rgbColorPicker.on("input:end", (color) => {
+  //     if (typeof props.onColorSet === "function") {
+  //       props.onColorSet({ type: "rgb", color: color.rgb });
+  //     }
+  //   });
+  //   whiteColorPicker.on("color:change", (color) => {
+  //     handleControlModeToggle(ControlMode.WHITE);
+  //     sendWhiteLevels({
+  //       kelvin: color.kelvin,
+  //       value: whiteValuePicker.color.value,
+  //     });
+  //     setKelvinValue(color.kelvin);
+  //     setWhiteBrightness(color.value);
+  //   });
+  //   whiteColorPicker.on("input:end", (color) => {
+  //     if (typeof props.onColorSet === "function") {
+  //       props.onColorSet({ type: "white", color: color.rgb });
+  //     }
+  //   });
+  //   whiteValuePicker.on("color:change", (color) => {
+  //     handleControlModeToggle(ControlMode.WHITE);
+  //     sendWhiteLevels({
+  //       kelvin: whiteColorPicker.color.kelvin,
+  //       value: color.value,
+  //     });
+  //     setKelvinValue(color.kelvin);
+  //     setWhiteBrightness(color.value);
+  //   });
+  //   whiteValuePicker.on("input:end", (color) => {
+  //     if (typeof props.onColorSet === "function") {
+  //       props.onColorSet({ type: "whiteValue", color: color.rgb });
+  //     }
+  //   });
+  // }, []);
 
   const withLeadingZeros = (value: string | number, zeros: number): string => {
     return `00${value}`.slice(`00${value}`.length - zeros);
@@ -161,6 +165,7 @@ const ManualControl: FunctionalComponent<IManualControlProps> = (props) => {
 
   return (
     <section>
+      <HexColorPicker color={color} onChange={setColor} />
       <div class="grid-large">
         <div class="form-group no-margin">
           <label for="modeRgb">RGB Test Mode</label>

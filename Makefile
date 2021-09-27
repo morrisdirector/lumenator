@@ -19,11 +19,13 @@ firm: compile upload monitor
 
 sketch: parcel compile upload
 
+compileall: parcel compile
+
 compile: display_config clean
 	arduino-cli compile --fqbn $(FQBN) -p $(PORT) --build-path $(BUILD_DIR)
 
 upload: display_config
-	arduino-cli upload -p $(PORT) -b $(BOARD)
+	arduino-cli upload --input-dir $(BUILD_DIR) -p $(PORT) -b $(BOARD)
 
 monitor:
 	screen -S lumenator_monitor $(PORT) $(MONITOR_SPEED)

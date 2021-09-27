@@ -7,7 +7,6 @@
 
 @import "./App/LumenatorApp/LumenatorApp.scss";
 @import "./App/LumenatorApp/ManualControl/ManualControl.scss";
-@import "./App/LumenatorApp/DeviceSetup/DeviceSetup.scss";
 
 body {
   margin: 0;
@@ -47,10 +46,6 @@ p {
   line-height: $textLineHeightNormal;
 }
 
-.text-medium {
-  font-size: $textSizeMedium !important;
-}
-
 main {
   margin: 120px 20px 20px;
 }
@@ -63,13 +58,6 @@ section {
   padding: $paddingLarge;
   border-radius: $borderRadius;
   background-color: $lightGrey;
-  .action-buttons {
-    margin: $margin 0 0 0;
-    padding: 0;
-    display: flex;
-    justify-content: flex-end;
-    gap: $marginSmall;
-  }
 }
 
 .section-action {
@@ -108,10 +96,6 @@ section {
   margin-bottom: $margin !important;
 }
 
-.mt-small {
-  margin-top: $marginSmall !important;
-}
-
 .mt-large {
   margin-top: $marginLarge !important;
 }
@@ -124,10 +108,6 @@ section {
   margin-bottom: $marginSmall !important;
 }
 
-.mb-large {
-  margin-bottom: $marginLarge !important;
-}
-
 .flex-stretch {
   display: flex !important;
   justify-content: flex-start !important;
@@ -137,41 +117,10 @@ section {
   flex-grow: 2 !important;
 }
 
-.grid-tiny {
-  display: grid;
-  grid-column-gap: $marginSmall;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-}
-
-.grid-small {
-  display: grid;
-  grid-column-gap: $marginSmall;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-}
-
-.grid-medium {
-  display: grid;
-  grid-column-gap: $marginSmall;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
-
 .grid-large {
   display: grid;
   grid-column-gap: $marginSmall;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-}
-
-.flex-row {
-  display: flex;
-  > * {
-    width: auto !important;
-    &:not(:first-child) {
-      margin-left: $marginSmall !important;
-    }
-  }
-  > .flex-grow-1 {
-    flex-grow: 1;
-  }
 }
 
 hr {
@@ -179,10 +128,6 @@ hr {
   border: 0;
   box-shadow: 0px 0.5px 0px 0.5px rgba(255, 255, 255, 0.8),
     0px -0.5px 0px 0.5px rgba(0, 0, 0, 0.15);
-}
-
-.bold {
-  font-weight: bold !important;
 }
 
 label {
@@ -240,16 +185,6 @@ label {
   color: darken($alert, 30%);
   font-size: 14px;
   margin: 10px 0 0 0;
-}
-
-.page-action-buttons {
-  position: relative;
-  max-width: $maxWidth;
-  margin: 0 auto $margin;
-  padding: 0;
-  display: flex;
-  justify-content: flex-end;
-  gap: $marginSmall;
 }
 
 .action-section {

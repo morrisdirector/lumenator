@@ -58,10 +58,15 @@ enum class Conf
   // E131
   E131_ENABLED,
   E131_UNIVERSE,
-  E131_START_CHAN
+  E131_START_CHAN,
+  E131_MANUAL,
+  E131_G_CHAN,
+  E131_B_CHAN,
+  E131_W_CHAN,
+  E131_WW_CHAN
 };
 
-#define NUM_CONF_ITEMS 51
+#define NUM_CONF_ITEMS 71
 #define MAX_DIGITS 3
 
 char confId[NUM_CONF_ITEMS][MAX_DIGITS] = {
@@ -115,7 +120,27 @@ char confId[NUM_CONF_ITEMS][MAX_DIGITS] = {
     "47",
     "48",
     "49",
-    "50"};
+    "50",
+    "51",
+    "52",
+    "53",
+    "54",
+    "55",
+    "56",
+    "57",
+    "58",
+    "59",
+    "60",
+    "61",
+    "62",
+    "63",
+    "64",
+    "65",
+    "66",
+    "67",
+    "68",
+    "69",
+    "70"};
 
 enum class DeviceType
 {
@@ -220,6 +245,11 @@ struct E131Config
   bool enabled = false;
   uint16_t universe = 1;
   uint16_t channel = 1;
+  bool manual = false;
+  uint16_t g = 2;
+  uint16_t b = 3;
+  uint16_t w = 4;
+  uint16_t ww = 5;
 };
 
 DeviceConfig deviceConfig;
@@ -284,6 +314,11 @@ void deserializeAll(DynamicJsonDocument json)
   e131Config.enabled = (bool)json[confId[(int)Conf::E131_ENABLED]];
   e131Config.universe = (uint8_t)json[confId[(int)Conf::E131_UNIVERSE]];
   e131Config.channel = (uint8_t)json[confId[(int)Conf::E131_START_CHAN]];
+  e131Config.manual = (bool)json[confId[(int)Conf::E131_MANUAL]];
+  e131Config.g = (uint8_t)json[confId[(int)Conf::E131_G_CHAN]];
+  e131Config.b = (uint8_t)json[confId[(int)Conf::E131_B_CHAN]];
+  e131Config.w = (uint8_t)json[confId[(int)Conf::E131_W_CHAN]];
+  e131Config.ww = (uint8_t)json[confId[(int)Conf::E131_WW_CHAN]];
 
   Serial.println();
   Serial.println("[DS]: * Loaded device configuration");

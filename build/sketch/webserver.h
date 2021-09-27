@@ -165,6 +165,11 @@ void initRoutes()
               doc[confId[(int)Conf::E131_ENABLED]] = e131Config.enabled;
               doc[confId[(int)Conf::E131_UNIVERSE]] = (uint8_t)e131Config.universe;
               doc[confId[(int)Conf::E131_START_CHAN]] = (uint8_t)e131Config.channel;
+              doc[confId[(int)Conf::E131_MANUAL]] = e131Config.manual;
+              doc[confId[(int)Conf::E131_G_CHAN]] = (uint8_t)e131Config.g;
+              doc[confId[(int)Conf::E131_B_CHAN]] = (uint8_t)e131Config.b;
+              doc[confId[(int)Conf::E131_W_CHAN]] = (uint8_t)e131Config.w;
+              doc[confId[(int)Conf::E131_WW_CHAN]] = (uint8_t)e131Config.ww;
 
               serializeJson(doc, response);
               request->send(200, "application/json", response);

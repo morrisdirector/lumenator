@@ -37,19 +37,6 @@ WiFiClient espClient;
 
 #include "websockets.h"
 
-//  D1 Mini Pin Number Reference:
-//  D0  16
-//  D1  5
-//  D2  4
-//  D3  0
-//  D4  2  (also this is the built in LED)
-//  D5  14
-//  D6  12
-//  D7  13
-//  D8  15
-//  TX  1
-//  RX  3
-
 // To make Arduino IDE autodetect OTA device
 // WiFiServer TelnetServer(8266);
 

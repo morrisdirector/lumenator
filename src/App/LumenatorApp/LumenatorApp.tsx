@@ -210,7 +210,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               onControlModeToggle={this.handleControlModeToggle}
             ></DeviceSetup>
           </NavMenuTab>
-          <NavMenuTab id={2} title="Network">
+          {/* <NavMenuTab id={2} title="Network">
             <NetworkSetup
               config={this.state.config}
               onConfigUpdate={(config) => {
@@ -245,8 +245,9 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
                 });
               }}
             ></E131Setup>
-          </NavMenuTab>
-          <NavMenuTab id={5} title="Test">
+          </NavMenuTab> */}
+          {/* TODO Bring this back when a lighter weight color picker is selected */}
+          {/* <NavMenuTab id={5} title="Test">
             <ManualControl
               webSocketService={this.websocketService}
               controlMode={this.state.controlMode}
@@ -256,7 +257,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
               whiteColor={this.state.whiteColor}
               whiteValueColor={this.state.whiteValueColor}
             ></ManualControl>
-          </NavMenuTab>
+          </NavMenuTab> */}
         </NavMenu>
       </div>
     );

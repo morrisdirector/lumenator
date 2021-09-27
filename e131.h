@@ -30,6 +30,11 @@ void e131Loop()
         if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW ||
             deviceConfig.type == DeviceType::RGB)
         {
+            if (e131Config.manual == true)
+            {
+                channel_2 = e131Config.g;
+                channel_3 = e131Config.b;
+            }
             analogWrite(gpioConfig.r, packet.property_values[channel_1]);
             analogWrite(gpioConfig.g, packet.property_values[channel_2]);
             analogWrite(gpioConfig.b, packet.property_values[channel_3]);
@@ -38,6 +43,10 @@ void e131Loop()
         // Cool White
         if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::RGBW)
         {
+            if (e131Config.manual == true)
+            {
+                channel_4 = e131Config.w;
+            }
             analogWrite(gpioConfig.w, packet.property_values[channel_4]);
         }
         else if (deviceConfig.type == DeviceType::W || deviceConfig.type == DeviceType::WW)
@@ -48,10 +57,18 @@ void e131Loop()
         // Warm White
         if (deviceConfig.type == DeviceType::RGBWW)
         {
+            if (e131Config.manual == true)
+            {
+                channel_5 = e131Config.ww;
+            }
             analogWrite(gpioConfig.ww, packet.property_values[channel_5]);
         }
         else if (deviceConfig.type == DeviceType::WW)
         {
+            if (e131Config.manual == true)
+            {
+                channel_2 = e131Config.ww;
+            }
             analogWrite(gpioConfig.ww, packet.property_values[channel_2]);
         }
     }

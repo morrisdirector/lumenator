@@ -38,19 +38,6 @@ WiFiClient espClient;
 
 # 39 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-//  D1 Mini Pin Number Reference:
-//  D0  16
-//  D1  5
-//  D2  4
-//  D3  0
-//  D4  2  (also this is the built in LED)
-//  D5  14
-//  D6  12
-//  D7  13
-//  D8  15
-//  TX  1
-//  RX  3
-
 // To make Arduino IDE autodetect OTA device
 // WiFiServer TelnetServer(8266);
 
@@ -289,9 +276,9 @@ void setup()
   }
 
   if (e131.begin(E131_UNICAST)) // Listen via Unicast
-    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "291" "." "14" "\", \"aSM\", @progbits, 1 #"))) = ("Listening for e131 data..."); &__c[0];}))))));
+    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "278" "." "14" "\", \"aSM\", @progbits, 1 #"))) = ("Listening for e131 data..."); &__c[0];}))))));
   else
-    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "293" "." "15" "\", \"aSM\", @progbits, 1 #"))) = ("*** e131.begin failed ***"); &__c[0];}))))));
+    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "280" "." "15" "\", \"aSM\", @progbits, 1 #"))) = ("*** e131.begin failed ***"); &__c[0];}))))));
 
   // startOTAServer();
 

@@ -1,2 +1,0 @@
-#line 1 "/Users/patrickmorris/git/lumenator/src-old/other.json"
-{"device":{"name":"My Device","map_preset":null,"device_type":null,"gpio_w":null,"gpio_ww":null,"gpio_r":null,"gpio_g":null,"gpio_b":null},"mqtt":{"mqtt_enabled":false,"mqtt_client_name":null,"mqtt_user":null,"mqtt_password":null,"mqtt_ip":[null,null,null,null],"mqtt_port":1883},"network":{"ssid":null,"password":null}}
