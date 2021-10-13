@@ -67,8 +67,8 @@
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/Stream.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/md5.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/debug.h \
- /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1/pins_arduino.h \
- /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1/../generic/common.h \
+ /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic/pins_arduino.h \
+ /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic/common.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/IPAddress.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/Printable.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/lwip2/include/lwip/init.h \

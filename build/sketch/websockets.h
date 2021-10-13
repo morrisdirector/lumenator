@@ -4,40 +4,40 @@
 WebSocketsServer webSocket = WebSocketsServer(1337);
 char msg_buf[10];
 
-void whiteManualCommand(char *command)
-{
-  resetGpios();
+// void whiteManualCommand(char *command)
+// {
+//   resetGpios();
 
-  String white;
-  white = command;
-  String w = white.substring(12, 15);
-  String ww = white.substring(19, 22);
+//   String white;
+//   white = command;
+//   String w = white.substring(12, 15);
+//   String ww = white.substring(19, 22);
 
-  int wVal = w.toInt();
-  int wwVal = ww.toInt();
+//   int wVal = w.toInt();
+//   int wwVal = ww.toInt();
 
-  analogWrite(gpioConfig.w, wVal);
-  analogWrite(gpioConfig.ww, wwVal);
-}
+//   analogWrite(gpioConfig.w, wVal);
+//   analogWrite(gpioConfig.ww, wwVal);
+// }
 
-void rgbManualCommand(char *command)
-{
-  resetGpios();
+// void rgbManualCommand(char *command)
+// {
+//   resetGpios();
 
-  String rgb;
-  rgb = command;
-  String r = rgb.substring(10, 13);
-  String g = rgb.substring(16, 19);
-  String b = rgb.substring(22);
+//   String rgb;
+//   rgb = command;
+//   String r = rgb.substring(10, 13);
+//   String g = rgb.substring(16, 19);
+//   String b = rgb.substring(22);
 
-  int rVal = r.toInt();
-  int gVal = g.toInt();
-  int bVal = b.toInt();
+//   int rVal = r.toInt();
+//   int gVal = g.toInt();
+//   int bVal = b.toInt();
 
-  analogWrite(gpioConfig.r, rVal);
-  analogWrite(gpioConfig.g, gVal);
-  analogWrite(gpioConfig.b, bVal);
-}
+//   analogWrite(gpioConfig.r, rVal);
+//   analogWrite(gpioConfig.g, gVal);
+//   analogWrite(gpioConfig.b, bVal);
+// }
 
 uint8_t getGPIOAddress(CtrlMode ctrMd)
 {
@@ -118,15 +118,15 @@ void onWebSocketEvent(uint8_t client_num, WStype_t type, uint8_t *payload, size_
     {
       GPIOTestCommand(text);
     }
-    else if (strncmp(text, "rgbctrl", 7) == 0)
-    {
-      rgbManualCommand(text);
-    }
-    else if (strncmp(text, "whitectrl", 9) == 0)
-    {
-      // white command:
-      whiteManualCommand(text);
-    }
+    // else if (strncmp(text, "rgbctrl", 7) == 0)
+    // {
+    //   rgbManualCommand(text);
+    // }
+    // else if (strncmp(text, "whitectrl", 9) == 0)
+    // {
+    //   // white command:
+    //   whiteManualCommand(text);
+    // }
     else if (strncmp(text, "standby", 7) == 0)
     {
       updateLumenatorLevels(); // Go back to stored state... whatever that was

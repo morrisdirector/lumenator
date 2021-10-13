@@ -16,7 +16,7 @@ enum class CtrlMode
 
 struct LumState
 {
-  CtrlMode ctrlMode = CtrlMode::WHITE;
+  CtrlMode ctrlMode = CtrlMode::WARM_WHITE;
   bool on = true;
   uint16_t brightness = 255;
   float brightnessMultiplier = 1;

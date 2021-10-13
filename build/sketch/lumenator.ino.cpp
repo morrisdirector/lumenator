@@ -5,6 +5,7 @@
   by Patrick Morris
 */
 #include <ArduinoJson.h>
+
 #include <DNSServer.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
@@ -39,24 +40,21 @@ WiFiClient espClient;
 
 #include "websockets.h"
 
-// To make Arduino IDE autodetect OTA device
-// WiFiServer TelnetServer(8266);
-
-#line 43 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 41 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void printWiFiStatus();
-#line 66 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 64 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void startAccessPoint();
-#line 90 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 88 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void startWiFi();
-#line 142 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 140 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void setupHardwareConfiguration();
-#line 207 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 179 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void readConfigJson(String configuration);
-#line 230 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 202 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void setup();
-#line 298 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 255 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void loop();
-#line 43 "/Users/patrickmorris/git/lumenator/lumenator.ino"
+#line 41 "/Users/patrickmorris/git/lumenator/lumenator.ino"
 void printWiFiStatus()
 {
 
@@ -195,32 +193,6 @@ void setupHardwareConfiguration()
   }
 }
 
-// void startOTAServer() {
-//   TelnetServer.begin();
-//   ArduinoOTA.onStart([]() { Serial.println("OTA Start"); });
-//   ArduinoOTA.onEnd([]() {
-//     Serial.println("OTA End");
-//     Serial.println("Rebooting...");
-//   });
-//   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-//     Serial.printf("Progress: %u%%\r\n", (progress / (total / 100)));
-//   });
-//   ArduinoOTA.onError([](ota_error_t error) {
-//     Serial.printf("Error[%u]: ", error);
-//     if (error == OTA_AUTH_ERROR)
-//       Serial.println("Auth Failed");
-//     else if (error == OTA_BEGIN_ERROR)
-//       Serial.println("Begin Failed");
-//     else if (error == OTA_CONNECT_ERROR)
-//       Serial.println("Connect Failed");
-//     else if (error == OTA_RECEIVE_ERROR)
-//       Serial.println("Receive Failed");
-//     else if (error == OTA_END_ERROR)
-//       Serial.println("End Failed");
-//   });
-//   ArduinoOTA.begin();
-// }
-
 void readConfigJson(String configuration)
 {
   if (configuration.length())
@@ -295,21 +267,6 @@ void setup()
     Serial.println(F("Listening for e131 data..."));
   else
     Serial.println(F("*** e131.begin failed ***"));
-
-  // startOTAServer();
-
-  // char data[4096]; // Max 100 Bytes
-  // int len = 0;
-  // unsigned char k;
-  // k = EEPROM.read(len);
-  // while (k != '\0' && len < 4096) // Read until null character
-  // {
-  //   k = EEPROM.read(len);
-  //   data[len] = k;
-  //   len++;
-  // }
-  // data[len] = '\0';
-  // Serial.println(String(data));
 }
 
 void loop()
@@ -330,8 +287,6 @@ void loop()
     }
     mqttClient.loop();
   }
-
-  // ArduinoOTA.handle();
 
   // DNS
   dnsServer.processNextRequest();

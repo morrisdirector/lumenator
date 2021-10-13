@@ -4,10 +4,11 @@
   by Patrick Morris
 */
 # 6 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
-# 7 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+
 # 8 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 # 9 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 # 10 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 11 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
 
 
@@ -24,22 +25,19 @@ DNSServer dnsServer;
 
 WiFiClient espClient;
 
-# 27 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 28 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-# 29 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 30 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-# 31 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 32 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-# 33 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 34 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-# 35 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 36 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-# 37 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
+# 38 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
-# 39 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
-
-// To make Arduino IDE autodetect OTA device
-// WiFiServer TelnetServer(8266);
+# 40 "/Users/patrickmorris/git/lumenator/lumenator.ino" 2
 
 void printWiFiStatus()
 {
@@ -179,32 +177,6 @@ void setupHardwareConfiguration()
   }
 }
 
-// void startOTAServer() {
-//   TelnetServer.begin();
-//   ArduinoOTA.onStart([]() { Serial.println("OTA Start"); });
-//   ArduinoOTA.onEnd([]() {
-//     Serial.println("OTA End");
-//     Serial.println("Rebooting...");
-//   });
-//   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-//     Serial.printf("Progress: %u%%\r\n", (progress / (total / 100)));
-//   });
-//   ArduinoOTA.onError([](ota_error_t error) {
-//     Serial.printf("Error[%u]: ", error);
-//     if (error == OTA_AUTH_ERROR)
-//       Serial.println("Auth Failed");
-//     else if (error == OTA_BEGIN_ERROR)
-//       Serial.println("Begin Failed");
-//     else if (error == OTA_CONNECT_ERROR)
-//       Serial.println("Connect Failed");
-//     else if (error == OTA_RECEIVE_ERROR)
-//       Serial.println("Receive Failed");
-//     else if (error == OTA_END_ERROR)
-//       Serial.println("End Failed");
-//   });
-//   ArduinoOTA.begin();
-// }
-
 void readConfigJson(String configuration)
 {
   if (configuration.length())
@@ -276,24 +248,9 @@ void setup()
   }
 
   if (e131.begin(E131_UNICAST)) // Listen via Unicast
-    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "278" "." "14" "\", \"aSM\", @progbits, 1 #"))) = ("Listening for e131 data..."); &__c[0];}))))));
+    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "250" "." "14" "\", \"aSM\", @progbits, 1 #"))) = ("Listening for e131 data..."); &__c[0];}))))));
   else
-    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "280" "." "15" "\", \"aSM\", @progbits, 1 #"))) = ("*** e131.begin failed ***"); &__c[0];}))))));
-
-  // startOTAServer();
-
-  // char data[4096]; // Max 100 Bytes
-  // int len = 0;
-  // unsigned char k;
-  // k = EEPROM.read(len);
-  // while (k != '\0' && len < 4096) // Read until null character
-  // {
-  //   k = EEPROM.read(len);
-  //   data[len] = k;
-  //   len++;
-  // }
-  // data[len] = '\0';
-  // Serial.println(String(data));
+    Serial.println(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom0.pstr." "lumenator.ino" "." "252" "." "15" "\", \"aSM\", @progbits, 1 #"))) = ("*** e131.begin failed ***"); &__c[0];}))))));
 }
 
 void loop()
@@ -314,8 +271,6 @@ void loop()
     }
     mqttClient.loop();
   }
-
-  // ArduinoOTA.handle();
 
   // DNS
   dnsServer.processNextRequest();

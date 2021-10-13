@@ -254,6 +254,8 @@ void initRoutes()
           int cmd = U_FLASH;
           Update.runAsync(true);
           uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+          Serial.print("maxSketchSpace = ");
+          Serial.println(maxSketchSpace);
           if (!Update.begin(maxSketchSpace, cmd))
           { // Start with max available size
             Update.printError(Serial);
@@ -272,9 +274,11 @@ void initRoutes()
 
         if (final)
         { // if the final flag is set then this is the last frame of data
+          Serial.println("made it to the end");
           if (!Update.end(true))
           { //true to set the size to the current progress
             Update.printError(Serial);
+            Serial.println("But the end didn't work");
             return request->send(400, "text/plain", "Could not end OTA");
           }
         }

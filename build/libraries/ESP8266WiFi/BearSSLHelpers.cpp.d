@@ -75,8 +75,8 @@
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/../../bootloaders/eboot/spi_vendors.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/Updater.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/debug.h \
- /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1/pins_arduino.h \
- /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1/../generic/common.h \
+ /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic/pins_arduino.h \
+ /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic/common.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/flash_utils.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/../../bootloaders/eboot/flash.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/tools/sdk/include/spi_flash_geometry.h \

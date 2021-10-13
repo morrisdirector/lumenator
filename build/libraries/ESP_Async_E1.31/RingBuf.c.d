@@ -38,5 +38,5 @@
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/core_esp8266_features.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/core_esp8266_version.h \
  /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/cores/esp8266/core_version.h \
- /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1/pins_arduino.h \
- /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1/../generic/common.h
+ /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic/pins_arduino.h \
+ /Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic/common.h

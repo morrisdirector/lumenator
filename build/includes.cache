@@ -7,7 +7,7 @@
   {
     "Sourcefile": null,
     "Include": "",
-    "Includepath": "/Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/d1"
+    "Includepath": "/Users/patrickmorris/Library/Arduino15/packages/esp8266/hardware/esp8266/2.7.4/variants/generic"
   },
   {
     "Sourcefile": "/Users/patrickmorris/git/lumenator/build/sketch/lumenator.ino.cpp",
