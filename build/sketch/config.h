@@ -27,8 +27,6 @@ enum class Conf
   NETWORK_SSID,
   NETWORK_PASS,
   NETWORK_DHCP,
-  NETWORK_GATEWAY,
-  NETWORK_SUBNET,
   // Access Point
   ACCESS_POINT_PASS,
   // GPIO
@@ -49,12 +47,6 @@ enum class Conf
   MQTT_PORT,
   MQTT_DEVICE_TOPIC,
   MQTT_AUTO_DISCOVERY,
-  // INITIAL STATE
-  INITIAL_W,
-  INITIAL_WW,
-  INITIAL_R,
-  INITIAL_G,
-  INITIAL_B,
   // E131
   E131_ENABLED,
   E131_UNIVERSE,
@@ -63,84 +55,14 @@ enum class Conf
   E131_G_CHAN,
   E131_B_CHAN,
   E131_W_CHAN,
-  E131_WW_CHAN
+  E131_WW_CHAN,
+  // INITIAL STATE
+  INITIAL_W,
+  INITIAL_WW,
+  INITIAL_R,
+  INITIAL_G,
+  INITIAL_B
 };
-
-#define NUM_CONF_ITEMS 71
-#define MAX_DIGITS 3
-
-char confId[NUM_CONF_ITEMS][MAX_DIGITS] = {
-    "0\0",
-    "1\0",
-    "2\0",
-    "3\0",
-    "4\0",
-    "5\0",
-    "6\0",
-    "7\0",
-    "8\0",
-    "9\0",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-    "30",
-    "31",
-    "32",
-    "33",
-    "34",
-    "35",
-    "36",
-    "37",
-    "38",
-    "39",
-    "40",
-    "41",
-    "42",
-    "43",
-    "44",
-    "45",
-    "46",
-    "47",
-    "48",
-    "49",
-    "50",
-    "51",
-    "52",
-    "53",
-    "54",
-    "55",
-    "56",
-    "57",
-    "58",
-    "59",
-    "60",
-    "61",
-    "62",
-    "63",
-    "64",
-    "65",
-    "66",
-    "67",
-    "68",
-    "69",
-    "70"};
 
 enum class DeviceType
 {
@@ -264,61 +186,63 @@ const int configJsonTotalCapacity = EEPROM_SIZE;
 
 void deserializeAll(DynamicJsonDocument json)
 {
-  strcpy(deviceConfig.name, json[confId[(int)Conf::DEVICE_NAME]]);
-  deviceConfig.type = (DeviceType)(uint8_t)json[confId[(int)Conf::DEVICE_TYPE]];
 
-  gpioConfig.r = (uint8_t)json[confId[(int)Conf::GPIO_R]];
-  gpioConfig.g = (uint8_t)json[confId[(int)Conf::GPIO_G]];
-  gpioConfig.b = (uint8_t)json[confId[(int)Conf::GPIO_B]];
-  gpioConfig.w = (uint8_t)json[confId[(int)Conf::GPIO_W]];
-  gpioConfig.ww = (uint8_t)json[confId[(int)Conf::GPIO_WW]];
+  JsonArray arr = json.as<JsonArray>();
+  strlcpy(deviceConfig.name, arr[(int)Conf::DEVICE_NAME] | deviceConfig.name, STRING_SIZE);
+  deviceConfig.type = (DeviceType)(uint8_t)arr[(int)Conf::DEVICE_TYPE];
 
-  strcpy(networkConfig.ssid, json[confId[(int)Conf::NETWORK_SSID]]);
-  strcpy(networkConfig.pass, json[confId[(int)Conf::NETWORK_PASS]]);
-  networkConfig.dhcp = (bool)json[confId[(int)Conf::NETWORK_DHCP]];
+  // gpioConfig.r = (uint8_t)json[confId[(int)Conf::GPIO_R]];
+  // gpioConfig.g = (uint8_t)json[confId[(int)Conf::GPIO_G]];
+  // gpioConfig.b = (uint8_t)json[confId[(int)Conf::GPIO_B]];
+  // gpioConfig.w = (uint8_t)json[confId[(int)Conf::GPIO_W]];
+  // gpioConfig.ww = (uint8_t)json[confId[(int)Conf::GPIO_WW]];
 
-  networkConfig.ip.a = (uint8_t)json[confId[(int)Conf::NETWORK_IP1]];
-  networkConfig.ip.b = (uint8_t)json[confId[(int)Conf::NETWORK_IP2]];
-  networkConfig.ip.c = (uint8_t)json[confId[(int)Conf::NETWORK_IP3]];
-  networkConfig.ip.d = (uint8_t)json[confId[(int)Conf::NETWORK_IP4]];
+  // strcpy(networkConfig.ssid, json[confId[(int)Conf::NETWORK_SSID]]);
+  // strcpy(networkConfig.pass, json[confId[(int)Conf::NETWORK_PASS]]);
+  // networkConfig.dhcp = (bool)json[confId[(int)Conf::NETWORK_DHCP]];
 
-  networkConfig.gateway.a = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY1]];
-  networkConfig.gateway.b = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY2]];
-  networkConfig.gateway.c = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY3]];
-  networkConfig.gateway.d = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY4]];
+  // networkConfig.ip.a = (uint8_t)json[confId[(int)Conf::NETWORK_IP1]];
+  // networkConfig.ip.b = (uint8_t)json[confId[(int)Conf::NETWORK_IP2]];
+  // networkConfig.ip.c = (uint8_t)json[confId[(int)Conf::NETWORK_IP3]];
+  // networkConfig.ip.d = (uint8_t)json[confId[(int)Conf::NETWORK_IP4]];
 
-  networkConfig.subnet.a = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET1]];
-  networkConfig.subnet.b = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET2]];
-  networkConfig.subnet.c = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET3]];
-  networkConfig.subnet.d = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET4]];
+  // networkConfig.gateway.a = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY1]];
+  // networkConfig.gateway.b = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY2]];
+  // networkConfig.gateway.c = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY3]];
+  // networkConfig.gateway.d = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY4]];
 
-  strcpy(accessPointConfig.pass, json[confId[(int)Conf::ACCESS_POINT_PASS]]);
+  // networkConfig.subnet.a = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET1]];
+  // networkConfig.subnet.b = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET2]];
+  // networkConfig.subnet.c = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET3]];
+  // networkConfig.subnet.d = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET4]];
 
-  mqttConfig.enabled = (bool)json[confId[(int)Conf::MQTT_ENABLED]];
-  strcpy(mqttConfig.clientId, json[confId[(int)Conf::MQTT_CLIENT_ID]]);
+  // strcpy(accessPointConfig.pass, json[confId[(int)Conf::ACCESS_POINT_PASS]]);
 
-  mqttConfig.autoDiscovery = (bool)json[confId[(int)Conf::MQTT_AUTO_DISCOVERY]];
+  // mqttConfig.enabled = (bool)json[confId[(int)Conf::MQTT_ENABLED]];
+  // strcpy(mqttConfig.clientId, json[confId[(int)Conf::MQTT_CLIENT_ID]]);
 
-  strcpy(mqttConfig.user, json[confId[(int)Conf::MQTT_USER]]);
-  strcpy(mqttConfig.pass, json[confId[(int)Conf::MQTT_PASSWORD]]);
+  // mqttConfig.autoDiscovery = (bool)json[confId[(int)Conf::MQTT_AUTO_DISCOVERY]];
 
-  mqttConfig.ip.a = (uint8_t)json[confId[(int)Conf::MQTT_IP1]];
-  mqttConfig.ip.b = (uint8_t)json[confId[(int)Conf::MQTT_IP2]];
-  mqttConfig.ip.c = (uint8_t)json[confId[(int)Conf::MQTT_IP3]];
-  mqttConfig.ip.d = (uint8_t)json[confId[(int)Conf::MQTT_IP4]];
+  // strcpy(mqttConfig.user, json[confId[(int)Conf::MQTT_USER]]);
+  // strcpy(mqttConfig.pass, json[confId[(int)Conf::MQTT_PASSWORD]]);
 
-  mqttConfig.port = (uint16_t)json[confId[(int)Conf::MQTT_PORT]];
+  // mqttConfig.ip.a = (uint8_t)json[confId[(int)Conf::MQTT_IP1]];
+  // mqttConfig.ip.b = (uint8_t)json[confId[(int)Conf::MQTT_IP2]];
+  // mqttConfig.ip.c = (uint8_t)json[confId[(int)Conf::MQTT_IP3]];
+  // mqttConfig.ip.d = (uint8_t)json[confId[(int)Conf::MQTT_IP4]];
 
-  strcpy(mqttConfig.topic, json[confId[(int)Conf::MQTT_DEVICE_TOPIC]]);
+  // mqttConfig.port = (uint16_t)json[confId[(int)Conf::MQTT_PORT]];
 
-  e131Config.enabled = (bool)json[confId[(int)Conf::E131_ENABLED]];
-  e131Config.universe = (uint8_t)json[confId[(int)Conf::E131_UNIVERSE]];
-  e131Config.channel = (uint8_t)json[confId[(int)Conf::E131_START_CHAN]];
-  e131Config.manual = (bool)json[confId[(int)Conf::E131_MANUAL]];
-  e131Config.g = (uint8_t)json[confId[(int)Conf::E131_G_CHAN]];
-  e131Config.b = (uint8_t)json[confId[(int)Conf::E131_B_CHAN]];
-  e131Config.w = (uint8_t)json[confId[(int)Conf::E131_W_CHAN]];
-  e131Config.ww = (uint8_t)json[confId[(int)Conf::E131_WW_CHAN]];
+  // strcpy(mqttConfig.topic, json[confId[(int)Conf::MQTT_DEVICE_TOPIC]]);
+
+  // e131Config.enabled = (bool)json[confId[(int)Conf::E131_ENABLED]];
+  // e131Config.universe = (uint8_t)json[confId[(int)Conf::E131_UNIVERSE]];
+  // e131Config.channel = (uint8_t)json[confId[(int)Conf::E131_START_CHAN]];
+  // e131Config.manual = (bool)json[confId[(int)Conf::E131_MANUAL]];
+  // e131Config.g = (uint8_t)json[confId[(int)Conf::E131_G_CHAN]];
+  // e131Config.b = (uint8_t)json[confId[(int)Conf::E131_B_CHAN]];
+  // e131Config.w = (uint8_t)json[confId[(int)Conf::E131_W_CHAN]];
+  // e131Config.ww = (uint8_t)json[confId[(int)Conf::E131_WW_CHAN]];
 
   Serial.println();
   Serial.println("[DS]: * Loaded device configuration");
@@ -338,6 +262,8 @@ bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
     Serial.println("------- Save Configuration Parse Error -------");
     return false;
   }
+
+  return false;
 
   deserializeAll(json);
 

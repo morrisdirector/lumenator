@@ -13,6 +13,11 @@ AsyncWebServer server(80);
 
 char dtoBuffer[CONFIG_DTO_SIZE];
 
+bool hasCharValue(char *val)
+{
+  return strlen(val) && strncmp(val, "null", 4) != 0;
+}
+
 void onRequest(AsyncWebServerRequest *request)
 {
   if (!!WiFi.softAPIP())
@@ -101,76 +106,64 @@ void initRoutes()
             {
               String response;
               DynamicJsonDocument doc(2048);
+              JsonArray arr = doc.to<JsonArray>();
 
-              if (deviceConfig.name != "null")
-                doc[confId[(int)Conf::DEVICE_NAME]] = deviceConfig.name;
+              arr.add(nullptr); // First item is null to align enums with indexes
 
-              doc[confId[(int)Conf::DEVICE_TYPE]] = (uint8_t)deviceConfig.type;
+              arr.add(hasCharValue(deviceConfig.name) ? deviceConfig.name : nullptr);
+              arr.add((uint8_t)deviceConfig.type);
 
-              doc[confId[(int)Conf::GPIO_R]] = (uint8_t)gpioConfig.r;
-              doc[confId[(int)Conf::GPIO_G]] = (uint8_t)gpioConfig.g;
-              doc[confId[(int)Conf::GPIO_B]] = (uint8_t)gpioConfig.b;
-              doc[confId[(int)Conf::GPIO_W]] = (uint8_t)gpioConfig.w;
-              doc[confId[(int)Conf::GPIO_WW]] = (uint8_t)gpioConfig.ww;
+              arr.add((uint8_t)networkConfig.ip.a);
+              arr.add((uint8_t)networkConfig.ip.b);
+              arr.add((uint8_t)networkConfig.ip.c);
+              arr.add((uint8_t)networkConfig.ip.d);
 
-              if (networkConfig.ssid != "null")
-                doc[confId[(int)Conf::NETWORK_SSID]] = networkConfig.ssid;
+              arr.add((uint8_t)networkConfig.gateway.a);
+              arr.add((uint8_t)networkConfig.gateway.b);
+              arr.add((uint8_t)networkConfig.gateway.c);
+              arr.add((uint8_t)networkConfig.gateway.d);
 
-              if (networkConfig.pass != "null")
-                doc[confId[(int)Conf::NETWORK_PASS]] = networkConfig.pass;
+              arr.add((uint8_t)networkConfig.subnet.a);
+              arr.add((uint8_t)networkConfig.subnet.b);
+              arr.add((uint8_t)networkConfig.subnet.c);
+              arr.add((uint8_t)networkConfig.subnet.d);
 
-              doc[confId[(int)Conf::NETWORK_DHCP]] = (bool)networkConfig.dhcp;
+              arr.add(hasCharValue(networkConfig.ssid) ? networkConfig.ssid : nullptr);
+              arr.add(hasCharValue(networkConfig.pass) ? networkConfig.pass : nullptr);
+              arr.add((bool)networkConfig.dhcp);
 
-              doc[confId[(int)Conf::NETWORK_IP1]] = (uint8_t)networkConfig.ip.a;
-              doc[confId[(int)Conf::NETWORK_IP2]] = (uint8_t)networkConfig.ip.b;
-              doc[confId[(int)Conf::NETWORK_IP3]] = (uint8_t)networkConfig.ip.c;
-              doc[confId[(int)Conf::NETWORK_IP4]] = (uint8_t)networkConfig.ip.d;
+              arr.add(hasCharValue(accessPointConfig.pass) ? accessPointConfig.pass : nullptr);
 
-              doc[confId[(int)Conf::NETWORK_GATEWAY1]] = (uint8_t)networkConfig.gateway.a;
-              doc[confId[(int)Conf::NETWORK_GATEWAY2]] = (uint8_t)networkConfig.gateway.b;
-              doc[confId[(int)Conf::NETWORK_GATEWAY3]] = (uint8_t)networkConfig.gateway.c;
-              doc[confId[(int)Conf::NETWORK_GATEWAY4]] = (uint8_t)networkConfig.gateway.d;
+              arr.add((uint8_t)gpioConfig.w);
+              arr.add((uint8_t)gpioConfig.ww);
+              arr.add((uint8_t)gpioConfig.r);
+              arr.add((uint8_t)gpioConfig.g);
+              arr.add((uint8_t)gpioConfig.b);
 
-              doc[confId[(int)Conf::NETWORK_SUBNET1]] = (uint8_t)networkConfig.subnet.a;
-              doc[confId[(int)Conf::NETWORK_SUBNET2]] = (uint8_t)networkConfig.subnet.b;
-              doc[confId[(int)Conf::NETWORK_SUBNET3]] = (uint8_t)networkConfig.subnet.c;
-              doc[confId[(int)Conf::NETWORK_SUBNET4]] = (uint8_t)networkConfig.subnet.d;
+              arr.add((bool)mqttConfig.enabled);
+              arr.add(hasCharValue(mqttConfig.clientId) ? mqttConfig.clientId : nullptr);
+              arr.add(hasCharValue(mqttConfig.user) ? mqttConfig.user : nullptr);
+              arr.add(hasCharValue(mqttConfig.pass) ? mqttConfig.pass : nullptr);
 
-              if (accessPointConfig.pass != "null")
-                doc[confId[(int)Conf::ACCESS_POINT_PASS]] = accessPointConfig.pass;
+              arr.add((uint8_t)mqttConfig.ip.a);
+              arr.add((uint8_t)mqttConfig.ip.b);
+              arr.add((uint8_t)mqttConfig.ip.c);
+              arr.add((uint8_t)mqttConfig.ip.d);
 
-              doc[confId[(int)Conf::MQTT_ENABLED]] = mqttConfig.enabled;
+              arr.add((uint16_t)mqttConfig.port);
+              arr.add(hasCharValue(mqttConfig.topic) ? mqttConfig.topic : nullptr);
+              arr.add((bool)mqttConfig.autoDiscovery);
 
-              if (mqttConfig.clientId != "null")
-                doc[confId[(int)Conf::MQTT_CLIENT_ID]] = mqttConfig.clientId;
+              arr.add((bool)e131Config.enabled);
+              arr.add((uint8_t)e131Config.universe);
+              arr.add((uint8_t)e131Config.channel);
+              arr.add((bool)e131Config.manual);
+              arr.add((uint8_t)e131Config.g);
+              arr.add((uint8_t)e131Config.b);
+              arr.add((uint8_t)e131Config.w);
+              arr.add((uint8_t)e131Config.ww);
 
-              doc[confId[(int)Conf::MQTT_AUTO_DISCOVERY]] = mqttConfig.autoDiscovery;
-
-              if (mqttConfig.user != "null")
-                doc[confId[(int)Conf::MQTT_USER]] = mqttConfig.user;
-
-              if (mqttConfig.pass != "null")
-                doc[confId[(int)Conf::MQTT_PASSWORD]] = mqttConfig.pass;
-
-              doc[confId[(int)Conf::MQTT_IP1]] = mqttConfig.ip.a;
-              doc[confId[(int)Conf::MQTT_IP2]] = mqttConfig.ip.b;
-              doc[confId[(int)Conf::MQTT_IP3]] = mqttConfig.ip.c;
-              doc[confId[(int)Conf::MQTT_IP4]] = mqttConfig.ip.d;
-
-              doc[confId[(int)Conf::MQTT_PORT]] = mqttConfig.port;
-
-              doc[confId[(int)Conf::MQTT_DEVICE_TOPIC]] = mqttConfig.topic;
-
-              doc[confId[(int)Conf::E131_ENABLED]] = e131Config.enabled;
-              doc[confId[(int)Conf::E131_UNIVERSE]] = (uint8_t)e131Config.universe;
-              doc[confId[(int)Conf::E131_START_CHAN]] = (uint8_t)e131Config.channel;
-              doc[confId[(int)Conf::E131_MANUAL]] = e131Config.manual;
-              doc[confId[(int)Conf::E131_G_CHAN]] = (uint8_t)e131Config.g;
-              doc[confId[(int)Conf::E131_B_CHAN]] = (uint8_t)e131Config.b;
-              doc[confId[(int)Conf::E131_W_CHAN]] = (uint8_t)e131Config.w;
-              doc[confId[(int)Conf::E131_WW_CHAN]] = (uint8_t)e131Config.ww;
-
-              serializeJson(doc, response);
+              serializeJson(arr, response);
               request->send(200, "application/json", response);
             });
 

@@ -20,8 +20,6 @@ export enum Conf {
   NETWORK_SSID,
   NETWORK_PASS,
   NETWORK_DHCP,
-  NETWORK_GATEWAY,
-  NETWORK_SUBNET,
   // Access Point
   ACCESS_POINT_PASS,
   // GPIO
@@ -42,12 +40,6 @@ export enum Conf {
   MQTT_PORT,
   MQTT_DEVICE_TOPIC,
   MQTT_AUTO_DISCOVERY,
-  // INITIAL STATE
-  INITIAL_W,
-  INITIAL_WW,
-  INITIAL_R,
-  INITIAL_G,
-  INITIAL_B,
   // E131
   E131_ENABLED,
   E131_UNIVERSE,
@@ -57,21 +49,18 @@ export enum Conf {
   E131_B_CHAN,
   E131_W_CHAN,
   E131_WW_CHAN,
+  // INITIAL STATE
+  INITIAL_W,
+  INITIAL_WW,
+  INITIAL_R,
+  INITIAL_G,
+  INITIAL_B,
 }
 export interface IConfigJson {
   // DEVICE:
-  [Conf.DEVICE_NAME]?: string;
+  [Conf.DEVICE_NAME]?: string | null;
   [Conf.DEVICE_TYPE]?: DeviceType;
-  // GPIO:
-  [Conf.GPIO_W]?: number;
-  [Conf.GPIO_WW]?: number;
-  [Conf.GPIO_R]?: number;
-  [Conf.GPIO_G]?: number;
-  [Conf.GPIO_B]?: number;
   // NETWORK:
-  [Conf.NETWORK_SSID]?: string;
-  [Conf.NETWORK_PASS]?: string;
-  [Conf.NETWORK_DHCP]?: boolean;
   [Conf.NETWORK_IP1]?: number;
   [Conf.NETWORK_IP2]?: number;
   [Conf.NETWORK_IP3]?: number;
@@ -84,26 +73,29 @@ export interface IConfigJson {
   [Conf.NETWORK_SUBNET2]?: number;
   [Conf.NETWORK_SUBNET3]?: number;
   [Conf.NETWORK_SUBNET4]?: number;
+  [Conf.NETWORK_SSID]?: string | null;
+  [Conf.NETWORK_PASS]?: string | null;
+  [Conf.NETWORK_DHCP]?: boolean;
   // ACCESS POINT:
-  [Conf.ACCESS_POINT_PASS]?: string;
+  [Conf.ACCESS_POINT_PASS]?: string | null;
+  // GPIO:
+  [Conf.GPIO_W]?: number;
+  [Conf.GPIO_WW]?: number;
+  [Conf.GPIO_R]?: number;
+  [Conf.GPIO_G]?: number;
+  [Conf.GPIO_B]?: number;
   // MQTT:
   [Conf.MQTT_ENABLED]?: boolean;
-  [Conf.MQTT_CLIENT_ID]?: string;
-  [Conf.MQTT_USER]?: string;
-  [Conf.MQTT_PASSWORD]?: string;
+  [Conf.MQTT_CLIENT_ID]?: string | null;
+  [Conf.MQTT_USER]?: string | null;
+  [Conf.MQTT_PASSWORD]?: string | null;
   [Conf.MQTT_IP1]?: number;
   [Conf.MQTT_IP2]?: number;
   [Conf.MQTT_IP3]?: number;
   [Conf.MQTT_IP4]?: number;
   [Conf.MQTT_PORT]?: number;
-  [Conf.MQTT_DEVICE_TOPIC]?: string;
+  [Conf.MQTT_DEVICE_TOPIC]?: string | null;
   [Conf.MQTT_AUTO_DISCOVERY]?: boolean;
-  // INITIAL STATE
-  [Conf.INITIAL_W]?: number;
-  [Conf.INITIAL_WW]?: number;
-  [Conf.INITIAL_R]?: number;
-  [Conf.INITIAL_G]?: number;
-  [Conf.INITIAL_B]?: number;
   // E131:
   [Conf.E131_ENABLED]?: boolean;
   [Conf.E131_UNIVERSE]?: number;
@@ -113,4 +105,68 @@ export interface IConfigJson {
   [Conf.E131_B_CHAN]?: number;
   [Conf.E131_W_CHAN]?: number;
   [Conf.E131_WW_CHAN]?: number;
+  // INITIAL STATE
+  [Conf.INITIAL_W]?: number;
+  [Conf.INITIAL_WW]?: number;
+  [Conf.INITIAL_R]?: number;
+  [Conf.INITIAL_G]?: number;
+  [Conf.INITIAL_B]?: number;
 }
+
+export type IConfigDto = [
+  null, // First item is null to align the enums with the indexes
+  // DEVICE:
+  IConfigJson[Conf.DEVICE_NAME],
+  IConfigJson[Conf.DEVICE_TYPE],
+  // NETWORK:
+  IConfigJson[Conf.NETWORK_IP1],
+  IConfigJson[Conf.NETWORK_IP2],
+  IConfigJson[Conf.NETWORK_IP3],
+  IConfigJson[Conf.NETWORK_IP4],
+  IConfigJson[Conf.NETWORK_GATEWAY1],
+  IConfigJson[Conf.NETWORK_GATEWAY2],
+  IConfigJson[Conf.NETWORK_GATEWAY3],
+  IConfigJson[Conf.NETWORK_GATEWAY4],
+  IConfigJson[Conf.NETWORK_SUBNET1],
+  IConfigJson[Conf.NETWORK_SUBNET2],
+  IConfigJson[Conf.NETWORK_SUBNET3],
+  IConfigJson[Conf.NETWORK_SUBNET4],
+  IConfigJson[Conf.NETWORK_SSID],
+  IConfigJson[Conf.NETWORK_PASS],
+  IConfigJson[Conf.NETWORK_DHCP],
+  // ACCESS POINT:
+  IConfigJson[Conf.ACCESS_POINT_PASS],
+  // GPIO:
+  IConfigJson[Conf.GPIO_W],
+  IConfigJson[Conf.GPIO_WW],
+  IConfigJson[Conf.GPIO_R],
+  IConfigJson[Conf.GPIO_G],
+  IConfigJson[Conf.GPIO_B],
+  // MQTT:
+  IConfigJson[Conf.MQTT_ENABLED],
+  IConfigJson[Conf.MQTT_CLIENT_ID],
+  IConfigJson[Conf.MQTT_USER],
+  IConfigJson[Conf.MQTT_PASSWORD],
+  IConfigJson[Conf.MQTT_IP1],
+  IConfigJson[Conf.MQTT_IP2],
+  IConfigJson[Conf.MQTT_IP3],
+  IConfigJson[Conf.MQTT_IP4],
+  IConfigJson[Conf.MQTT_PORT],
+  IConfigJson[Conf.MQTT_DEVICE_TOPIC],
+  IConfigJson[Conf.MQTT_AUTO_DISCOVERY],
+  // E131:
+  IConfigJson[Conf.E131_ENABLED],
+  IConfigJson[Conf.E131_UNIVERSE],
+  IConfigJson[Conf.E131_START_CHAN],
+  IConfigJson[Conf.E131_MANUAL],
+  IConfigJson[Conf.E131_G_CHAN],
+  IConfigJson[Conf.E131_B_CHAN],
+  IConfigJson[Conf.E131_W_CHAN],
+  IConfigJson[Conf.E131_WW_CHAN],
+  // INITIAL STATE
+  IConfigJson[Conf.INITIAL_W],
+  IConfigJson[Conf.INITIAL_WW],
+  IConfigJson[Conf.INITIAL_R],
+  IConfigJson[Conf.INITIAL_G],
+  IConfigJson[Conf.INITIAL_B]
+];
