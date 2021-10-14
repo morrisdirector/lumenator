@@ -480,7 +480,6 @@ const ManualControl: FunctionalComponent<IDeviceSetupProps> = ({
                     disabled={uploading}
                     class="form-input file-input"
                     type="file"
-                    accept=".bin,.bin.gz"
                     onChange={handleFirmwareSelection}
                   />
                 </div>

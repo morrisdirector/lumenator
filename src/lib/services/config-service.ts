@@ -60,12 +60,16 @@ export class ConfigService extends DataService {
       json[Conf.E131_B_CHAN],
       json[Conf.E131_W_CHAN],
       json[Conf.E131_WW_CHAN],
-      // INITIAL STATE
-      json[Conf.INITIAL_W],
-      json[Conf.INITIAL_WW],
-      json[Conf.INITIAL_R],
-      json[Conf.INITIAL_G],
-      json[Conf.INITIAL_B],
+      // SAVED STATE
+      json[Conf.STATE_CTRL_MODE],
+      json[Conf.STATE_ON],
+      json[Conf.STATE_BRIGHTNESS],
+      json[Conf.STATE_TEMP],
+      json[Conf.STATE_R],
+      json[Conf.STATE_G],
+      json[Conf.STATE_B],
+      json[Conf.STATE_W],
+      json[Conf.STATE_WW],
     ];
     return dto;
   }

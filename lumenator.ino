@@ -259,7 +259,7 @@ void loop()
   webSocket.loop();
 
   // E131:
-  if (!e131.isEmpty())
+  if (e131Config.enabled == true && !e131.isEmpty())
   {
     e131Loop();
   }
@@ -275,4 +275,7 @@ void loop()
 
   // DNS
   dnsServer.processNextRequest();
+
+  // STATE
+  saveLevelsQueue();
 }

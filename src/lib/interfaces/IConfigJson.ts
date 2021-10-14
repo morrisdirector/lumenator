@@ -1,3 +1,4 @@
+import { ControlMode } from "../enums/ControlMode";
 import { DeviceType } from "../enums/DeviceType";
 import { MixingStrategy } from "../enums/MixingStrategy";
 
@@ -51,12 +52,16 @@ export enum Conf {
   E131_B_CHAN,
   E131_W_CHAN,
   E131_WW_CHAN,
-  // INITIAL STATE
-  INITIAL_W,
-  INITIAL_WW,
-  INITIAL_R,
-  INITIAL_G,
-  INITIAL_B,
+  // SAVED STATE
+  STATE_CTRL_MODE,
+  STATE_ON,
+  STATE_BRIGHTNESS,
+  STATE_TEMP,
+  STATE_R,
+  STATE_G,
+  STATE_B,
+  STATE_W,
+  STATE_WW,
 }
 export interface IConfigJson {
   // DEVICE:
@@ -108,12 +113,16 @@ export interface IConfigJson {
   [Conf.E131_B_CHAN]?: number;
   [Conf.E131_W_CHAN]?: number;
   [Conf.E131_WW_CHAN]?: number;
-  // INITIAL STATE
-  [Conf.INITIAL_W]?: number;
-  [Conf.INITIAL_WW]?: number;
-  [Conf.INITIAL_R]?: number;
-  [Conf.INITIAL_G]?: number;
-  [Conf.INITIAL_B]?: number;
+  // SAVED STATE
+  [Conf.STATE_CTRL_MODE]?: ControlMode;
+  [Conf.STATE_ON]?: boolean;
+  [Conf.STATE_BRIGHTNESS]?: number;
+  [Conf.STATE_TEMP]?: number;
+  [Conf.STATE_R]?: number;
+  [Conf.STATE_G]?: number;
+  [Conf.STATE_B]?: number;
+  [Conf.STATE_W]?: number;
+  [Conf.STATE_WW]?: number;
 }
 
 export type IConfigDto = [
@@ -167,10 +176,14 @@ export type IConfigDto = [
   IConfigJson[Conf.E131_B_CHAN],
   IConfigJson[Conf.E131_W_CHAN],
   IConfigJson[Conf.E131_WW_CHAN],
-  // INITIAL STATE
-  IConfigJson[Conf.INITIAL_W],
-  IConfigJson[Conf.INITIAL_WW],
-  IConfigJson[Conf.INITIAL_R],
-  IConfigJson[Conf.INITIAL_G],
-  IConfigJson[Conf.INITIAL_B]
+  // SAVED STATE
+  IConfigJson[Conf.STATE_CTRL_MODE],
+  IConfigJson[Conf.STATE_ON],
+  IConfigJson[Conf.STATE_BRIGHTNESS],
+  IConfigJson[Conf.STATE_TEMP],
+  IConfigJson[Conf.STATE_R],
+  IConfigJson[Conf.STATE_G],
+  IConfigJson[Conf.STATE_B],
+  IConfigJson[Conf.STATE_W],
+  IConfigJson[Conf.STATE_WW]
 ];

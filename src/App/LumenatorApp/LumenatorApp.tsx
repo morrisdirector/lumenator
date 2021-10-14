@@ -179,7 +179,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
                     text={this.state.originalConfig[Conf.DEVICE_NAME] as string}
                   ></Chip>
                 )}
-              <div class="version">v1.0</div>
+              <div class="version">v1.1</div>
             </div>
           </div>
         </header>

@@ -1,31 +1,17 @@
 #include <ArduinoJson.h>
 
-enum class CtrlMode
-{
-  STANDBY, // OFF
-  RGB,
-  WHITE,      // SINGLE COLD WHITE
-  WARM_WHITE, // SINGLE WARM WHITE
-  TEMP,       // WARM/COLD WHITE
-  GPIO_R,
-  GPIO_G,
-  GPIO_B,
-  GPIO_W,
-  GPIO_WW
-};
-
 struct LumState
 {
   CtrlMode ctrlMode = CtrlMode::WARM_WHITE;
   bool on = true;
   uint16_t brightness = 255;
   float brightnessMultiplier = 1;
-  int temp = 153; // Mireds
-  int r = 0;
-  int g = 0;
-  int b = 0;
-  int w = 255;
-  int ww = 0;
+  uint8_t temp = 153; // Mireds
+  uint8_t r = 0;
+  uint8_t g = 0;
+  uint8_t b = 0;
+  uint8_t w = 0;
+  uint8_t ww = 255;
 };
 
 LumState lumState;
@@ -109,5 +95,48 @@ void updateLumenatorLevels(bool on, int r, int g, int b, int w, int ww, int temp
         analogWrite(gpioConfig.ww, lumState.ww * lumState.brightnessMultiplier);
       break;
     }
+  }
+}
+
+void saveLevels()
+{
+  Serial.println(printLine);
+  Serial.println("Saving levels...");
+
+  // Update Saved State
+  savedState.ctrlMode = lumState.ctrlMode;
+  savedState.on = lumState.on;
+  savedState.brightness = lumState.brightness;
+  savedState.temp = lumState.temp;
+  savedState.r = lumState.r;
+  savedState.g = lumState.g;
+  savedState.b = lumState.b;
+  savedState.w = lumState.w;
+  savedState.ww = lumState.ww;
+
+  serializeAll();
+  commitConfiguration(dtoBuffer);
+  Serial.println("Data Saved:");
+  Serial.println(dtoBuffer);
+  Serial.println(printLine);
+}
+
+unsigned long lastSaveAttemptTime = 0;
+unsigned long saveDelay = 3000;
+bool markedForSave = false;
+
+void markForSave()
+{
+  lastSaveAttemptTime = millis();
+  markedForSave = true;
+}
+
+void saveLevelsQueue()
+{
+  if (markedForSave == true && (millis() - lastSaveAttemptTime) > saveDelay)
+  {
+    lastSaveAttemptTime = millis();
+    markedForSave = false;
+    saveLevels();
   }
 }

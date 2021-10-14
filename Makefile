@@ -11,6 +11,7 @@ SKETCH_FILE   = $(shell ls -1 $(CURDIR)/*.ino | head -n1)
 SKETCH_NAME   = $(shell basename $(CURDIR))
 MONITOR_SPEED = $(shell egrep Serial.begin $(SKETCH_FILE) | perl -pE 's/\D+//g' | head -n1)
 BUILD_DIR     = ${PWD}/build
+BIN_DIR     = ${PWD}/bin
 
 default: sketch monitor
 
@@ -25,7 +26,7 @@ sketch: parcel compile upload
 compileall: parcel compile
 
 compile: display_config clean
-	arduino-cli compile --fqbn $(FQBN) -p $(PORT) --build-path $(BUILD_DIR) && gzip -kf $(BUILD_DIR)/lumenator.ino.bin
+	arduino-cli compile --fqbn $(FQBN) -p $(PORT) --build-path $(BUILD_DIR) && gzip -kf $(BUILD_DIR)/lumenator.ino.bin && cp $(BUILD_DIR)/lumenator.ino.bin $(BIN_DIR) && cp $(BUILD_DIR)/lumenator.ino.bin.gz $(BIN_DIR)
 
 upload: display_config
 	arduino-cli upload --input-dir $(BUILD_DIR) -p $(PORT) -b $(BOARD)

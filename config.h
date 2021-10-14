@@ -56,12 +56,31 @@ enum class Conf
   E131_B_CHAN,
   E131_W_CHAN,
   E131_WW_CHAN,
-  // INITIAL STATE
-  INITIAL_W,
-  INITIAL_WW,
-  INITIAL_R,
-  INITIAL_G,
-  INITIAL_B
+  // SAVED STATE
+  STATE_CTRL_MODE,
+  STATE_ON,
+  STATE_BRIGHTNESS,
+  STATE_TEMP,
+  STATE_R,
+  STATE_G,
+  STATE_B,
+  STATE_W,
+  STATE_WW
+};
+
+enum class CtrlMode
+{
+  STANDBY, // OFF
+  RGB,
+  WHITE,      // SINGLE COLD WHITE
+  WARM_WHITE, // SINGLE WARM WHITE
+  TEMP,       // WARM/COLD WHITE
+  E131,       // Active E131 streaming
+  GPIO_R,
+  GPIO_G,
+  GPIO_B,
+  GPIO_W,
+  GPIO_WW
 };
 
 enum class DeviceType
@@ -133,13 +152,17 @@ struct GpioConfig
   uint8_t ww = 13;
 };
 
-struct InitialState
+struct SavedState
 {
+  CtrlMode ctrlMode = CtrlMode::WARM_WHITE;
+  bool on = true;
+  uint16_t brightness = 255;
+  uint8_t temp = 153; // Mireds
   uint8_t r = 0;
   uint8_t g = 0;
   uint8_t b = 0;
-  uint8_t w = 255;
-  uint8_t ww = 0;
+  uint8_t w = 0;
+  uint8_t ww = 255;
 };
 
 struct MqttConfig
@@ -178,10 +201,109 @@ NetworkConfig networkConfig;
 AccessPointConfig accessPointConfig;
 GpioConfig gpioConfig;
 MqttConfig mqttConfig;
-InitialState initialState;
 E131Config e131Config;
+SavedState savedState;
 
 const int configJsonTotalCapacity = EEPROM_SIZE;
+
+bool hasCharValue(char *val)
+{
+  return strlen(val) && strncmp(val, "null", 4) != 0;
+}
+
+char dtoBuffer[CONFIG_DTO_SIZE];
+
+void serializeAll()
+{
+  DynamicJsonDocument doc(2048);
+  JsonArray arr = doc.to<JsonArray>();
+
+  arr.add(nullptr); // First item is null to align enums with indexes
+
+  arr.add(deviceConfig.name);
+  arr.add((uint8_t)deviceConfig.type);
+
+  arr.add((uint8_t)networkConfig.ip.a);
+  arr.add((uint8_t)networkConfig.ip.b);
+  arr.add((uint8_t)networkConfig.ip.c);
+  arr.add((uint8_t)networkConfig.ip.d);
+
+  arr.add((uint8_t)networkConfig.gateway.a);
+  arr.add((uint8_t)networkConfig.gateway.b);
+  arr.add((uint8_t)networkConfig.gateway.c);
+  arr.add((uint8_t)networkConfig.gateway.d);
+
+  arr.add((uint8_t)networkConfig.subnet.a);
+  arr.add((uint8_t)networkConfig.subnet.b);
+  arr.add((uint8_t)networkConfig.subnet.c);
+  arr.add((uint8_t)networkConfig.subnet.d);
+
+  arr.add(hasCharValue(networkConfig.ssid) ? networkConfig.ssid : nullptr);
+  arr.add(hasCharValue(networkConfig.pass) ? networkConfig.pass : nullptr);
+  arr.add((bool)networkConfig.dhcp);
+
+  arr.add(hasCharValue(accessPointConfig.pass) ? accessPointConfig.pass : nullptr);
+
+  arr.add((uint8_t)gpioConfig.w);
+  arr.add((uint8_t)gpioConfig.ww);
+  arr.add((uint8_t)gpioConfig.r);
+  arr.add((uint8_t)gpioConfig.g);
+  arr.add((uint8_t)gpioConfig.b);
+
+  arr.add((bool)mqttConfig.enabled);
+  arr.add(hasCharValue(mqttConfig.clientId) ? mqttConfig.clientId : nullptr);
+  arr.add(hasCharValue(mqttConfig.user) ? mqttConfig.user : nullptr);
+  arr.add(hasCharValue(mqttConfig.pass) ? mqttConfig.pass : nullptr);
+
+  arr.add((uint8_t)mqttConfig.ip.a);
+  arr.add((uint8_t)mqttConfig.ip.b);
+  arr.add((uint8_t)mqttConfig.ip.c);
+  arr.add((uint8_t)mqttConfig.ip.d);
+
+  arr.add((uint16_t)mqttConfig.port);
+  arr.add(hasCharValue(mqttConfig.topic) ? mqttConfig.topic : nullptr);
+  arr.add((bool)mqttConfig.autoDiscovery);
+
+  arr.add((bool)e131Config.enabled);
+  arr.add((uint8_t)e131Config.mixing);
+  arr.add((uint8_t)e131Config.universe);
+  arr.add((uint8_t)e131Config.channel);
+  arr.add((bool)e131Config.manual);
+  arr.add((uint8_t)e131Config.g);
+  arr.add((uint8_t)e131Config.b);
+  arr.add((uint8_t)e131Config.w);
+  arr.add((uint8_t)e131Config.ww);
+
+  arr.add((uint8_t)savedState.ctrlMode);
+  arr.add((bool)savedState.on);
+  arr.add((uint16_t)savedState.brightness);
+  arr.add((uint8_t)savedState.ctrlMode);
+  arr.add((uint8_t)savedState.ctrlMode);
+  arr.add((uint8_t)savedState.ctrlMode);
+  arr.add((uint8_t)savedState.ctrlMode);
+
+  // STATE_MODE,
+  // STATE_ON,
+  // STATE_BRIGHTNESS,
+  // STATE_TEMP,
+  // STATE_R,
+  // STATE_G,
+  // STATE_B,
+  // STATE_W,
+  // STATE_WW
+
+  // CtrlMode ctrlMode = CtrlMode::WARM_WHITE;
+  // bool on = true;
+  // uint16_t brightness = 255;
+  // uint8_t temp = 153; // Mireds
+  // uint8_t r = 0;
+  // uint8_t g = 0;
+  // uint8_t b = 0;
+  // uint8_t w = 0;
+  // uint8_t ww = 255;
+
+  serializeJson(arr, dtoBuffer);
+}
 
 void deserializeAll(DynamicJsonDocument json)
 {
@@ -246,6 +368,12 @@ void deserializeAll(DynamicJsonDocument json)
   Serial.println("[DS]: * Loaded device configuration");
 }
 
+void commitConfiguration(char dto[CONFIG_DTO_SIZE])
+{
+  clearEEPROM();
+  writeEEPROM(dto);
+}
+
 bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
 {
   const char *dBuffer = dto; // Needs to hold char[] in a const for deserializJson to work properly
@@ -263,8 +391,7 @@ bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
 
   deserializeAll(json);
 
-  clearEEPROM();
-  writeEEPROM(dto);
+  commitConfiguration(dto);
 
   return true;
 }

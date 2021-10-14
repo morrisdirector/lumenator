@@ -11,13 +11,6 @@
 // Web Server port 80
 AsyncWebServer server(80);
 
-char dtoBuffer[CONFIG_DTO_SIZE];
-
-bool hasCharValue(char *val)
-{
-  return strlen(val) && strncmp(val, "null", 4) != 0;
-}
-
 void onRequest(AsyncWebServerRequest *request)
 {
   if (!!WiFi.softAPIP())
@@ -104,68 +97,8 @@ void initRoutes()
 
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request)
             {
-              String response;
-              DynamicJsonDocument doc(2048);
-              JsonArray arr = doc.to<JsonArray>();
-
-              arr.add(nullptr); // First item is null to align enums with indexes
-
-              arr.add(hasCharValue(deviceConfig.name) ? deviceConfig.name : nullptr);
-              arr.add((uint8_t)deviceConfig.type);
-
-              arr.add((uint8_t)networkConfig.ip.a);
-              arr.add((uint8_t)networkConfig.ip.b);
-              arr.add((uint8_t)networkConfig.ip.c);
-              arr.add((uint8_t)networkConfig.ip.d);
-
-              arr.add((uint8_t)networkConfig.gateway.a);
-              arr.add((uint8_t)networkConfig.gateway.b);
-              arr.add((uint8_t)networkConfig.gateway.c);
-              arr.add((uint8_t)networkConfig.gateway.d);
-
-              arr.add((uint8_t)networkConfig.subnet.a);
-              arr.add((uint8_t)networkConfig.subnet.b);
-              arr.add((uint8_t)networkConfig.subnet.c);
-              arr.add((uint8_t)networkConfig.subnet.d);
-
-              arr.add(hasCharValue(networkConfig.ssid) ? networkConfig.ssid : nullptr);
-              arr.add(hasCharValue(networkConfig.pass) ? networkConfig.pass : nullptr);
-              arr.add((bool)networkConfig.dhcp);
-
-              arr.add(hasCharValue(accessPointConfig.pass) ? accessPointConfig.pass : nullptr);
-
-              arr.add((uint8_t)gpioConfig.w);
-              arr.add((uint8_t)gpioConfig.ww);
-              arr.add((uint8_t)gpioConfig.r);
-              arr.add((uint8_t)gpioConfig.g);
-              arr.add((uint8_t)gpioConfig.b);
-
-              arr.add((bool)mqttConfig.enabled);
-              arr.add(hasCharValue(mqttConfig.clientId) ? mqttConfig.clientId : nullptr);
-              arr.add(hasCharValue(mqttConfig.user) ? mqttConfig.user : nullptr);
-              arr.add(hasCharValue(mqttConfig.pass) ? mqttConfig.pass : nullptr);
-
-              arr.add((uint8_t)mqttConfig.ip.a);
-              arr.add((uint8_t)mqttConfig.ip.b);
-              arr.add((uint8_t)mqttConfig.ip.c);
-              arr.add((uint8_t)mqttConfig.ip.d);
-
-              arr.add((uint16_t)mqttConfig.port);
-              arr.add(hasCharValue(mqttConfig.topic) ? mqttConfig.topic : nullptr);
-              arr.add((bool)mqttConfig.autoDiscovery);
-
-              arr.add((bool)e131Config.enabled);
-              arr.add((uint8_t)e131Config.mixing);
-              arr.add((uint8_t)e131Config.universe);
-              arr.add((uint8_t)e131Config.channel);
-              arr.add((bool)e131Config.manual);
-              arr.add((uint8_t)e131Config.g);
-              arr.add((uint8_t)e131Config.b);
-              arr.add((uint8_t)e131Config.w);
-              arr.add((uint8_t)e131Config.ww);
-
-              serializeJson(arr, response);
-              request->send(200, "application/json", response);
+              serializeAll();
+              request->send(200, "application/json", dtoBuffer);
             });
 
   server.on(

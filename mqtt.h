@@ -194,6 +194,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
                 lumState.temp = (uint16_t)msg["color_temp"];
             }
             updateLumenatorLevels();
+            markForSave();
             sendState();
         }
     }

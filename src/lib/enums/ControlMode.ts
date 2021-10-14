@@ -4,6 +4,7 @@ export enum ControlMode {
   WHITE, // SINGLE COLD WHITE
   WARM_WHITE, // SINGLE WARM WHITE
   TEMP, // WARM/COLD WHITE
+  E131, // Active E131 streaming
   GPIO_R,
   GPIO_G,
   GPIO_B,
