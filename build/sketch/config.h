@@ -191,58 +191,56 @@ void deserializeAll(DynamicJsonDocument json)
   strlcpy(deviceConfig.name, arr[(int)Conf::DEVICE_NAME] | deviceConfig.name, STRING_SIZE);
   deviceConfig.type = (DeviceType)(uint8_t)arr[(int)Conf::DEVICE_TYPE];
 
-  // gpioConfig.r = (uint8_t)json[confId[(int)Conf::GPIO_R]];
-  // gpioConfig.g = (uint8_t)json[confId[(int)Conf::GPIO_G]];
-  // gpioConfig.b = (uint8_t)json[confId[(int)Conf::GPIO_B]];
-  // gpioConfig.w = (uint8_t)json[confId[(int)Conf::GPIO_W]];
-  // gpioConfig.ww = (uint8_t)json[confId[(int)Conf::GPIO_WW]];
+  networkConfig.ip.a = (uint8_t)arr[(int)Conf::NETWORK_IP1];
+  networkConfig.ip.b = (uint8_t)arr[(int)Conf::NETWORK_IP2];
+  networkConfig.ip.c = (uint8_t)arr[(int)Conf::NETWORK_IP3];
+  networkConfig.ip.d = (uint8_t)arr[(int)Conf::NETWORK_IP4];
 
-  // strcpy(networkConfig.ssid, json[confId[(int)Conf::NETWORK_SSID]]);
-  // strcpy(networkConfig.pass, json[confId[(int)Conf::NETWORK_PASS]]);
-  // networkConfig.dhcp = (bool)json[confId[(int)Conf::NETWORK_DHCP]];
+  networkConfig.gateway.a = (uint8_t)arr[(int)Conf::NETWORK_GATEWAY1];
+  networkConfig.gateway.b = (uint8_t)arr[(int)Conf::NETWORK_GATEWAY2];
+  networkConfig.gateway.c = (uint8_t)arr[(int)Conf::NETWORK_GATEWAY3];
+  networkConfig.gateway.d = (uint8_t)arr[(int)Conf::NETWORK_GATEWAY4];
 
-  // networkConfig.ip.a = (uint8_t)json[confId[(int)Conf::NETWORK_IP1]];
-  // networkConfig.ip.b = (uint8_t)json[confId[(int)Conf::NETWORK_IP2]];
-  // networkConfig.ip.c = (uint8_t)json[confId[(int)Conf::NETWORK_IP3]];
-  // networkConfig.ip.d = (uint8_t)json[confId[(int)Conf::NETWORK_IP4]];
+  networkConfig.subnet.a = (uint8_t)arr[(int)Conf::NETWORK_SUBNET1];
+  networkConfig.subnet.b = (uint8_t)arr[(int)Conf::NETWORK_SUBNET2];
+  networkConfig.subnet.c = (uint8_t)arr[(int)Conf::NETWORK_SUBNET3];
+  networkConfig.subnet.d = (uint8_t)arr[(int)Conf::NETWORK_SUBNET4];
 
-  // networkConfig.gateway.a = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY1]];
-  // networkConfig.gateway.b = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY2]];
-  // networkConfig.gateway.c = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY3]];
-  // networkConfig.gateway.d = (uint8_t)json[confId[(int)Conf::NETWORK_GATEWAY4]];
+  strlcpy(networkConfig.ssid, arr[(int)Conf::NETWORK_SSID] | networkConfig.ssid, STRING_SIZE);
+  strlcpy(networkConfig.pass, arr[(int)Conf::NETWORK_PASS] | networkConfig.pass, STRING_SIZE_SMALL);
+  networkConfig.dhcp = (bool)arr[(int)Conf::NETWORK_DHCP];
 
-  // networkConfig.subnet.a = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET1]];
-  // networkConfig.subnet.b = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET2]];
-  // networkConfig.subnet.c = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET3]];
-  // networkConfig.subnet.d = (uint8_t)json[confId[(int)Conf::NETWORK_SUBNET4]];
+  strlcpy(accessPointConfig.pass, arr[(int)Conf::ACCESS_POINT_PASS] | accessPointConfig.pass, STRING_SIZE_SMALL);
 
-  // strcpy(accessPointConfig.pass, json[confId[(int)Conf::ACCESS_POINT_PASS]]);
+  gpioConfig.w = (uint8_t)arr[(int)Conf::GPIO_W];
+  gpioConfig.ww = (uint8_t)arr[(int)Conf::GPIO_WW];
+  gpioConfig.r = (uint8_t)arr[(int)Conf::GPIO_R];
+  gpioConfig.g = (uint8_t)arr[(int)Conf::GPIO_G];
+  gpioConfig.b = (uint8_t)arr[(int)Conf::GPIO_B];
 
-  // mqttConfig.enabled = (bool)json[confId[(int)Conf::MQTT_ENABLED]];
-  // strcpy(mqttConfig.clientId, json[confId[(int)Conf::MQTT_CLIENT_ID]]);
+  mqttConfig.enabled = (bool)arr[(int)Conf::MQTT_ENABLED];
+  strlcpy(mqttConfig.clientId, arr[(int)Conf::MQTT_CLIENT_ID] | mqttConfig.clientId, STRING_SIZE_SMALL);
+  strlcpy(mqttConfig.user, arr[(int)Conf::MQTT_USER] | mqttConfig.user, STRING_SIZE);
+  strlcpy(mqttConfig.pass, arr[(int)Conf::MQTT_PASSWORD] | mqttConfig.pass, STRING_SIZE_SMALL);
 
-  // mqttConfig.autoDiscovery = (bool)json[confId[(int)Conf::MQTT_AUTO_DISCOVERY]];
+  mqttConfig.ip.a = (uint8_t)arr[(int)Conf::MQTT_IP1];
+  mqttConfig.ip.b = (uint8_t)arr[(int)Conf::MQTT_IP2];
+  mqttConfig.ip.c = (uint8_t)arr[(int)Conf::MQTT_IP3];
+  mqttConfig.ip.d = (uint8_t)arr[(int)Conf::MQTT_IP4];
 
-  // strcpy(mqttConfig.user, json[confId[(int)Conf::MQTT_USER]]);
-  // strcpy(mqttConfig.pass, json[confId[(int)Conf::MQTT_PASSWORD]]);
+  mqttConfig.port = (uint16_t)arr[(int)Conf::MQTT_PORT];
 
-  // mqttConfig.ip.a = (uint8_t)json[confId[(int)Conf::MQTT_IP1]];
-  // mqttConfig.ip.b = (uint8_t)json[confId[(int)Conf::MQTT_IP2]];
-  // mqttConfig.ip.c = (uint8_t)json[confId[(int)Conf::MQTT_IP3]];
-  // mqttConfig.ip.d = (uint8_t)json[confId[(int)Conf::MQTT_IP4]];
+  strlcpy(mqttConfig.topic, arr[(int)Conf::MQTT_DEVICE_TOPIC] | mqttConfig.topic, STRING_SIZE);
+  mqttConfig.autoDiscovery = (bool)arr[(int)Conf::MQTT_AUTO_DISCOVERY];
 
-  // mqttConfig.port = (uint16_t)json[confId[(int)Conf::MQTT_PORT]];
-
-  // strcpy(mqttConfig.topic, json[confId[(int)Conf::MQTT_DEVICE_TOPIC]]);
-
-  // e131Config.enabled = (bool)json[confId[(int)Conf::E131_ENABLED]];
-  // e131Config.universe = (uint8_t)json[confId[(int)Conf::E131_UNIVERSE]];
-  // e131Config.channel = (uint8_t)json[confId[(int)Conf::E131_START_CHAN]];
-  // e131Config.manual = (bool)json[confId[(int)Conf::E131_MANUAL]];
-  // e131Config.g = (uint8_t)json[confId[(int)Conf::E131_G_CHAN]];
-  // e131Config.b = (uint8_t)json[confId[(int)Conf::E131_B_CHAN]];
-  // e131Config.w = (uint8_t)json[confId[(int)Conf::E131_W_CHAN]];
-  // e131Config.ww = (uint8_t)json[confId[(int)Conf::E131_WW_CHAN]];
+  e131Config.enabled = (bool)arr[(int)Conf::E131_ENABLED];
+  e131Config.universe = (uint8_t)arr[(int)Conf::E131_UNIVERSE];
+  e131Config.channel = (uint8_t)arr[(int)Conf::E131_START_CHAN];
+  e131Config.manual = (bool)arr[(int)Conf::E131_MANUAL];
+  e131Config.g = (uint8_t)arr[(int)Conf::E131_G_CHAN];
+  e131Config.b = (uint8_t)arr[(int)Conf::E131_B_CHAN];
+  e131Config.w = (uint8_t)arr[(int)Conf::E131_W_CHAN];
+  e131Config.ww = (uint8_t)arr[(int)Conf::E131_WW_CHAN];
 
   Serial.println();
   Serial.println("[DS]: * Loaded device configuration");
@@ -262,8 +260,6 @@ bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
     Serial.println("------- Save Configuration Parse Error -------");
     return false;
   }
-
-  return false;
 
   deserializeAll(json);
 

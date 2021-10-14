@@ -1,6 +1,6 @@
 #line 1 "/Users/patrickmorris/git/lumenator/data/build/setup.html.h"
 unsigned char setup_html_gz[] = {
-  0X1F, 0X8B, 0X08, 0X08, 0XC8, 0X87, 0X67, 0X61, 0X00, 0X03, 0X73, 0X65,
+  0X1F, 0X8B, 0X08, 0X08, 0X38, 0X8D, 0X67, 0X61, 0X00, 0X03, 0X73, 0X65,
   0X74, 0X75, 0X70, 0X2E, 0X68, 0X74, 0X6D, 0X6C, 0X00, 0X3D, 0X50, 0X41,
   0X4E, 0XC4, 0X30, 0X0C, 0XFC, 0X8A, 0XC9, 0X79, 0XBB, 0X81, 0X7B, 0X92,
   0X0B, 0X70, 0X43, 0X02, 0X09, 0X2E, 0X1C, 0XB3, 0X89, 0X51, 0X0D, 0X49,
