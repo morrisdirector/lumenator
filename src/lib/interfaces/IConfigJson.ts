@@ -1,4 +1,5 @@
 import { DeviceType } from "../enums/DeviceType";
+import { MixingStrategy } from "../enums/MixingStrategy";
 
 export enum Conf {
   // Device
@@ -42,6 +43,7 @@ export enum Conf {
   MQTT_AUTO_DISCOVERY,
   // E131
   E131_ENABLED,
+  E131_MIXING_STRATEGY,
   E131_UNIVERSE,
   E131_START_CHAN,
   E131_MANUAL,
@@ -98,6 +100,7 @@ export interface IConfigJson {
   [Conf.MQTT_AUTO_DISCOVERY]?: boolean;
   // E131:
   [Conf.E131_ENABLED]?: boolean;
+  [Conf.E131_MIXING_STRATEGY]?: MixingStrategy;
   [Conf.E131_UNIVERSE]?: number;
   [Conf.E131_START_CHAN]?: number;
   [Conf.E131_MANUAL]?: boolean;
@@ -156,6 +159,7 @@ export type IConfigDto = [
   IConfigJson[Conf.MQTT_AUTO_DISCOVERY],
   // E131:
   IConfigJson[Conf.E131_ENABLED],
+  IConfigJson[Conf.E131_MIXING_STRATEGY],
   IConfigJson[Conf.E131_UNIVERSE],
   IConfigJson[Conf.E131_START_CHAN],
   IConfigJson[Conf.E131_MANUAL],

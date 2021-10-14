@@ -209,7 +209,6 @@ void setup()
   Serial.println();
   Serial.println("Starting Lumenator...");
   Serial.println();
-  Serial.println("Disconnecting previously connected WiFi");
 
   WiFi.disconnect();
   WiFi.softAPdisconnect(true);
@@ -246,10 +245,13 @@ void setup()
     setupMqtt();
   }
 
-  if (e131.begin(E131_UNICAST)) // Listen via Unicast
-    Serial.println(F("Listening for e131 data..."));
-  else
-    Serial.println(F("*** e131.begin failed ***"));
+  if (e131Config.enabled == true)
+  {
+    if (e131.begin(E131_UNICAST)) // Listen via Unicast
+      Serial.println(F("Listening for e131 data..."));
+    else
+      Serial.println(F("*** e131.begin failed ***"));
+  }
 }
 
 void loop()

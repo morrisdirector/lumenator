@@ -3,6 +3,7 @@ import { Fragment, FunctionalComponent, VNode, h } from "preact";
 
 import Chip from "../../../lib/components/Chip/Chip";
 import { DeviceType } from "../../../lib/enums/DeviceType";
+import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
 import { IE131SetupProps } from "./IE131SetupProps";
 import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
@@ -223,9 +224,35 @@ const E131Setup: FunctionalComponent<IE131SetupProps> = ({
                 }
               }}
             />
-            <div class="helper-text mt-large">The universe to listen for.</div>
+            <div class="helper-text">The universe to listen for.</div>
           </div>
-          <div></div>
+          <div class="form-group no-margin">
+            <label for="name">Mixing Strategy</label>
+            <DropdownMenu
+              type="number"
+              disabled={!config[Conf.E131_ENABLED]}
+              placeholder="Set a mixing strategy"
+              value={config[Conf.E131_MIXING_STRATEGY] || undefined}
+              onSelect={(value) => {
+                if (typeof props.onConfigUpdate === "function") {
+                  props.onConfigUpdate({
+                    ...config,
+                    [Conf.E131_MIXING_STRATEGY]: value as number,
+                  });
+                }
+              }}
+            >
+              <option value="1">
+                Limited - RGB and whites cannot be mixed
+              </option>
+              <option value="2">All - RGB and whites can be mixed</option>
+            </DropdownMenu>
+            <div class="helper-text">
+              As a potential safety measure, it's recommended to only allow
+              limited mixing to prevent overloading the internal power supplies
+              of the hardware. Limited mode will prioritize RGB data over white.
+            </div>
+          </div>
           <div class="form-group">
             <label for="channel">
               {config[Conf.E131_MANUAL]
@@ -252,7 +279,7 @@ const E131Setup: FunctionalComponent<IE131SetupProps> = ({
               }}
             />
             {!config[Conf.E131_MANUAL] && (
-              <div class="helper-text mt-large">
+              <div class="helper-text">
                 The starting channel assigned to Lumenator.
               </div>
             )}

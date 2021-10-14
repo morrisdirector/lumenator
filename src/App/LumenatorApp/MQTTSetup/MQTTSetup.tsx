@@ -124,7 +124,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
                 handleClientIdChange(value, true);
               }}
             />
-            <div class="helper-text mt-large">
+            <div class="helper-text">
               Max 20 characters. A unique ID for MQTT broker to identify the
               device. Alphanumeric characters, underscores, and dashes only.
               Example: <strong>bedroom_lamp1</strong>
@@ -137,7 +137,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
               onClick={handleAutoDiscoveryEnable}
               on={config[Conf.MQTT_AUTO_DISCOVERY]}
             />
-            <div class="helper-text mt-large">
+            <div class="helper-text">
               Will add this device to your entites in Home Assistant
               automatically.
               <br /> See{" "}
@@ -253,7 +253,7 @@ const MQTTSetup: FunctionalComponent<IMQTTSetupProps> = ({
           </div>
           <div class="form-group">
             <label for="topic"></label>
-            <div class="helper-text mt-large">
+            <div class="helper-text">
               Max 40 characters. The topic that all incoming and outgoing sub
               topics will be based on for this device. Example:{" "}
               <strong>upstairs/bedroom/lamp1</strong>

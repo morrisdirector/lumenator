@@ -8,8 +8,9 @@ const DropdownMenu: FunctionalComponent<IDropdownMenuProps> = (props) => {
   const [selectedValue, setSelectedValue] = useState(props.value);
 
   return (
-    <div class="lum-DropdownMenu">
+    <div class={`lum-DropdownMenu${props.disabled ? " disabled" : ""}`}>
       <select
+        disabled={props.disabled}
         value={props.value}
         class={
           props.placeholder &&

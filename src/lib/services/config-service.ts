@@ -52,6 +52,7 @@ export class ConfigService extends DataService {
       json[Conf.MQTT_AUTO_DISCOVERY],
       // E131:
       json[Conf.E131_ENABLED],
+      json[Conf.E131_MIXING_STRATEGY],
       json[Conf.E131_UNIVERSE],
       json[Conf.E131_START_CHAN],
       json[Conf.E131_MANUAL],

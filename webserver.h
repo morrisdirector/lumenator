@@ -155,6 +155,7 @@ void initRoutes()
               arr.add((bool)mqttConfig.autoDiscovery);
 
               arr.add((bool)e131Config.enabled);
+              arr.add((uint8_t)e131Config.mixing);
               arr.add((uint8_t)e131Config.universe);
               arr.add((uint8_t)e131Config.channel);
               arr.add((bool)e131Config.manual);

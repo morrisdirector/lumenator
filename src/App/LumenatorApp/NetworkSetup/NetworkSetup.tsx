@@ -128,7 +128,7 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                 handleIpChange(value, true);
               }}
             />
-            <div class="helper-text mt-large">
+            <div class="helper-text">
               Static IPv4 address on the local network.
             </div>
           </div>
@@ -218,9 +218,9 @@ const NetworkSetup: FunctionalComponent<INetworkSetupProps> = ({
                 </button>
               )}
             </div>
-            <div class="helper-text mt-large">
-              Password for the setup access point{" "}
-              {page === "setup" ? "(this page)" : ""} when Lumenator cannot
+            <div class="helper-text">
+              Password for the setup access point
+              {page === "setup" ? " (this page) " : " "}when Lumenator cannot
               connect to the network.
             </div>
           </div>

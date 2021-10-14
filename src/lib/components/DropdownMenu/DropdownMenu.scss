@@ -38,4 +38,14 @@
       position: absolute;
     }
   }
+  &.disabled {
+    select {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: lighten($grey, 20%);
+      cursor: not-allowed;
+    }
+    .dropdown-indicator {
+      visibility: hidden;
+    }
+  }
 }

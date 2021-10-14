@@ -48,6 +48,7 @@ enum class Conf
   MQTT_AUTO_DISCOVERY,
   // E131
   E131_ENABLED,
+  E131_MIXING_STRATEGY,
   E131_UNIVERSE,
   E131_START_CHAN,
   E131_MANUAL,
@@ -72,13 +73,11 @@ enum class DeviceType
   W
 };
 
-char deviceTypeId[6][6] = {
-    "\0",
-    "rgbww",
-    "rgbw",
-    "rgb",
-    "ww",
-    "w"};
+enum class E131MixingStrategy
+{
+  RGB_WWW = 1,
+  RGBWWW
+};
 
 struct IPv4
 {
@@ -164,6 +163,7 @@ struct MqttConfig
 struct E131Config
 {
   bool enabled = false;
+  E131MixingStrategy mixing = E131MixingStrategy::RGB_WWW;
   uint16_t universe = 1;
   uint16_t channel = 1;
   bool manual = false;
@@ -233,6 +233,7 @@ void deserializeAll(DynamicJsonDocument json)
   mqttConfig.autoDiscovery = (bool)arr[(int)Conf::MQTT_AUTO_DISCOVERY];
 
   e131Config.enabled = (bool)arr[(int)Conf::E131_ENABLED];
+  e131Config.mixing = (E131MixingStrategy)(uint8_t)arr[(int)Conf::E131_MIXING_STRATEGY];
   e131Config.universe = (uint8_t)arr[(int)Conf::E131_UNIVERSE];
   e131Config.channel = (uint8_t)arr[(int)Conf::E131_START_CHAN];
   e131Config.manual = (bool)arr[(int)Conf::E131_MANUAL];
