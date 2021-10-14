@@ -3,5 +3,6 @@ node_modules
 .parcel-cache
 .DS_Store
 dist
-data/config.json
+data
+build
 config.json
