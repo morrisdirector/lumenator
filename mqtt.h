@@ -145,6 +145,26 @@ void sendState()
     mqttClient.publish(mqttConfig.stateTopic, msg);
 }
 
+unsigned long lastStateSendAttemptTime = 0;
+unsigned long stateSendDelay = 500;
+bool markedForStateSend = false;
+
+void markForStateSend()
+{
+    lastStateSendAttemptTime = millis();
+    markedForStateSend = true;
+}
+
+void stateSendQueue()
+{
+    if (markedForStateSend == true && (millis() - lastStateSendAttemptTime) > stateSendDelay)
+    {
+        lastStateSendAttemptTime = millis();
+        markedForStateSend = false;
+        sendState();
+    }
+}
+
 void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     Serial.print("Message arrived [");
@@ -179,11 +199,11 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
             }
             else if (msg["color_temp"] != nullptr)
             {
-                if (msg["color_temp"] == 153)
+                if (msg["color_temp"] <= 153)
                 {
                     lumState.ctrlMode = CtrlMode::WHITE;
                 }
-                else if (msg["color_temp"] == 500)
+                else if (msg["color_temp"] >= 500)
                 {
                     lumState.ctrlMode = CtrlMode::WARM_WHITE;
                 }
@@ -195,7 +215,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
             }
             updateLumenatorLevels();
             markForSave();
-            sendState();
+            markForStateSend();
         }
     }
 }
@@ -291,4 +311,10 @@ void reconnectMqtt()
             delay(5000);
         }
     }
+}
+
+void mqttLoop()
+{
+    mqttClient.loop();
+    stateSendQueue();
 }

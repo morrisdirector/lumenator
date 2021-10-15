@@ -76,7 +76,7 @@ enum class CtrlMode
   WARM_WHITE, // SINGLE WARM WHITE
   TEMP,       // WARM/COLD WHITE
   E131,       // Active E131 streaming
-  GPIO_R,
+  GPIO_R = 10,
   GPIO_G,
   GPIO_B,
   GPIO_W,
@@ -157,7 +157,7 @@ struct SavedState
   CtrlMode ctrlMode = CtrlMode::WARM_WHITE;
   bool on = true;
   uint16_t brightness = 255;
-  uint8_t temp = 153; // Mireds
+  uint16_t temp = 500; // Mireds
   uint8_t r = 0;
   uint8_t g = 0;
   uint8_t b = 0;
@@ -277,30 +277,12 @@ void serializeAll()
   arr.add((uint8_t)savedState.ctrlMode);
   arr.add((bool)savedState.on);
   arr.add((uint16_t)savedState.brightness);
-  arr.add((uint8_t)savedState.ctrlMode);
-  arr.add((uint8_t)savedState.ctrlMode);
-  arr.add((uint8_t)savedState.ctrlMode);
-  arr.add((uint8_t)savedState.ctrlMode);
-
-  // STATE_MODE,
-  // STATE_ON,
-  // STATE_BRIGHTNESS,
-  // STATE_TEMP,
-  // STATE_R,
-  // STATE_G,
-  // STATE_B,
-  // STATE_W,
-  // STATE_WW
-
-  // CtrlMode ctrlMode = CtrlMode::WARM_WHITE;
-  // bool on = true;
-  // uint16_t brightness = 255;
-  // uint8_t temp = 153; // Mireds
-  // uint8_t r = 0;
-  // uint8_t g = 0;
-  // uint8_t b = 0;
-  // uint8_t w = 0;
-  // uint8_t ww = 255;
+  arr.add((uint16_t)savedState.temp);
+  arr.add((uint8_t)savedState.r);
+  arr.add((uint8_t)savedState.g);
+  arr.add((uint8_t)savedState.b);
+  arr.add((uint8_t)savedState.w);
+  arr.add((uint8_t)savedState.ww);
 
   serializeJson(arr, dtoBuffer);
 }
@@ -363,6 +345,16 @@ void deserializeAll(DynamicJsonDocument json)
   e131Config.b = (uint8_t)arr[(int)Conf::E131_B_CHAN];
   e131Config.w = (uint8_t)arr[(int)Conf::E131_W_CHAN];
   e131Config.ww = (uint8_t)arr[(int)Conf::E131_WW_CHAN];
+
+  savedState.ctrlMode = (CtrlMode)(uint8_t)arr[(int)Conf::STATE_CTRL_MODE];
+  savedState.on = (bool)arr[(int)Conf::STATE_ON];
+  savedState.brightness = (uint16_t)arr[(int)Conf::STATE_BRIGHTNESS];
+  savedState.temp = (uint16_t)arr[(int)Conf::STATE_TEMP];
+  savedState.r = (uint16_t)arr[(int)Conf::STATE_R];
+  savedState.g = (uint16_t)arr[(int)Conf::STATE_G];
+  savedState.b = (uint16_t)arr[(int)Conf::STATE_B];
+  savedState.w = (uint16_t)arr[(int)Conf::STATE_W];
+  savedState.ww = (uint16_t)arr[(int)Conf::STATE_WW];
 
   Serial.println();
   Serial.println("[DS]: * Loaded device configuration");

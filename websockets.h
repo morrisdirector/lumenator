@@ -64,8 +64,8 @@ uint8_t getGPIOAddress(CtrlMode ctrMd)
 
 void GPIOTestCommand(char *text)
 {
-  char *gpioModeStr = subString(text, 5, 1);
-  char *onOffStr = subString(text, 7, 1);
+  char *gpioModeStr = subString(text, 5, 2);
+  char *onOffStr = subString(text, 8, 1);
   CtrlMode gpioCtrlMode = (CtrlMode)atoi(gpioModeStr); // atoi converts string to number
 
   resetGpios();

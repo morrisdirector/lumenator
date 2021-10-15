@@ -9,8 +9,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 
-#define EEPROM_SIZE 1000
-#define CONFIG_DTO_SIZE 1000
+#define EEPROM_SIZE 2000
+#define CONFIG_DTO_SIZE 2000
 
 const char printLine[] = "----------------------------";
 
@@ -219,7 +219,8 @@ void setup()
 
   setupHardwareConfiguration();
 
-  updateLumenatorLevels(); // Turn light on immediately on boot up
+  setStateFromSaved();
+  updateLumenatorLevels(true); // Turn light on immediately on boot up
 
   if (strlen(networkConfig.ssid) && strlen(networkConfig.pass))
   {
@@ -270,7 +271,7 @@ void loop()
     {
       reconnectMqtt();
     }
-    mqttClient.loop();
+    mqttLoop();
   }
 
   // DNS

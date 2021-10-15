@@ -6,7 +6,7 @@ struct LumState
   bool on = true;
   uint16_t brightness = 255;
   float brightnessMultiplier = 1;
-  uint8_t temp = 153; // Mireds
+  uint16_t temp = 500; // Mireds
   uint8_t r = 0;
   uint8_t g = 0;
   uint8_t b = 0;
@@ -15,6 +15,31 @@ struct LumState
 };
 
 LumState lumState;
+
+void printCurrentState()
+{
+  Serial.println(printLine);
+  Serial.println("*** Current lumState ***");
+  Serial.print("ctrlMode: ");
+  Serial.println((int)lumState.ctrlMode);
+  Serial.print("on: ");
+  Serial.println(lumState.on);
+  Serial.print("brightness: ");
+  Serial.println(lumState.brightness);
+  Serial.print("temp: ");
+  Serial.println(lumState.temp);
+  Serial.print("r: ");
+  Serial.println(lumState.r);
+  Serial.print("g: ");
+  Serial.println(lumState.g);
+  Serial.print("b: ");
+  Serial.println(lumState.b);
+  Serial.print("w: ");
+  Serial.println(lumState.w);
+  Serial.print("ww: ");
+  Serial.println(lumState.ww);
+  Serial.println(printLine);
+}
 
 void resetGpios()
 {
@@ -47,7 +72,7 @@ void setBrightnessMultiplier()
   lumState.brightnessMultiplier = brt / 100;
 }
 
-void updateLumenatorLevels(bool on = lumState.on, int r = lumState.r, int g = lumState.g, int b = lumState.b, int w = lumState.w, int ww = lumState.ww, int temp = lumState.temp, int brigthness = lumState.brightness);
+void updateLumenatorLevels(bool brightness = lumState.on, int r = lumState.r, int g = lumState.g, int b = lumState.b, int w = lumState.w, int ww = lumState.ww, int temp = lumState.temp, int brigthness = lumState.brightness);
 
 void updateLumenatorLevels(bool on, int r, int g, int b, int w, int ww, int temp, int brightness)
 {
@@ -62,6 +87,7 @@ void updateLumenatorLevels(bool on, int r, int g, int b, int w, int ww, int temp
 
   setBrightnessMultiplier();
   resetGpios();
+
   if (lumState.on)
   {
     switch (lumState.ctrlMode)
@@ -100,19 +126,16 @@ void updateLumenatorLevels(bool on, int r, int g, int b, int w, int ww, int temp
 
 void saveLevels()
 {
-  Serial.println(printLine);
-  Serial.println("Saving levels...");
-
   // Update Saved State
-  savedState.ctrlMode = lumState.ctrlMode;
-  savedState.on = lumState.on;
-  savedState.brightness = lumState.brightness;
-  savedState.temp = lumState.temp;
-  savedState.r = lumState.r;
-  savedState.g = lumState.g;
-  savedState.b = lumState.b;
-  savedState.w = lumState.w;
-  savedState.ww = lumState.ww;
+  savedState.ctrlMode = (CtrlMode)(int)lumState.ctrlMode;
+  savedState.on = (bool)lumState.on;
+  savedState.brightness = (uint16_t)lumState.brightness;
+  savedState.temp = (uint16_t)lumState.temp;
+  savedState.r = (uint8_t)lumState.r;
+  savedState.g = (uint8_t)lumState.g;
+  savedState.b = (uint8_t)lumState.b;
+  savedState.w = (uint8_t)lumState.w;
+  savedState.ww = (uint8_t)lumState.ww;
 
   serializeAll();
   commitConfiguration(dtoBuffer);
@@ -138,5 +161,21 @@ void saveLevelsQueue()
     lastSaveAttemptTime = millis();
     markedForSave = false;
     saveLevels();
+  }
+}
+
+void setStateFromSaved()
+{
+  if ((int)savedState.ctrlMode > 0)
+  {
+    lumState.ctrlMode = savedState.ctrlMode;
+    lumState.on = savedState.on;
+    lumState.brightness = savedState.brightness;
+    lumState.temp = savedState.temp;
+    lumState.w = savedState.w;
+    lumState.ww = savedState.ww;
+    lumState.r = savedState.r;
+    lumState.g = savedState.g;
+    lumState.b = savedState.b;
   }
 }
