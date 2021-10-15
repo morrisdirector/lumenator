@@ -249,7 +249,11 @@ void setup()
   if (e131Config.enabled == true)
   {
     if (e131.begin(E131_UNICAST)) // Listen via Unicast
+    {
+      Serial.println(printLine);
       Serial.println(F("Listening for e131 data..."));
+      Serial.println(printLine);
+    }
     else
       Serial.println(F("*** e131.begin failed ***"));
   }
@@ -260,7 +264,7 @@ void loop()
   webSocket.loop();
 
   // E131:
-  if (e131Config.enabled == true && !e131.isEmpty())
+  if (e131Config.enabled == true)
   {
     e131Loop();
   }
