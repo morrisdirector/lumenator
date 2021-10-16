@@ -10,6 +10,7 @@ enum class Conf
   // Device
   DEVICE_NAME = 1,
   DEVICE_TYPE,
+  DEVICE_TRANSITION,
   // Network
   NETWORK_IP1,
   NETWORK_IP2,
@@ -126,6 +127,7 @@ struct DeviceConfig
 {
   char name[STRING_SIZE] = "Lumenator";
   DeviceType type = DeviceType::RGBWW;
+  bool transition = true;
 };
 
 struct NetworkConfig
@@ -222,6 +224,7 @@ void serializeAll()
 
   arr.add(deviceConfig.name);
   arr.add((uint8_t)deviceConfig.type);
+  arr.add((bool)deviceConfig.transition);
 
   arr.add((uint8_t)networkConfig.ip.a);
   arr.add((uint8_t)networkConfig.ip.b);
@@ -293,6 +296,7 @@ void deserializeAll(DynamicJsonDocument json)
   JsonArray arr = json.as<JsonArray>();
   strlcpy(deviceConfig.name, arr[(int)Conf::DEVICE_NAME] | deviceConfig.name, STRING_SIZE);
   deviceConfig.type = (DeviceType)(uint8_t)arr[(int)Conf::DEVICE_TYPE];
+  deviceConfig.transition = (bool)arr[(int)Conf::DEVICE_TRANSITION];
 
   networkConfig.ip.a = (uint8_t)arr[(int)Conf::NETWORK_IP1];
   networkConfig.ip.b = (uint8_t)arr[(int)Conf::NETWORK_IP2];

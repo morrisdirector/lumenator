@@ -283,4 +283,8 @@ void loop()
 
   // STATE
   saveLevelsQueue();
+  if (deviceConfig.transition == true)
+  {
+    transitionRenderQueue();
+  }
 }

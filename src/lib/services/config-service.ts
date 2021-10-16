@@ -14,6 +14,7 @@ export class ConfigService extends DataService {
       // DEVICE:
       json[Conf.DEVICE_NAME],
       json[Conf.DEVICE_TYPE],
+      json[Conf.DEVICE_TRANSITION],
       // NETWORK:
       json[Conf.NETWORK_IP1],
       json[Conf.NETWORK_IP2],

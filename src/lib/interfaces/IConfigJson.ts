@@ -6,6 +6,7 @@ export enum Conf {
   // Device
   DEVICE_NAME = 1,
   DEVICE_TYPE,
+  DEVICE_TRANSITION,
   // Network
   NETWORK_IP1,
   NETWORK_IP2,
@@ -67,6 +68,7 @@ export interface IConfigJson {
   // DEVICE:
   [Conf.DEVICE_NAME]?: string | null;
   [Conf.DEVICE_TYPE]?: DeviceType;
+  [Conf.DEVICE_TRANSITION]?: boolean;
   // NETWORK:
   [Conf.NETWORK_IP1]?: number;
   [Conf.NETWORK_IP2]?: number;
@@ -130,6 +132,7 @@ export type IConfigDto = [
   // DEVICE:
   IConfigJson[Conf.DEVICE_NAME],
   IConfigJson[Conf.DEVICE_TYPE],
+  IConfigJson[Conf.DEVICE_TRANSITION],
   // NETWORK:
   IConfigJson[Conf.NETWORK_IP1],
   IConfigJson[Conf.NETWORK_IP2],

@@ -5,6 +5,7 @@ export const testData = (): IConfigDto => {
     null,
     "Lumenator Dev",
     1,
+    true,
     0,
     0,
     0,

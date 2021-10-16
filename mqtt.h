@@ -179,22 +179,30 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     // Received Command
     if (strncmp(topic, mqttConfig.commandTopic, strlen(mqttConfig.commandTopic)) == 0)
     {
+
+        bool val_on;
+        uint16_t val_brightness;
+        uint16_t val_temp;
+        uint8_t val_r;
+        uint8_t val_g;
+        uint8_t val_b;
+
         DynamicJsonDocument msg(JSON_OBJECT_SIZE(10));
         DeserializationError error = deserializeJson(msg, payload);
         if (error)
             Serial.println(MQTT_ERROR);
         else
         {
-            lumState.on = !!(strncmp(msg["state"], MQTT_ON, 2) == 0);
+            val_on = !!(strncmp(msg["state"], MQTT_ON, 2) == 0);
             if (msg["brightness"] != nullptr)
             {
-                lumState.brightness = (uint16_t)msg["brightness"];
+                val_brightness = (uint16_t)msg["brightness"];
             }
             if (msg["color"] != nullptr)
             {
-                lumState.r = (uint16_t)msg["color"]["r"];
-                lumState.g = (uint16_t)msg["color"]["g"];
-                lumState.b = (uint16_t)msg["color"]["b"];
+                val_r = (uint8_t)msg["color"]["r"];
+                val_g = (uint8_t)msg["color"]["g"];
+                val_b = (uint8_t)msg["color"]["b"];
                 lumState.ctrlMode = CtrlMode::RGB;
             }
             else if (msg["color_temp"] != nullptr)
@@ -211,9 +219,9 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
                 {
                     lumState.ctrlMode = CtrlMode::TEMP;
                 }
-                lumState.temp = (uint16_t)msg["color_temp"];
+                val_temp = (uint16_t)msg["color_temp"];
             }
-            updateLumenatorLevels();
+            updateLumenatorLevels(val_on, val_r, val_g, val_b, lumState.w, lumState.ww, val_temp, val_brightness);
             markForSave();
             markForStateSend();
         }
