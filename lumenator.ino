@@ -12,6 +12,8 @@
 #define EEPROM_SIZE 2000
 #define CONFIG_DTO_SIZE 2000
 
+#define CONFIG_MAJOR_VERSION_COMPATABILITY 1
+
 const char printLine[] = "----------------------------";
 
 bool apMode = false; // True when in "setup" access point mode is on

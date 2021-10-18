@@ -3,6 +3,7 @@ import { IConfigDto } from "../interfaces/IConfigJson";
 export const testData = (): IConfigDto => {
   return [
     null,
+    1.1,
     "Lumenator Dev",
     1,
     0,

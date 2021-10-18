@@ -1,5 +1,6 @@
 import { Conf, IConfigDto, IConfigJson } from "../interfaces/IConfigJson";
 
+import { CONFIG_VERSION } from "../../version";
 import { DataService } from "./data-service";
 import { testData } from "../utils/MockData";
 
@@ -12,6 +13,7 @@ export class ConfigService extends DataService {
     const dto: IConfigDto = [
       null,
       // DEVICE:
+      json[Conf.DEVICE_CONFIG_VERSION],
       json[Conf.DEVICE_NAME],
       json[Conf.DEVICE_TYPE],
       // NETWORK:
@@ -75,8 +77,11 @@ export class ConfigService extends DataService {
   }
 
   private getJsonFromDto(dto: IConfigDto): IConfigJson {
-    const json: IConfigJson = {};
+    const json: IConfigJson = { [Conf.DEVICE_CONFIG_VERSION]: CONFIG_VERSION };
     dto.forEach((value, idx) => {
+      if (idx == Conf.DEVICE_CONFIG_VERSION) {
+        return;
+      }
       //@ts-ignore
       json[idx] = value;
     });

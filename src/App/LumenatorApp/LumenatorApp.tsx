@@ -12,6 +12,7 @@ import { ConfigService } from "../../lib/services/config-service";
 import { ControlMode } from "../../lib/enums/ControlMode";
 import DeviceSetup from "./DeviceSetup/DeviceSetup";
 import E131Setup from "./E131Setup/E131Setup";
+import { FIRMWARE_VERSION } from "../../version";
 import { HardwareService } from "../../lib/services/hardware-service";
 import { IOnColorSetData } from "./ManualControl/IManualControlProps";
 import Loader from "../../lib/components/Loader/Loader";
@@ -179,7 +180,7 @@ class LumenatorApp extends Component<null, ILumenatorAppState> {
                     text={this.state.originalConfig[Conf.DEVICE_NAME] as string}
                   ></Chip>
                 )}
-              <div class="version">v1.1</div>
+              <div class="version">v{FIRMWARE_VERSION}</div>
             </div>
           </div>
         </header>

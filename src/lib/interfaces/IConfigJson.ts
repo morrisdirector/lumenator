@@ -4,7 +4,8 @@ import { MixingStrategy } from "../enums/MixingStrategy";
 
 export enum Conf {
   // Device
-  DEVICE_NAME = 1,
+  DEVICE_CONFIG_VERSION = 1,
+  DEVICE_NAME,
   DEVICE_TYPE,
   // Network
   NETWORK_IP1,
@@ -65,6 +66,7 @@ export enum Conf {
 }
 export interface IConfigJson {
   // DEVICE:
+  [Conf.DEVICE_CONFIG_VERSION]: number;
   [Conf.DEVICE_NAME]?: string | null;
   [Conf.DEVICE_TYPE]?: DeviceType;
   // NETWORK:
@@ -128,6 +130,7 @@ export interface IConfigJson {
 export type IConfigDto = [
   null, // First item is null to align the enums with the indexes
   // DEVICE:
+  IConfigJson[Conf.DEVICE_CONFIG_VERSION],
   IConfigJson[Conf.DEVICE_NAME],
   IConfigJson[Conf.DEVICE_TYPE],
   // NETWORK:

@@ -8,7 +8,8 @@
 enum class Conf
 {
   // Device
-  DEVICE_NAME = 1,
+  DEVICE_CONFIG_VERSION = 1,
+  DEVICE_NAME,
   DEVICE_TYPE,
   // Network
   NETWORK_IP1,
@@ -121,9 +122,9 @@ struct IPSubnet
   uint8_t c = 255;
   uint8_t d = 0;
 };
-
 struct DeviceConfig
 {
+  float configVersion = 0.0; // Major version = incompatable config; Minor version = backwards compatable
   char name[STRING_SIZE] = "Lumenator";
   DeviceType type = DeviceType::RGBWW;
 };
@@ -220,6 +221,7 @@ void serializeAll()
 
   arr.add(nullptr); // First item is null to align enums with indexes
 
+  arr.add((float)deviceConfig.configVersion);
   arr.add(deviceConfig.name);
   arr.add((uint8_t)deviceConfig.type);
 
@@ -287,10 +289,25 @@ void serializeAll()
   serializeJson(arr, dtoBuffer);
 }
 
+bool configCompatabilityCheck()
+{
+  return ((int)deviceConfig.configVersion == CONFIG_MAJOR_VERSION_COMPATABILITY);
+}
+
 void deserializeAll(DynamicJsonDocument json)
 {
 
   JsonArray arr = json.as<JsonArray>();
+
+  deviceConfig.configVersion = (float)arr[(int)Conf::DEVICE_CONFIG_VERSION];
+
+  if (!configCompatabilityCheck())
+  {
+    Serial.println("***** Detected incompatable configuration version *****");
+    clearEEPROM();
+    return;
+  }
+
   strlcpy(deviceConfig.name, arr[(int)Conf::DEVICE_NAME] | deviceConfig.name, STRING_SIZE);
   deviceConfig.type = (DeviceType)(uint8_t)arr[(int)Conf::DEVICE_TYPE];
 
