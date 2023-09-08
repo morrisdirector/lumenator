@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "Add e1.31 streaming support to your ESP8266 based light bulbs",
   "scripts": {
-    "dev": "vite serve src",
-    "build": "rm -rf data/build/* && tsc && vite build src && cp src/assets/* data/build && npm run gzip && npm run dump",
-    "minifyConfig": "cd ./src && python -c 'import json, sys;json.dump(json.load(sys.stdin), sys.stdout, separators=(\",\",\":\"))'  < default-config.json > ../data/build/default-config.min.json",
-    "gzip": "cd ./data/build && gzip -kf index.html && gzip -kf setup.html && gzip -kf lumenator.js && gzip -kf lumenator.css",
-    "dump": "cd ./data/build && xxd -i -u index.html.gz >> index.html.h && xxd -i -u setup.html.gz >> setup.html.h && xxd -i -u lumenator.js.gz >> lumenator.js.h && xxd -i -u lumenator.css.gz >> lumenator.css.h"
+    "dev": "vite serve src/www",
+    "build": "rm -rf build/* && tsc && vite build src/www && cp src/www/assets/* build && npm run gzip && npm run dump",
+    "gzip": "cd ./build && gzip -kf index.html && gzip -kf setup.html && gzip -kf lumenator.js && gzip -kf lumenator.css",
+    "dump": "cd ./build && xxd -i -u index.html.gz >> index.html.h && xxd -i -u setup.html.gz >> setup.html.h && xxd -i -u lumenator.js.gz >> lumenator.js.h && xxd -i -u lumenator.css.gz >> lumenator.css.h"
   },
   "repository": {
     "type": "git",
