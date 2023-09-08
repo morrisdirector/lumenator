@@ -6,7 +6,7 @@
 #include "data/build/index.html.h"
 #include "data/build/lumenator.js.h"
 #include "data/build/setup.html.h"
-#include "data/build/style.css.h"
+#include "data/build/lumenator.css.h"
 
 // Web Server port 80
 AsyncWebServer server(80);
@@ -43,10 +43,10 @@ void initRoutes()
               request->send(response);
             });
 
-  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
+  server.on("/lumenator.css", HTTP_GET, [](AsyncWebServerRequest *request)
             {
               AsyncWebServerResponse *response =
-                  request->beginResponse_P(200, "text/css", style_css_gz, style_css_gz_len);
+                  request->beginResponse_P(200, "text/css", lumenator_css_gz, lumenator_css_gz_len);
               response->addHeader("Content-Encoding", "gzip");
               request->send(response);
             });

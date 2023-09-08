@@ -17,7 +17,7 @@ const ToggleSwitch: FunctionalComponent<IToggleSwitchProps> = (props) => {
         renderStateClass() +
         (props.disabled ? " disabled" : "")
       }
-      ontouchstart="return true;"
+      // ontouchstart="return true;"
       onClick={() => {
         if (typeof props.onClick === "function" && !props.disabled) {
           props.onClick(!props.on);

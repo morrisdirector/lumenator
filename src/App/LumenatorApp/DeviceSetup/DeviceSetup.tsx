@@ -7,7 +7,7 @@ import {
 import { Fragment, FunctionalComponent, h } from "preact";
 
 import AlertWarning from "../../../lib/components/AlertWarning/AlertWarning";
-import { Conf } from "../../../lib/interfaces/IConfigJson";
+import { Conf, IConfigJson } from "../../../lib/interfaces/IConfigJson";
 import { ControlMode } from "../../../lib/enums/ControlMode";
 import { DeviceType } from "../../../lib/enums/DeviceType";
 import DropdownMenu from "../../../lib/components/DropdownMenu/DropdownMenu";
@@ -20,7 +20,7 @@ import { useState } from "preact/hooks";
 type DevicePage = "setup" | "update";
 
 const ManualControl: FunctionalComponent<IDeviceSetupProps> = ({
-  config = {},
+  config = {} as IConfigJson,
   bannerService,
   hardwareService,
   websocketService,

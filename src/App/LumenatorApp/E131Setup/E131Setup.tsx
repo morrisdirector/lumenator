@@ -9,7 +9,7 @@ import Input from "../../../lib/components/Input/Input";
 import ToggleSwitch from "../../../lib/components/ToggleSwitch/ToggleSwitch";
 
 const E131Setup: FunctionalComponent<IE131SetupProps> = ({
-  config = {},
+  config = {} as IConfigJson,
   ...props
 }) => {
   const handleE131Enable = (): void => {
