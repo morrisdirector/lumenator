@@ -1,9 +1,5 @@
 # Lumenator: ESP8266-based Smart Light Bulb Firmware
 
----
-
-## Info
-
 **Lumenator** is a dedicated firmware designed to bring E1.31 streaming protocol to your ESP8266-based smart light bulbs without compromising their everyday use.
 
 ### Features:
@@ -17,8 +13,6 @@
 - **OTA (Over The Air) Updates**: Update your bulb firmware remotely without the need to physically access or disconnect it.
 
 - **Hotspot for Initial Setup**: Lumenator provides a hotspot for a straightforward initial configuration, making the initial setup process a breeze.
-
----
 
 ## Project File Structure
 
@@ -58,8 +52,6 @@
    - Gzip the bundled files to reduce their size.
    - Generate byte arrays from the gzipped files, making them ready for inclusion in the sketch files.
 
----
-
 ## Firmware Core:
 
 Working on the firmware's core, i.e., the sketch files, requires a different setup and understanding. This project leverages PlatformIO, a prominent ecosystem for embedded development.
@@ -91,8 +83,6 @@ Working on the firmware's core, i.e., the sketch files, requires a different set
 
 4. **Incorporating Web Page Byte Arrays**:
    When building the core firmware, it automatically integrates the latest web page byte array files generated from the `build` directory.
-
----
 
 ### Tips:
 
