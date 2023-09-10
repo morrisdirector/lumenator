@@ -54,7 +54,7 @@
 
 ## Firmware Core:
 
-Working on the firmware's core, i.e., the sketch files, requires a different setup and understanding. This project leverages PlatformIO, a prominent ecosystem for embedded development.
+This project leverages PlatformIO, a prominent ecosystem for embedded development.
 
 1. **Lumenator Environment** (`lumenator`):
 
