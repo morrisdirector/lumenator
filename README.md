@@ -4,19 +4,19 @@
 
 ## Info
 
-**Lumenator** is a dedicated firmware designed for ESP8266-based smart light bulbs. Our aim is to bring flexibility, durability, and efficient performance to smart lighting solutions.
+**Lumenator** is a dedicated firmware designed to bring E1.31 streaming protocol to your ESP8266-based smart light bulbs without compromising their everyday use.
 
 ### Features:
-
-- **Web Interface for Configuration**: Easily adjust settings and preferences without the need for complicated software. Our intuitive web interface offers seamless user experience.
-
-- **OTA (Over The Air) Updates**: Update your bulb firmware remotely without the need to physically access or disconnect it. Keep your bulbs up-to-date with the latest features and security patches.
-
-- **Hotspot for Initial Setup**: No need for convoluted wiring or tedious setup procedures. Lumenator provides a hotspot for a straightforward initial configuration, making the initial setup process a breeze.
 
 - **E1.31 Streaming**: Support for E1.31 streaming protocol ensures that you can integrate Lumenator into entertainment, architectural, and even professional lighting systems.
 
 - **MQTT Integration**: Allows your smart bulbs to communicate over MQTT. Integrate your bulbs with home automation platforms, sensors, or other devices for a cohesive smart home environment.
+
+- **Web Interface for Configuration**: Remotely adjust settings and preferences with an easy-to-use ui.
+
+- **OTA (Over The Air) Updates**: Update your bulb firmware remotely without the need to physically access or disconnect it.
+
+- **Hotspot for Initial Setup**: Lumenator provides a hotspot for a straightforward initial configuration, making the initial setup process a breeze.
 
 ---
 
@@ -26,19 +26,13 @@
 
 - 📁 **build**: Houses bundled web assets, including gzipped versions and byte array files.
 
-- 📁 **node_modules**: Holds the dependencies for the web interface. This directory is generated when 'npm install' is run.
+- 📁 **node_modules**: Holds the dependencies for the web interface. This directory is generated when 'pnpm install' is run.
 
 - 📁 **src**: The core of the project with all source files.
 
   - 📁 **www**: Source files for the front-end User Interface (UI) of the firmware.
 
   - **Sketch Files**: Outside the 'www' directory, you'll find the sketch files vital to the firmware, including the primary '.ino' file and its associated header files.
-
-# Development Guide
-
----
-
-For those looking to contribute to or modify the Lumenator's web pages, this section will guide you through the development and deployment process.
 
 ## Web Development:
 
