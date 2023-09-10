@@ -36,7 +36,7 @@ void e131Loop()
 
             if (lumState.ctrlMode != CtrlMode::E131)
             {
-                Serial.println(printLine);
+                PL(___);
                 Serial.print("Receiving E1.31 data...");
                 lumState.ctrlMode = CtrlMode::E131;
                 updateLumenatorLevels(true, 0, 0, 0, 0, 0, 500, 255); // Bulb is on with all channels at 0
@@ -117,8 +117,8 @@ void e131Loop()
         // Packets stopped:
         setStateFromSaved();
         updateLumenatorLevels();
-        Serial.println("done");
-        Serial.println("Stream ended");
-        Serial.println(printLine);
+        PL("done");
+        PL("Stream ended");
+        PL(___);
     }
 }

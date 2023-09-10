@@ -10,7 +10,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 
-#define EEPROM_SIZE 1000
+#define EEPROM_SIZE 2000
 #define CONFIG_DTO_SIZE 2000
 
 #define CONFIG_MAJOR_VERSION_COMPATABILITY 1
@@ -31,18 +31,12 @@ DNSServer dnsServer;
 WiFiClient espClient;
 
 #include "utils.h"
-
 #include "config.h"
-
 #include "state.h"
-
 #include "webserver.h"
-
-// #include "mqtt.h"
-
-// #include "e131.h"
-
-// #include "websockets.h"
+#include "mqtt.h"
+#include "e131.h"
+#include "websockets.h"
 
 void printWiFiStatus()
 {
@@ -255,10 +249,51 @@ void setupEEPROM()
   delay(10);
 }
 
+void handleE131Loop()
+{
+  if (e131Config.enabled == true)
+  {
+    e131Loop();
+  }
+}
+
+void handleMQTTLoop()
+{
+  if (mqttConfig.enabled == true)
+  {
+    if (!mqttClient.connected())
+    {
+      reconnectMqtt();
+    }
+    mqttLoop();
+  }
+}
+
+void setupWebSockets()
+{
+  webSocket.begin();
+  webSocket.onEvent(onWebSocketEvent);
+}
+
+void setupE131()
+{
+  if (e131Config.enabled == true)
+  {
+    if (e131.begin(E131_UNICAST)) // Listen via Unicast
+    {
+      PL(___);
+      PL(F("Listening for e131 data..."));
+      PL(___);
+    }
+    else
+      PL(F("*** e131.begin failed ***"));
+  }
+}
+
 void setup()
 {
-  setupWriteSettings(); // Setup analog write settings
-  initialStartup();
+  setupWriteSettings();         // Setup analog write settings
+  initialStartup();             // Setup environment
   resetPreviousConnections();   // Reset previous connections
   setupEEPROM();                // Setup EEPROM
   readConfigJson(readEEPROM()); // Read config from EEPROM
@@ -267,51 +302,17 @@ void setup()
   updateLumenatorLevels(true);  // Turn light on immediately on boot up
   setupWirelessConnection();    // Connect to WiFi or start access point
   setupWebServer();             // Start web server and assign callback
-
-  // Start WebSocket server and assign callback
-  // webSocket.begin();
-  // webSocket.onEvent(onWebSocketEvent);
-
-  // if (mqttConfig.enabled == true)
-  // {
-  //   setupMqtt();
-  // }
-
-  // if (e131Config.enabled == true)
-  // {
-  //   if (e131.begin(E131_UNICAST)) // Listen via Unicast
-  //   {
-  //     PL(printLine);
-  //     PL(F("Listening for e131 data..."));
-  //     PL(printLine);
-  //   }
-  //   else
-  //     PL(F("*** e131.begin failed ***"));
-  // }
+  setupWebSockets();            // Start web socket server and assign callback
+  setupMqtt();                  // Setup MQTT
+  setupE131();                  // Setup E131
 }
 
 void loop()
 {
-  // webSocket.loop();
-
-  // E131:
-  // if (e131Config.enabled == true)
-  // {
-  //   e131Loop();
-  // }
-  // MQTT:
-  // if (mqttConfig.enabled == true)
-  // {
-  //   if (!mqttClient.connected())
-  //   {
-  //     reconnectMqtt();
-  //   }
-  //   mqttLoop();
-  // }
-
-  server.handleClient();          // handle webserver requests
-  dnsServer.processNextRequest(); // handle dns requests
-
-  // STATE
-  // saveLevelsQueue();
+  webSocket.loop();               // Handle web socket events
+  handleE131Loop();               // Handle E131 events
+  handleMQTTLoop();               // Handle MQTT events
+  server.handleClient();          // Handle webserver requests
+  dnsServer.processNextRequest(); // Handle dns requests
+  saveLevelsQueue();              // Save levels to eeprom if marked for save
 }
