@@ -2,6 +2,7 @@ node_modules
 .vscode
 .parcel-cache
 .DS_Store
+.pio
 dist
 data
 build

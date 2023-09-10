@@ -18,27 +18,27 @@ LumState lumState;
 
 void printCurrentState()
 {
-  Serial.println(printLine);
-  Serial.println("*** Current lumState ***");
-  Serial.print("ctrlMode: ");
-  Serial.println((int)lumState.ctrlMode);
-  Serial.print("on: ");
-  Serial.println(lumState.on);
-  Serial.print("brightness: ");
-  Serial.println(lumState.brightness);
-  Serial.print("temp: ");
-  Serial.println(lumState.temp);
-  Serial.print("r: ");
-  Serial.println(lumState.r);
-  Serial.print("g: ");
-  Serial.println(lumState.g);
-  Serial.print("b: ");
-  Serial.println(lumState.b);
-  Serial.print("w: ");
-  Serial.println(lumState.w);
-  Serial.print("ww: ");
-  Serial.println(lumState.ww);
-  Serial.println(printLine);
+  PL(___);
+  PL("*** Current lumState ***");
+  P("ctrlMode: ");
+  PL((int)lumState.ctrlMode);
+  P("on: ");
+  PL(lumState.on);
+  P("brightness: ");
+  PL(lumState.brightness);
+  P("temp: ");
+  PL(lumState.temp);
+  P("r: ");
+  PL(lumState.r);
+  P("g: ");
+  PL(lumState.g);
+  P("b: ");
+  PL(lumState.b);
+  P("w: ");
+  PL(lumState.w);
+  P("ww: ");
+  PL(lumState.ww);
+  PL(___);
 }
 
 void resetGpios()
@@ -120,6 +120,8 @@ void updateLumenatorLevels(bool on, int r, int g, int b, int w, int ww, int temp
       if (deviceConfig.type == DeviceType::RGBWW || deviceConfig.type == DeviceType::WW)
         analogWrite(gpioConfig.ww, lumState.ww * lumState.brightnessMultiplier);
       break;
+    default:
+      break;
     }
   }
 }
@@ -139,9 +141,9 @@ void saveLevels()
 
   serializeAll();
   commitConfiguration(dtoBuffer);
-  Serial.println("Data Saved:");
-  Serial.println(dtoBuffer);
-  Serial.println(printLine);
+  PL("Data Saved:");
+  PL(dtoBuffer);
+  PL(___);
 }
 
 unsigned long lastSaveAttemptTime = 0;

@@ -388,7 +388,7 @@ bool saveConfiguration(char dto[CONFIG_DTO_SIZE])
   const char *dBuffer = dto; // Needs to hold char[] in a const for deserializJson to work properly
   Serial.println("Config to save: ");
   Serial.println(dBuffer);
-  Serial.println(printLine);
+  PL(___);
   DynamicJsonDocument json(2048);
   DeserializationError error = deserializeJson(json, dBuffer);
   if (error)

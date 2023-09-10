@@ -56,10 +56,7 @@ uint8_t getGPIOAddress(CtrlMode ctrMd)
   {
     return gpioConfig.w;
   }
-  else if (ctrMd == CtrlMode::GPIO_WW)
-  {
-    return gpioConfig.ww;
-  }
+  return gpioConfig.ww;
 }
 
 void GPIOTestCommand(char *text)

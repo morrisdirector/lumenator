@@ -2,6 +2,7 @@
   "Lumenator" v1.0
   by Patrick Morris
 */
+#include <Arduino.h>
 #include <ArduinoJson.h>
 
 #include <DNSServer.h>
@@ -9,12 +10,15 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h> //https://github.com/knolleary/pubsubclient
 
-#define EEPROM_SIZE 2000
+#define EEPROM_SIZE 1000
 #define CONFIG_DTO_SIZE 2000
 
 #define CONFIG_MAJOR_VERSION_COMPATABILITY 1
 
-const char printLine[] = "----------------------------";
+#define P(...) Serial.print(__VA_ARGS__)    // P stands for "Print"
+#define PL(...) Serial.println(__VA_ARGS__) // PL stands for "Print Line"
+
+const char ___[] = "----------------------------";
 
 bool apMode = false; // True when in "setup" access point mode is on
 IPAddress apIP(192, 168, 4, 1);
@@ -34,39 +38,38 @@ WiFiClient espClient;
 
 #include "webserver.h"
 
-#include "mqtt.h"
+// #include "mqtt.h"
 
-#include "e131.h"
+// #include "e131.h"
 
-#include "websockets.h"
+// #include "websockets.h"
 
 void printWiFiStatus()
 {
-
-  Serial.println(" ");
-  Serial.println(printLine);
-  Serial.println("Connected to wifi");
-  Serial.print("Status: ");
-  Serial.println(WiFi.status());
-  Serial.print("IP: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("Subnet: ");
-  Serial.println(WiFi.subnetMask());
-  Serial.print("Gateway: ");
-  Serial.println(WiFi.gatewayIP());
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-  Serial.print("Signal: ");
-  Serial.println(WiFi.RSSI());
-  Serial.print("Networks: ");
-  Serial.println(WiFi.scanNetworks());
-  Serial.println(printLine);
+  PL();
+  PL(___);
+  PL("Connected to wifi");
+  P("Status: ");
+  PL(WiFi.status());
+  P("IP: ");
+  PL(WiFi.localIP());
+  P("Subnet: ");
+  PL(WiFi.subnetMask());
+  P("Gateway: ");
+  PL(WiFi.gatewayIP());
+  P("SSID: ");
+  PL(WiFi.SSID());
+  P("Signal: ");
+  PL(WiFi.RSSI());
+  P("Networks: ");
+  PL(WiFi.scanNetworks());
+  PL(___);
 }
 
 void startAccessPoint()
 {
 
-  Serial.println("Starting access point");
+  PL("Starting access point");
 
   apMode = true;
   WiFi.disconnect();
@@ -79,8 +82,8 @@ void startAccessPoint()
   WiFi.softAP(nameBuff);
   delay(500); // Without delay I've seen the IP address blank
 
-  Serial.print("AP IP address: ");
-  Serial.println(WiFi.softAPIP());
+  P("AP IP address: ");
+  PL(WiFi.softAPIP());
 
   /* Setup the DNS server redirecting all the domains to the apIP */
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
@@ -90,19 +93,19 @@ void startAccessPoint()
 void startWiFi()
 {
 
-  Serial.println();
-  Serial.println("Connecting to WiFi:");
+  PL();
+  PL("Connecting to WiFi:");
 
   if (networkConfig.dhcp == false)
   {
-    Serial.println("Static IP: ");
-    Serial.print(networkConfig.ip.a);
-    Serial.print(".");
-    Serial.print(networkConfig.ip.b);
-    Serial.print(".");
-    Serial.print(networkConfig.ip.c);
-    Serial.print(".");
-    Serial.println(networkConfig.ip.d);
+    PL("Static IP: ");
+    P(networkConfig.ip.a);
+    P(".");
+    P(networkConfig.ip.b);
+    P(".");
+    P(networkConfig.ip.c);
+    P(".");
+    PL(networkConfig.ip.d);
 
     IPAddress local_IP(networkConfig.ip.a, networkConfig.ip.b, networkConfig.ip.c, networkConfig.ip.d);
     IPAddress gateway(192, 168, 1, 1);
@@ -117,7 +120,7 @@ void startWiFi()
   {
     delay(1000);
 
-    Serial.print(".");
+    P(".");
 
     if (i >= 30)
       break;
@@ -126,14 +129,14 @@ void startWiFi()
   if (WiFi.status() == WL_CONNECTED)
   {
 
-    Serial.print("Status: ");
-    Serial.println(WiFi.status());
+    P("Status: ");
+    PL(WiFi.status());
     printWiFiStatus();
   }
   else
   {
 
-    Serial.println("Failed");
+    PL("Failed");
 
     startAccessPoint();
   }
@@ -187,11 +190,11 @@ void readConfigJson(String configuration)
     if (error)
     {
 
-      Serial.print(error.c_str());
+      P(error.c_str());
 
-      Serial.println();
-      Serial.println("----- Cannot Parse Configuration -----");
-      Serial.println();
+      PL();
+      PL("----- Cannot Parse Configuration -----");
+      PL();
 
       if (configuration[0] != 0)
         clearEEPROM();
@@ -201,29 +204,29 @@ void readConfigJson(String configuration)
   }
 }
 
-void setup()
+void setupWriteSettings()
 {
   analogWriteRange(255);
   analogWriteFreq(880);
+}
 
+void initialStartup()
+{
   // Serial port for debugging purposes
   Serial.begin(115200);
-  Serial.println();
-  Serial.println("Starting Lumenator...");
-  Serial.println();
+  PL();
+  P("Starting Lumenator...");
+  PL();
+}
 
+void resetPreviousConnections()
+{
   WiFi.disconnect();
   WiFi.softAPdisconnect(true);
-  EEPROM.begin(EEPROM_SIZE); // Initialasing EEPROM
-  delay(10);
+}
 
-  readConfigJson(readEEPROM());
-
-  setupHardwareConfiguration();
-
-  setStateFromSaved();
-  updateLumenatorLevels(true); // Turn light on immediately on boot up
-
+void setupWirelessConnection()
+{
   if (strlen(networkConfig.ssid) && strlen(networkConfig.pass))
   {
     startWiFi();
@@ -232,57 +235,83 @@ void setup()
   {
     startAccessPoint();
   }
+}
 
+void setupWebServer()
+{
   // Setup HTTP server routes
   initRoutes();
 
+  // Setup APIs
+  initAPIs();
+
   // Start web server
   server.begin();
+}
+
+void setupEEPROM()
+{
+  EEPROM.begin(EEPROM_SIZE); // Initialising EEPROM
+  delay(10);
+}
+
+void setup()
+{
+  setupWriteSettings(); // Setup analog write settings
+  initialStartup();
+  resetPreviousConnections();   // Reset previous connections
+  setupEEPROM();                // Setup EEPROM
+  readConfigJson(readEEPROM()); // Read config from EEPROM
+  setupHardwareConfiguration(); // Setup GPIOs
+  setStateFromSaved();          // Load saved state from EEPROM
+  updateLumenatorLevels(true);  // Turn light on immediately on boot up
+  setupWirelessConnection();    // Connect to WiFi or start access point
+  setupWebServer();             // Start web server and assign callback
 
   // Start WebSocket server and assign callback
-  webSocket.begin();
-  webSocket.onEvent(onWebSocketEvent);
+  // webSocket.begin();
+  // webSocket.onEvent(onWebSocketEvent);
 
-  if (mqttConfig.enabled == true)
-  {
-    setupMqtt();
-  }
+  // if (mqttConfig.enabled == true)
+  // {
+  //   setupMqtt();
+  // }
 
-  if (e131Config.enabled == true)
-  {
-    if (e131.begin(E131_UNICAST)) // Listen via Unicast
-    {
-      Serial.println(printLine);
-      Serial.println(F("Listening for e131 data..."));
-      Serial.println(printLine);
-    }
-    else
-      Serial.println(F("*** e131.begin failed ***"));
-  }
+  // if (e131Config.enabled == true)
+  // {
+  //   if (e131.begin(E131_UNICAST)) // Listen via Unicast
+  //   {
+  //     PL(printLine);
+  //     PL(F("Listening for e131 data..."));
+  //     PL(printLine);
+  //   }
+  //   else
+  //     PL(F("*** e131.begin failed ***"));
+  // }
 }
 
 void loop()
 {
-  webSocket.loop();
+  // webSocket.loop();
 
   // E131:
-  if (e131Config.enabled == true)
-  {
-    e131Loop();
-  }
+  // if (e131Config.enabled == true)
+  // {
+  //   e131Loop();
+  // }
   // MQTT:
-  if (mqttConfig.enabled == true)
-  {
-    if (!mqttClient.connected())
-    {
-      reconnectMqtt();
-    }
-    mqttLoop();
-  }
+  // if (mqttConfig.enabled == true)
+  // {
+  //   if (!mqttClient.connected())
+  //   {
+  //     reconnectMqtt();
+  //   }
+  //   mqttLoop();
+  // }
 
-  // DNS
-  dnsServer.processNextRequest();
+  server.handleClient();          // handle webserver requests
+  dnsServer.processNextRequest(); // handle dns requests
 
   // STATE
-  saveLevelsQueue();
+  // saveLevelsQueue();
 }
